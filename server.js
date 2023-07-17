@@ -18,7 +18,7 @@ const config = {
     user: 'VergAdmin',
     password: process.env.PASSWORD,
     server: process.env.SERVER,
-    port: process.env.DBPORT, 
+    port: parseInt(process.env.DBPORT, 10), 
     database: process.env.DATABASE,
     pool: {
       max: 10,
