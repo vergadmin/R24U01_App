@@ -1,0 +1,15 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+h1 {
+    font-weight: 900;
+    color: #015495;
+}
+
+p {
+    font-weight: 500;
+    font-size: 25px;
+}

@@ -1,0 +1,25 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #000000;
+    margin-bottom: 15px;
+}
+
+.main-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+img {
+    height: 75px;
+    margin-right: 15px;
+}
+
+.UFLogo {
+    height: 65px !important;
+    right: 15px !important;
+}

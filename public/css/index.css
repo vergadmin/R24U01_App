@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    justify-content: center;
+}
+
+.logo {
+    height: 105px;
+}
+
+.title {
+    font-size: 55px !important;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.selection-area {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #015495;
+    border-radius: 35px;
+    padding: 35px;
+}
+
+.choose-alex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.alex-snippet {
+    height: 250px;
+}
