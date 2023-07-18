@@ -22,20 +22,44 @@ window.addEventListener("load", () => {
     let dateTime = new Date().toLocaleString() + " " + Intl.DateTimeFormat().resolvedOptions().timeZone;
     console.log(dateTime)
 
-    sendData(browserInfo, osInfo, platform, dateTime)
+    sendGeneralData(browserInfo, osInfo, platform, dateTime)
 });
 
-async function sendData(browserInfo, osInfo, platform, dateTime) {
-    console.log("IN SEND TO SERVER REGISTER CLICK")
+async function sendGeneralData(browserInfo, osInfo, platform, dateTime) {
+    console.log("IN SEND TO SERVER GENERAL DATA")
 
-    let url = '/registerClick';
+    let url = '/updateDatabase';
     let data = {
-        'isFirst': true,
         'DateTime': dateTime,
         'BrowserInfo': browserInfo,
         'OsInfo': osInfo,
         'Platform': platform
     };
+
+    let res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    if (res.ok) {
+        let ret = await res.json();
+        return JSON.parse(ret.data);
+
+    } else {
+        return `HTTP error: ${res.status}`;
+    }
+}
+
+async function sendVHData(column, value) {
+    console.log("IN REGISTER CLICK FROM CLIENT")
+    console.log(column + ": " + value)
+
+    let url = '/updateDatabase';
+    let data = {};
+    data[column] = value
+    console.log(data)
 
     let res = await fetch(url, {
         method: 'POST',
