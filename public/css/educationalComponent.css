@@ -1,3 +1,31 @@
 video {
     width: 75%;
 }
+
+.navigation-area {
+    display: flex;
+    flex-direction: row;
+}
+
+.education-navigation {
+    background-color: #015495;
+    color: white;
+    border: 0px;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 7px;
+    font-size: 21px;
+    width: 205px;
+    height: 105px;
+    transition: .2s ease-in-out;
+}
+
+.selected {
+    background-color: #EE7E38 !important;
+}
+
+.education-navigation:hover {
+    cursor: pointer;
+    background-color: #EE7E38;
+    transform: scale(1.1);
+}
