@@ -17,3 +17,18 @@ p {
 a {
     text-decoration: none;
 }
+
+button {
+    background-color: #015495;
+    padding: 15px;
+    border: 0px;
+    border-radius: 11px;
+    color: white;
+    font-size: 21px;
+    transition: .2s ease-in-out;
+}
+
+button:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}

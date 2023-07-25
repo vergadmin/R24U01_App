@@ -1,0 +1,17 @@
+.areas {
+    display: flex;
+    flex-direction: row;
+}
+
+.area {
+    border: 3px solid #EE7E38;
+    border-radius: 15px;
+    margin: 15px;
+    padding: 15px;
+    width: 29%;
+}
+
+h2 {
+    color: #015495;
+    font-size: 35px;
+}

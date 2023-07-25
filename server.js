@@ -74,6 +74,33 @@ app.get('/:version/:id', checkUser, (req, res) => {
     res.render('pages/index', {id: id, version: version})
 })
 
+app.get('/:version/:id/Discover', (req, res) => {
+    console.log("REQUEST PARAMS:")
+    console.log(req.params)
+    version = req.params.version
+    id = req.params.id
+
+    sql.connect(config, function (err) {
+
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+
+        let queryString = 'UPDATE R24U01 SET Discover' + `='clicked' WHERE ID=` + `'` + id + `' AND VERSION='` + version + `'`;
+        console.log(queryString)
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+            // send records as a response
+            console.log("UPDATED! IN R24U01 TABLE:")
+            console.log(recordset);
+        }); 
+    
+    });
+
+    res.render('pages/discover', {id: id, version: version})
+})
+
 app.use(logger)
 
 function logger(req, res, next) {

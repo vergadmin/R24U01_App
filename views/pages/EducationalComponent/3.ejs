@@ -16,6 +16,9 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
+        <div class="character-selection-area">
+            <a href="/<%=version%>/<%=id%>">⬅ Character Selection</a>
+        </div>
         <video autoplay controls>
             <source src="https://vpf2content.s3.amazonaws.com/Uploads/Videos/R24/<%=vh%>_3_03_16_23.mp4" type="video/mp4">
         </video>
@@ -36,6 +39,11 @@
                     </a>
                 <% } %>
             <% } %>
+        </div>
+        <div class="discover-button-area">
+            <a href="/<%=version%>/<%=id%>/Discover">
+                <button class="discover-button">Discover Research Opportunities</button>
+            </a>
         </div>
     </div>
 </body>
