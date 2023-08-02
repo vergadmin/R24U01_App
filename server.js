@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const io = require('socket.io-client');
 
 require('dotenv').config()
 console.log(process.env)
@@ -30,6 +31,100 @@ const config = {
       trustServerCertificate: true // change to true for local dev / self-signed certs
     }
 }
+
+app.get('/faqResponse', async (req, res) => {
+    let tag = req.body.fulfillmentInfo.tag;
+    let query = req.body.text;
+
+    console.log("Query is");
+    console.log(query);
+
+    console.log('A new request came...');
+    console.log(tag);
+    console.log(new Date())
+
+    const socket = io('http://127.0.0.1:6000');
+    
+    socket.on('connect', () => {
+      console.log('Connected to Python Socket.IO server');
+    
+      const data = 'What is a clinical trial?';
+      socket.emit('my_event', data);
+    });
+    
+    socket.on('my_response', (data) => {
+      console.log('Response from Python Socket.IO server:', data);
+    });
+    console.log("END");
+    /*
+    const options = {
+        hostname: 'localhost',
+        port: 6000, // Replace with the same port used in the Python script
+        path: '/data',
+        method: 'GET'
+      };
+
+    const reqs = http.request(options, (ress) => {
+        let data = '';
+        ress.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        ress.on('end', () => {
+            console.log('Response from Python Server:', data);
+        });
+    });
+    
+    reqs.on('error', (err) => {
+        console.error('Error connecting to Python Server:', err);
+    });
+
+    reqs.end();
+    /*
+    const pythonProcess = spawn('python', ['FaqResponse.py'])
+
+    const http = require('http')
+    const server = http.createServer((req, res) => {
+        functionName = 'greeting';
+        pythonProcess.stdin.write(`${functionName}`);
+
+        res.end('Request received');
+    });
+
+    if (tag === 'sampleResponse') {
+        let result = await callPythonScript(query);
+        console.log(result.status)
+        console.log(result.response)
+        if (result.status == 1) {
+            console.log("We in it!");
+            res.send(formatResponseForDialogflow(
+                [
+                    result.response
+                ],
+                '',
+                '',
+                ''
+            ));
+        } else {
+            res.send(getErrorMessage());
+        }
+
+    } else {
+        res.send(
+            formatResponseForDialogflow(
+                [
+                    'This is from the webhook.',
+                    'There is no tag set for this request.'
+                ],
+                '',
+                '',
+                ''
+            )
+        );
+    }
+    */
+
+})
 
 app.post('/updateDatabase', async (req, res) => {
     console.log("IN UPDATE DATABASE")

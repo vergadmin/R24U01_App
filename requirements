@@ -1,0 +1,8 @@
+npm install -g nodemon
+npm install express
+pip install boto3
+npm install socket.io-client
+pip install socketio
+pip install eventlet
+pip install python-socketio
+pip install python-dotenv
