@@ -71,7 +71,6 @@ router.get('/Results', (req, res) => {
 })
 
 function CTsWithDatabase(req, res, next) {
-  trialsList = trialsList.slice(0,5)
   // The following function "processNext()" is a wrapper function so that the async calls made to
   // summarizeGPT don't return out of order -- it's a glorified for loop.
   // processNext() checks if we've already recorded the CT, if we have, retrieves it and stores in trialsList.GPTSummary
@@ -194,6 +193,7 @@ async function searchForCT(req, res, next) {
     console.log('Error: ', err.message);
   });
   console.log(trialsList)
+  trialsList = trialsList.slice(0,5)
   next()
 }
 
