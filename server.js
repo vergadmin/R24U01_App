@@ -185,7 +185,7 @@ app.get('/CTsWithDatabase', (req, res) => {
                             trialsList[i]['GPTSummary'] = summary;
 
                             // Keep track of IDs already seen.
-                            idTracker.push(trialsList.ID);
+                            idTracker.push(trialsList[i].ID);
                             // Insert new entry into table
                             // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
                             let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTSummary) VALUES ('` + trialsList[i].ID + `','` + summary + `')`;
