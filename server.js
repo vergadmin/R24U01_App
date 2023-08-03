@@ -19,6 +19,10 @@ const MAX_TOKENS = 300;
 const TEMPERATURE = 0;
 // open ai constants --->
 
+// <--- ENCRYPTION LIBRARY 
+const CryptoJS = require("crypto-js");
+
+// ENCRYPTION LIBRARY --->
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
 app.use(express.json())
@@ -114,6 +118,20 @@ app.get('/:version/:id/Discover', (req, res) => {
     });
 
     res.render('pages/discover', {id: id, version: version})
+})
+
+app.get('/decrypt', (req, res) => {
+
+    var id = req.params.id;
+    var bytes = CryptoJS.AES.decrypt(id, process.env.DECRYPTION_KEY);
+    var result = bytes.toString(CryptoJS.enc.Utf8);
+    console.log("after decrypt: " + result);
+    // order of information as of right now:
+    // gender, age, healthy, state, city, race, condition, text or video.
+    // separated by _
+    
+    
+
 })
 
 app.get('/CTsWithDatabase', (req, res) => {
