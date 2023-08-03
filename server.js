@@ -144,7 +144,7 @@ app.get('/CTsWithDatabase', (req, res) => {
     // -- To Here (stop scrolling).
 
 
-    // The following function "processNext()" is a wrapper function so that the async calls in
+    // The following function "processNext()" is a wrapper function so that the async calls made to
     // summarizeGPT don't return out of order -- it's a glorified for loop.
     // processNext() checks if we've already recorded the CT, if we have, retrieves it and stores in trialsList.GPTSummary
     // if we have not recorded it, it calls summarizeGPT, stores it in trialsList.GPTSummary and then inserts it into the ClinicalTrials table
@@ -187,6 +187,7 @@ app.get('/CTsWithDatabase', (req, res) => {
                             // Keep track of IDs already seen.
                             idTracker.push(trialsList.ID);
                             // Insert new entry into table
+                            // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
                             let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTSummary) VALUES ('` + trialsList[i].ID + `','` + summary + `')`;
                             request.query(updateString, function (err, recordset2) {
                                 if (err) 
