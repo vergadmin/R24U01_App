@@ -21,8 +21,11 @@ const TEMPERATURE = 0;
 
 // <--- ENCRYPTION LIBRARY 
 const CryptoJS = require("crypto-js");
-
 // ENCRYPTION LIBRARY --->
+
+// Modify based on Miriam/Emma's Qualtrics:
+const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
+
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
 app.use(express.json())
@@ -123,16 +126,59 @@ app.get('/:version/:id/Discover', (req, res) => {
 app.get('/decrypt', (req, res) => {
 
     var id = req.params.id;
-    var bytes = CryptoJS.AES.decrypt(id, process.env.DECRYPTION_KEY);
+    // Test String
+    id = "U2FsdGVkX1-65+k-+XeQ4sLoEHZfMYjDPhOrn2oklAJhbM05l-KyH97UOpiKSBtlSgeJgGPM1ECXKVOoOPTCv4SNykjhAdO-RN7H-xVR9Dc="
+    var fixedID = id.replaceAll("-","/");
+    var bytes = CryptoJS.AES.decrypt(fixedID, process.env.DECRYPTION_KEY);
     var result = bytes.toString(CryptoJS.enc.Utf8);
     console.log("after decrypt: " + result);
+    // 13282_Male_22_Maine_Other_Gainesville_Yes_heart_Video
     // order of information as of right now:
     // gender, age, healthy, state, city, race, condition, text or video.
     // separated by _
-    
-    
+    // result = "12942___Maine__Gainesville___Text"
+    extractInformation(result);
+});
 
-})
+function extractInformation(info) {
+    // fields is an array of objects formatted as such...
+    // {"ID" : id, "Gender" : gender, ... "Pref" : video}
+    var fields = [];
+    
+    var numberOfStrings = 0;
+    var previousLocation = 0
+    while (true) {
+        // Find "_" -- 3 cases.
+        let currentLocation = info.indexOf("_", previousLocation);
+        // Case 1: We're at the end of the string, in that case insert
+        // the remaining substring. This also accounts for if a user
+        // did not answer the question.
+        if (currentLocation === -1) {
+            let item = info.substring(previousLocation);
+            let field = orderOfInfo[numberOfStrings];
+            fields[field] = item;
+            break;
+        }
+        // Case 2: Two _'s next to each other -- the user skipped a question.
+        // Simply insert the proper field and a blank ""        
+        else if (currentLocation == previousLocation + 1) {
+            let field = orderOfInfo[numberOfStrings];
+            fields[field] = "";
+            numberOfStrings++;
+        }
+        // Case 3: Base case. User properly entered an answer for the field
+        // Grab the substring and insert into fields list.
+        else {
+            let item = info.substring(previousLocation, currentLocation);
+            let field = orderOfInfo[numberOfStrings];
+            fields[field] = item;
+            numberOfStrings++;
+        }
+        previousLocation = currentLocation + 1;
+    }
+    console.log(fields);
+    return fields;
+}
 
 app.get('/CTsWithDatabase', (req, res) => {
     
