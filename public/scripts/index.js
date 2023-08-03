@@ -1,4 +1,12 @@
 window.addEventListener("load", () => {
+    console.log("SAVING SESSION INFO LOCALLY")
+    console.log(document.URL)
+    var id = document.URL.split('/').reverse()[1]
+    var version = document.URL.split('/').reverse()[2]
+    console.log(id, version)
+    sessionStorage.setItem("id", id)
+    sessionStorage.setItem("version", version)
+
     console.log("IN GET INFO")
     // (B1) PARSE USER AGENT
     var result = bowser.getParser(navigator.userAgent).getResult();

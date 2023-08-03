@@ -18,19 +18,38 @@ label, input, select {
     border-radius: 5px;
 }
 
-#submit {
-    background-color: #00a038;
-    color: white;
+.study-card {
+    display: flex;
+    flex-direction: column;
+    width: 65%;
+    border: 1px solid #1e4a97;
     border-radius: 7px;
-    font-size: 21px;
-    border-width: 0px;
-    padding: 9px;
-    transition: .2s ease-in-out;
+    padding: 45px;
+    text-align: left;
+    margin: 55px;
 }
 
-#submit:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-    animation: pulse-red 2s infinite;
-  }
+.study-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.row {
+    margin: 15px;
+}
+
+h3 {
+    color:#1e4a97;
+    font-size: 33px;
+}
+
+h4 {
+    font-size: 25px;
+    margin-bottom: 0px;
+}
+
+hr {
+
+    width: 100%;
+}
   

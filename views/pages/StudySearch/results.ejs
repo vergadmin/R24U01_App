@@ -22,10 +22,41 @@
         <h1 class="title">Results</h1>
         <p> Thank you for all that information! Here are some research studies we found for you.</p>
         <p> After you’ve downloaded your “Liked Studies”, please click the following button to continue to our survey. </p>
-       
-        <a href="/<%=version%>/<%=id%>/StudySearch/Results"">
-            <button>Next</button>
-        </a>
+    
+        <% for(var i=0; i<trialsList.length; i++) { %>
+            <div class="study-card">
+                <h3><%= trialsList[i].BriefTitle %> </h3>
+                <h4>Brief Summary:</h4>
+                <p><%= trialsList[i].GPTSummary %></p>
+                <hr/>
+                <div class="study-row">
+                    <div class="row">
+                        <h4>Condition(s): </h4>
+                        <p><%= trialsList[i].Condition %></p>
+                    </div>
+                   <div class="row">
+                    <h4>Intervention/Treatment:</h4>
+                    <p><%= trialsList[i].InterventionType %> </p>
+                   </div>
+                   <div class="row">
+                    <h4>Study Type:</h4>
+                    <p><%= trialsList[i].StudyType %></p>
+                   </div>
+                </div>
+                <hr/>
+                <div class="study-row">
+                    <div class="row">
+                        <h4>Study Location: </h4>
+                        <p><%= trialsList[i].Condition %></p>
+                    </div>
+                   <div class="row">
+                    <h4>Study Contact:</h4>
+                    <p>Name: <%= trialsList[i].CentralContactName %> </p>
+                    <p>Email: <%= trialsList[i].CentralContactEmail %> </p>
+                   </div>
+                </div>
+            </div>
+        <% } %>
     </div>
 </body>
 </html>
