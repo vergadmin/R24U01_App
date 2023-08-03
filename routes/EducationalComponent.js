@@ -46,7 +46,7 @@ let buttons = [
     }
 ]
 
-router.get('/Introduction', getVH, updateDatabase, (req, res) => {
+router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
     res.render("pages/EducationalComponent/introduction", {version: version, id: id, vh: vh, buttons: buttons, url: 'Introduction'})
@@ -76,7 +76,7 @@ router.get('/4', updateDatabase, (req, res) => {
     res.render("pages/EducationalComponent/4", {version: version, id: id, vh: vh, buttons: buttons, url: '4'})
 })
 
-function getVH(req, res, next) {
+function getInfo(req, res, next) {
     console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
     version = req.version

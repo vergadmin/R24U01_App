@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
+    <script src="/scripts/studySearch.js"></script>
+    <title>ALEX</title>
+</head>
+<body>
+    <header>
+        <%- include('../../partials/header'); %>
+    </header>
+    <div class="container">
+        <img class="logo" src="/images/logo.png" /> 
+        <h1 class="title">Results</h1>
+        <p> Thank you for all that information! Here are some research studies we found for you.</p>
+        <p> After you’ve downloaded your “Liked Studies”, please click the following button to continue to our survey. </p>
+       
+        <a href="/<%=version%>/<%=id%>/StudySearch/Results"">
+            <button>Next</button>
+        </a>
+    </div>
+</body>
+</html>

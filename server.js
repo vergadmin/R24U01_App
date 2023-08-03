@@ -66,7 +66,7 @@ app.post('/updateDatabase', async (req, res) => {
     // END DATABASE STUFF
 })
 
-app.get('/:version/:id', checkUser, (req, res) => {
+app.get('/:version/:id', addVisitToDatabase, (req, res) => {
     console.log("REQUEST PARAMS:")
     console.log(req.params)
     version = req.params.version
@@ -108,7 +108,7 @@ function logger(req, res, next) {
     next()
 }
 
-function checkUser(req, res, next) {
+function addVisitToDatabase(req, res, next) {
     console.log("IN MIDDLEWARE - REQUEST PARAMS:")
     console.log(req.params)
     version = req.params.version
@@ -116,38 +116,15 @@ function checkUser(req, res, next) {
 
     sql.connect(config, function (err) {
         var request = new sql.Request();
-        let queryString0 = `SELECT * FROM R24U01 WHERE ID='` + id + `' AND VERSION='` + version + `'` ;
-        console.log(queryString0)
-        request.query(queryString0, function (err, recordset) {
+        console.log("ADDING NEW ROW TO DATABASE FOR THIS VISIT")
+        let queryString =  `INSERT INTO R24U01 (ID, Version) VALUES ('` + id + `','` + version + `')`;
+        console.log(queryString)
+        request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            console.log("RECORD SET:")
-            console.log(recordset.recordset)
-            if (recordset.recordsets.length !== 0) {
-                console.log("ID EXISTS! INCREMENTING VISIT COUNT")
-                let queryString1 = `UPDATE R24U01 SET VisitCount = VisitCount + 1 WHERE ID='` + id + `' AND VERSION='` + version + `'`
-                console.log(queryString1)
-                request.query(queryString1, function (err, recordset) {
-                    if (err) console.log(err)
-                    // send records as a response
-                    console.log("INCREMENTED VISIT COUNT:")
-                    console.log(recordset)
-                })
-            } 
-
-            if (recordset.recordset.length === 0) {
-                console.log("ID DOES NOT EXIST. ADDING TO DATABASE")
-                let queryString2 =  `INSERT INTO R24U01 (ID, Version, VisitCount) VALUES ('` + id + `','` + version + `',0)`;
-                console.log(queryString2)
-                request.query(queryString2, function (err, recordset) {
-                    if (err) console.log(err)
-                    // send records as a response
-                    console.log("ADDED TO DATABSE:")
-                    console.log(recordset)
-                })
-            } 
-
-        }); 
+            console.log("ADDED TO DATABSE:")
+            console.log(recordset)
+        })
     })
     next()
 }
@@ -158,6 +135,14 @@ app.use('/:version/:id/EducationalComponent', function(req,res,next){
     req.version = version
     req.vh = vh
     next();
-  }, EducationalComponentRouter)
+}, EducationalComponentRouter)
+
+const StudySearchRouter = require('./routes/StudySearch')
+app.use('/:version/:id/StudySearch', function(req,res,next){
+    req.id = id;
+    req.version = version
+    req.vh = vh
+    next();
+}, StudySearchRouter)
 
 app.listen(process.env.PORT || 3000);

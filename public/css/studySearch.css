@@ -1,0 +1,36 @@
+fieldset {
+    margin: 15px;
+    padding: 15px;
+    border-radius: 7px;
+    border-color: #1e4a97;
+}
+
+legend {
+    background-color: #1e4a97;
+    color: white;
+    font-weight: 900;
+    border-radius: 5px;
+    font-size: 21px;
+}
+
+label, input, select {
+    font-size: 21px;
+    border-radius: 5px;
+}
+
+#submit {
+    background-color: #00a038;
+    color: white;
+    border-radius: 7px;
+    font-size: 21px;
+    border-width: 0px;
+    padding: 9px;
+    transition: .2s ease-in-out;
+}
+
+#submit:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+    animation: pulse-red 2s infinite;
+  }
+  

@@ -21,21 +21,22 @@
         <p>Now that you’ve learned more about research studies from Alex, here are a few things you can do!</p>
         <div class="areas">
             <div class="area">
-                <h2>Download Question Guide</h2>
-                <p>To download questions to <b>ask healthcare providers, study teams, and loved ones</b> about research studies, click the button below. It will open a new tab where you can easily download a PDF version.</p>
-                <button>Download Question Guide</button>
+                <h3>Download Question Guide</h3>
+                <p class="minor">To download questions to <b>ask healthcare providers, study teams, and loved ones</b> about research studies, click the button below. It will open a new tab where you can easily download a PDF version.</p>
+                <button onclick="download()">Download Question Guide</button>
             </div>
             <div class="area">
-                <h2>Share ALEX with Friends and Family</h2>
-                <p>To <b>share this information with friends and family</b>, click the button below to copy the link to this website.</p>
-                <button>Copy Link</button>
-            </div>
-            <div class="area">
-                <h2>Search for a Research Study</h2>
-                <p>To <b>find research studies suitable for you</b>, click the button below. It will take you to a search page. </p>
-                <button>Search for Studies</button>
+                <h3>Share ALEX with Friends and Family</h3>
+                <p class="minor">To <b>share this information with friends and family</b>, click the button below to copy the link to this website.</p>
+                <button onclick="copyLink()">Copy Link</button>
             </div>
         </div>
+
+                <h2>Search for a Research Study</h2>
+                <p>Now you're ready to search for a research study! To <b>find research studies suitable for you</b>, click the button below. It will take you to a search page. </p>
+                <a onclick="sendToDatabase(`SearchStudies`, `clicked`)" href="/<%=version%>/<%=id%>/StudySearch/Background"><button>Search for Studies</button>
+    
+        
     </div>
 </body>
 </html>

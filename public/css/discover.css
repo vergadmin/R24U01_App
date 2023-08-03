@@ -8,10 +8,20 @@
     border-radius: 15px;
     margin: 15px;
     padding: 15px;
-    width: 29%;
+    width: 49%;
 }
 
 h2 {
     color: #015495;
     font-size: 35px;
+    margin-bottom: 0px;
+}
+
+h3 {
+    color: #015495;
+    font-size: 29px;
+}
+
+.minor {
+    font-size: 21px !important;
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
+    <script src="/scripts/studySearch.js"></script>
+    <title>ALEX</title>
+</head>
+<body>
+    <header>
+        <%- include('../../partials/header'); %>
+    </header>
+    <div class="container">
+        <img class="logo" src="/images/logo.png" /> 
+        <h1 class="title">Preferences</h1>
+        <p> Please fill out the following information to identify research studies you may be eligible for.  </p>
+        <div class="form-area">
+            <form id="preferences-info">
+                <fieldset>
+                    <legend>&nbsp; What is your condition? (for example, "cancer" or "heart") &nbsp;</legend>
+                    <input type="text" id="Condition" name="Condition">
+                </fieldset>
+
+                <fieldset>
+                    <legend>&nbsp; Are you a healthy volunteer? &nbsp;</legend>
+                    <input type="radio" id="yes" name="HealthyVolunteer" value="yes" />
+                    <label for="yes">Yes</label>
+                    <input type="radio" id="no" name="HealthyVolunteer" value="no" />
+                    <label for="no">No</label>
+                </fieldset>
+            </form>
+            <a href="/<%=version%>/<%=id%>/StudySearch/Registries" onclick="sendFormData(`preferences-info`)">
+                <button>Next</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
