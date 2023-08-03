@@ -13,6 +13,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 const COMPLETIONS_MODEL = "text-davinci-003";
 // SUMMARY_PROMPT, MAX_TOKENS, & TEMPERATURE can be modified as needed.
+// TODO: Move Summary Prompts into .env -- don't want any chance for user's to see prompt.
 const SUMMARY_PROMPT = "Re-explain the following to a population with an 8th grader's literacy while retaining accuracy: ";
 const MAX_TOKENS = 300;
 const TEMPERATURE = 0;
