@@ -104,7 +104,7 @@ app.get('/:version/:id/:type/Discover', (req, res) => {
     
     });
 
-    res.render('pages/discover', {id: id, version: version})
+    res.render('pages/discover', {id: id, version: version, type: type})
 })
 
 app.use(logger)
