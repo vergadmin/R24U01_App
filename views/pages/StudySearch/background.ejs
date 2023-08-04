@@ -15,7 +15,7 @@
 </head>
 <body>
     <header>
-        <%- include('../../partials/header'); %>
+        <%- include('../../../partials/header'); %>
     </header>
     <div class="container">
         <img class="logo" src="/images/logo.png" /> 
@@ -53,7 +53,7 @@
                     <input type="text" id="LocationCity" name="LocationCity">
                 </fieldset>
             </form>
-            <a href="/<%=version%>/<%=id%>/StudySearch/Preferences" onclick="sendFormData(`background-info`)">
+            <a href="/<%=version%>/<%=id%>/<%=type%>/StudySearch/Preferences" onclick="sendFormData(`background-info`)">
                 <button>Next</button>
             </a>
         </div>

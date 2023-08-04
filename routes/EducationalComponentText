@@ -50,32 +50,31 @@ let buttons = [
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/introduction", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
+    res.render("pages/type/EducationalComponentText/introduction", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    console.log("TYPE IS : " + type);
-    res.render("pages/type/EducationalComponent/1", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '1'})
+    res.render("pages/type/EducationalComponentText/1", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/2", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '2'})
+    res.render("pages/type/EducationalComponentText/2", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/3", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '3'})
+    res.render("pages/type/EducationalComponentText/3", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/4", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '4'})
+    res.render("pages/type/EducationalComponentText/4", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '4'})
 })
 
 function getInfo(req, res, next) {

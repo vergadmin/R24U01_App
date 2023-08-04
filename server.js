@@ -13,6 +13,7 @@ app.use(logger)
 var version = ''
 var id = null
 var vh = ''
+var type = ''
 
 const config = {
     user: 'VergAdmin',
@@ -66,19 +67,24 @@ app.post('/updateDatabase', async (req, res) => {
     // END DATABASE STUFF
 })
 
-app.get('/:version/:id', addVisitToDatabase, (req, res) => {
+app.get('/:version/:id/:type', addVisitToDatabase, (req, res) => {
     console.log("REQUEST PARAMS:")
     console.log(req.params)
     version = req.params.version
     id = req.params.id
-    res.render('pages/index', {id: id, version: version})
+    type = req.params.type
+    if (type == "vh")
+        res.render('pages/index', {id: id, version: version, type: type})
+    else if (type == "text")
+        res.render('pages/type/EducationalComponentText/introduction', {id: id, version: version, type: type})
 })
 
-app.get('/:version/:id/Discover', (req, res) => {
+app.get('/:version/:id/:type/Discover', (req, res) => {
     console.log("REQUEST PARAMS:")
     console.log(req.params)
     version = req.params.version
     id = req.params.id
+    type = req.params.type
 
     sql.connect(config, function (err) {
 
@@ -113,6 +119,7 @@ function addVisitToDatabase(req, res, next) {
     console.log(req.params)
     version = req.params.version
     id = req.params.id
+    type = req.params.type
 
     sql.connect(config, function (err) {
         var request = new sql.Request();
@@ -129,20 +136,38 @@ function addVisitToDatabase(req, res, next) {
     next()
 }
 
+// Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent')
-app.use('/:version/:id/EducationalComponent', function(req,res,next){
+app.use('/:version/:id/:type/EducationalComponent', function(req,res,next){
     req.id = id;
     req.version = version
     req.vh = vh
+    req.type = type
     next();
 }, EducationalComponentRouter)
 
-const StudySearchRouter = require('./routes/StudySearch')
-app.use('/:version/:id/StudySearch', function(req,res,next){
+// Text Types
+const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
+app.use('/:version/:id/:type/EducationalComponentText', function(req,res,next){
     req.id = id;
     req.version = version
     req.vh = vh
+    req.type = type
+    next();
+}, EducationalComponentTextRouter)
+
+const StudySearchRouter = require('./routes/StudySearch')
+app.use('/:version/:id/:type/StudySearch', function(req,res,next){
+    req.id = id;
+    req.version = version
+    req.vh = vh
+    req.type = type
     next();
 }, StudySearchRouter)
+
+// TODO: For Chris
+// 1. Add "type" (text or virtual human) to the SQL Table
+// 2. Add "type" to all the SQL insertions necessary inside the accesses to R24U01 Database
+
 
 app.listen(process.env.PORT || 3000);

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponent.css" rel="stylesheet" type="text/css">
+    <title>ALEX</title>
+</head>
+<body>
+    <header>
+        <%- include('../../../partials/header'); %>
+    </header>
+    <div class="container">
+        <br/>
+        <div class="navigation-area">
+            <% for (var i = 0; i < buttons.length; i++) { %>
+                <% if (buttons[i].url === url) { %>
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
+                        <button class="education-navigation selected" >
+                            <%= buttons[i].text %>
+                        </button>
+                    </a>
+                <% } else { %>
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
+                        <button class="education-navigation" >
+                            <%= buttons[i].text %>
+                        </button>
+                    </a>
+                <% } %>
+            <% } %>
+        </div>
+        <div class="discover-button-area">
+            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                <button class="discover-button">Discover Research Opportunities</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
