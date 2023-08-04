@@ -119,7 +119,7 @@ app.get('/:version/:id/:type/Discover', (req, res) => {
     version = req.params.version
     id = req.params.id
     type = req.params.type
-    console.log ("type is : " + type);
+    console.log ("type is 2: " + type);
 
     sql.connect(config, function (err) {
 
