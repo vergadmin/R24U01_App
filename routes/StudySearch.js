@@ -45,24 +45,25 @@ const config = {
 }
 
 // TODO: You removed "getInfo" function and all calls to it.
+// You also removed the {version and id}, type is new.
 router.get('/Background', getInfo, (req, res) => {
-    res.render("pages/StudySearch/background")
+    res.render("pages/StudySearch/background", {version: version, id: id, vh: vh, type: type})
 })
 
 router.get('/Preferences', (req, res) => {
-  res.render("pages/StudySearch/preferences")
+  res.render("pages/StudySearch/preferences", {version: version, id: id, vh: vh, type: type})
 })
 
 router.get('/Registries', (req, res) => {
-  res.render("pages/StudySearch/registries")
+  res.render("pages/StudySearch/registries", {version: version, id: id, vh: vh, type: type})
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
-  res.render("pages/StudySearch/results", {trialsList: trialsList})
+  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, type: type, trialsList: trialsList})
 })
 
 router.get('/Results', (req, res) => {
-  res.render("pages/StudySearch/results", {trialsList: trialsList})
+  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, type: type, trialsList: trialsList})
 })
 
 function CTsWithDatabase(req, res, next) {
