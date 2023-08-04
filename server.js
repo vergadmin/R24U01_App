@@ -11,7 +11,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json())
 var sql = require("mssql");
 
-var vh = ''
+var vh = 'bf'
 var type = ''
 
 // Modify based on Miriam/Emma's Qualtrics:
@@ -297,10 +297,6 @@ app.use('/:version/:id/:type/EducationalComponent', function(req,res,next) {
     next();
 }, EducationalComponentRouter)
 
-const StudySearchRouter = require('./routes/StudySearch')
-app.use('/StudySearch', function(req,res,next){
-    next();
-}, StudySearchRouter)
 
 // TODO: You previously deleted this function.
 // Text Types
@@ -313,12 +309,17 @@ app.use('/:version/:id/:type/EducationalComponentText', function(req,res,next){
     next();
 }, EducationalComponentTextRouter)
 
+const StudySearchRouter = require('./routes/StudySearch')
 // TODO: You previously deleted this function.
 app.use('/:version/:id/:type/StudySearch', function(req,res,next){
     req.id = id;
     req.version = version
     req.vh = vh
     req.type = type
+    next();
+}, StudySearchRouter)
+
+app.use('/StudySearch', function(req,res,next){
     next();
 }, StudySearchRouter)
 
