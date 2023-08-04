@@ -43,13 +43,9 @@ const config = {
       trustServerCertificate: true // change to true for local dev / self-signed certs
     }
 }
-router.get('/test', (req, res) => {
-  console.log("here!");
-  text = `The JAX-ASCENT Registry is a registry of older adults interested in participating in local research studies. We are looking for adults 60 and older who are interested in helping the University of Florida College of Medicine – Jacksonville explore aging and independence in older adults. Participants will have the opportunity to be part of a variety of studies, from assessing risk factors that affect healthy aging to prevention therapies that can help improve quality of life as we age. As a member of the JAX-ASCENT Registry, you will receive information about the latest research being conducted at JAX-ASCENT. If you qualify, you may be invited to participate in numerous studies during your time as a registry member. There is no cost to you to participate in the registry. Compensation may be provided to you for your time and transportation if you choose to participate in a research study. To sign up for the JAX-ASCENT Registry, go to UFJaxAgingStudy.com, sign the consent form and enter the requested information. If you have questions or would like a paper consent and information form sent to you, please call (866) 386-7730.The JAX-ASCENT Registry is a registry of older adults interested in participating in local research studies. We are looking for adults 60 and older who are interested in helping the University of Florida College of Medicine – Jacksonville explore aging and independence in older adults. Participants will have the opportunity to be part of a variety of studies, from assessing risk factors that affect healthy aging to prevention therapies that can help improve quality of life as we age. As a member of the JAX-ASCENT Registry, you will receive information about the latest research being conducted at JAX-ASCENT. If you qualify, you may be invited to participate in numerous studies during your time as a registry member. There is no cost to you to participate in the registry. Compensation may be provided to you for your time and transportation if you choose to participate in a research study. To sign up for the JAX-ASCENT Registry, go to UFJaxAgingStudy.com, sign the consent form and enter the requested information. If you have questions or would like a paper consent and information form sent to you, please call (866) 386-7730.`
-  summarizeGPT(text);
-})
 
-router.get('/Background', (req, res) => {
+// TODO: You removed "getInfo" function and all calls to it.
+router.get('/Background', getInfo, (req, res) => {
     res.render("pages/StudySearch/background")
 })
 
@@ -167,6 +163,7 @@ function getInfo(req, res, next) {
     version = req.version
     vh = req.vh
     type = req.type
+    console.log("type is " + type);
     next()
 }
 

@@ -119,6 +119,7 @@ app.get('/:version/:id/:type/Discover', (req, res) => {
     version = req.params.version
     id = req.params.id
     type = req.params.type
+    console.log ("type is : " + type);
 
     sql.connect(config, function (err) {
 
@@ -316,6 +317,7 @@ app.use('/:version/:id/:type/StudySearch', function(req,res,next){
     req.version = version
     req.vh = vh
     req.type = type
+    console.log("type is : "+ type);
     next();
 }, StudySearchRouter)
 

@@ -84,6 +84,7 @@ function getInfo(req, res, next) {
     version = req.version
     vh = req.vh
     type = req.type
+    console.log("type is " + type);
     next()
 }
 
