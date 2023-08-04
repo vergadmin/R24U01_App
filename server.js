@@ -314,7 +314,6 @@ app.use('/:version/:id/:type/EducationalComponentText', function(req,res,next){
 }, EducationalComponentTextRouter)
 
 // TODO: You previously deleted this function.
-const StudySearchRouter = require('./routes/StudySearch')
 app.use('/:version/:id/:type/StudySearch', function(req,res,next){
     req.id = id;
     req.version = version
