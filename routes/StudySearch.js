@@ -18,10 +18,6 @@ const MAX_TOKENS = 300;
 const TEMPERATURE = 0;
 // open ai constants --->
 
-var id = ''
-var version = ''
-var vh = ''
-
 var trialsList = []
 
 const config = {
@@ -41,33 +37,24 @@ const config = {
     }
 }
 
-router.get('/Background', getInfo, (req, res) => {
-    console.log("IN STUDY SEARCH ROUTER")
-    console.log("VHType is: " + vh)
-    res.render("pages/StudySearch/background", {version: version, id: id, vh: vh})
+router.get('/Background', (req, res) => {
+    res.render("pages/StudySearch/background")
 })
 
 router.get('/Preferences', (req, res) => {
-  console.log("IN STUDY SEARCH ROUTER")
-  console.log("VHType is: " + vh)
-  res.render("pages/StudySearch/preferences", {version: version, id: id, vh: vh})
+  res.render("pages/StudySearch/preferences")
 })
 
 router.get('/Registries', (req, res) => {
-  console.log("IN STUDY SEARCH ROUTER")
-  console.log("VHType is: " + vh)
-  res.render("pages/StudySearch/registries", {version: version, id: id, vh: vh})
+  res.render("pages/StudySearch/registries")
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
-  console.log("IN SEARCH FOR CT POST ROUTER/RESULTS ROUTER")
-  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, trialsList: trialsList})
+  res.render("pages/StudySearch/results", {trialsList: trialsList})
 })
 
 router.get('/Results', (req, res) => {
-  console.log("IN GET RESULTS ROUTER")
-  // console.log(trialsList)
-  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, trialsList: trialsList})
+  res.render("pages/StudySearch/results", {trialsList: trialsList})
 })
 
 function CTsWithDatabase(req, res, next) {
@@ -158,15 +145,6 @@ async function summarizeGPT(summary) {
           temperature: TEMPERATURE,
   });
   return result.data.choices[0].text;
-}
-
-
-function getInfo(req, res, next) {
-    console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
-    id = req.id
-    version = req.version
-    vh = req.vh
-    next()
 }
 
 async function searchForCT(req, res, next) {

@@ -1,3 +1,9 @@
+window.addEventListener("load", () => {
+    console.log("SESSION STORAGE")
+    console.log(sessionStorage)
+    
+});
+
 async function sendFormData(id) {
     console.log("IN SEND TO SERVER SEND FORM DATA")
     var htmlForm = document.getElementById(id)
@@ -6,22 +12,6 @@ async function sendFormData(id) {
     let data = Object.fromEntries(formData)
 
     sessionStorage.setItem(id, JSON.stringify(data))
-
-    let url = '/updateDatabase';
-    
-    let res = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-    if (res.ok) {
-        let ret = await res.json();
-        return JSON.parse(ret.data);
-    } else {
-        return `HTTP error: ${res.status}`;
-    }
 }
 
 if(window.location.toString().indexOf("Results") != -1){
