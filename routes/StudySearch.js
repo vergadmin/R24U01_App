@@ -16,7 +16,14 @@ const COMPLETIONS_MODEL = "text-davinci-003";
 const SUMMARY_PROMPT = "Re-explain the following to a population with an 8th grader's literacy while retaining accuracy: ";
 const MAX_TOKENS = 300;
 const TEMPERATURE = 0;
+const REGISTRY_PROMPT = `Rewrite the following text to make it more concise (around one brief paragraph) and at an 8th grade language level, but keep the accuracy of the text: `;
 // open ai constants --->
+
+// TODO: You previously deleted these variables.
+var id = ''
+var version = ''
+var vh = ''
+var type = ''
 
 var trialsList = []
 
@@ -36,6 +43,11 @@ const config = {
       trustServerCertificate: true // change to true for local dev / self-signed certs
     }
 }
+router.get('/test', (req, res) => {
+  console.log("here!");
+  text = `The JAX-ASCENT Registry is a registry of older adults interested in participating in local research studies. We are looking for adults 60 and older who are interested in helping the University of Florida College of Medicine – Jacksonville explore aging and independence in older adults. Participants will have the opportunity to be part of a variety of studies, from assessing risk factors that affect healthy aging to prevention therapies that can help improve quality of life as we age. As a member of the JAX-ASCENT Registry, you will receive information about the latest research being conducted at JAX-ASCENT. If you qualify, you may be invited to participate in numerous studies during your time as a registry member. There is no cost to you to participate in the registry. Compensation may be provided to you for your time and transportation if you choose to participate in a research study. To sign up for the JAX-ASCENT Registry, go to UFJaxAgingStudy.com, sign the consent form and enter the requested information. If you have questions or would like a paper consent and information form sent to you, please call (866) 386-7730.The JAX-ASCENT Registry is a registry of older adults interested in participating in local research studies. We are looking for adults 60 and older who are interested in helping the University of Florida College of Medicine – Jacksonville explore aging and independence in older adults. Participants will have the opportunity to be part of a variety of studies, from assessing risk factors that affect healthy aging to prevention therapies that can help improve quality of life as we age. As a member of the JAX-ASCENT Registry, you will receive information about the latest research being conducted at JAX-ASCENT. If you qualify, you may be invited to participate in numerous studies during your time as a registry member. There is no cost to you to participate in the registry. Compensation may be provided to you for your time and transportation if you choose to participate in a research study. To sign up for the JAX-ASCENT Registry, go to UFJaxAgingStudy.com, sign the consent form and enter the requested information. If you have questions or would like a paper consent and information form sent to you, please call (866) 386-7730.`
+  summarizeGPT(text);
+})
 
 router.get('/Background', (req, res) => {
     res.render("pages/StudySearch/background")
@@ -144,7 +156,18 @@ async function summarizeGPT(summary) {
           max_tokens: MAX_TOKENS,
           temperature: TEMPERATURE,
   });
+  console.log(result.data.choices[0].text);
   return result.data.choices[0].text;
+}
+
+// TODO: You deleted this function previously.
+function getInfo(req, res, next) {
+    console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
+    id = req.id
+    version = req.version
+    vh = req.vh
+    type = req.type
+    next()
 }
 
 async function searchForCT(req, res, next) {

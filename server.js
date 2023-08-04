@@ -12,6 +12,7 @@ app.use(express.json())
 var sql = require("mssql");
 
 var vh = ''
+var type = ''
 
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
@@ -98,6 +99,48 @@ app.get('/1', registerClick, (req, res) => {
     res.render("pages/EducationalComponent/1", {vh: userInfo.VHType, buttons: buttons, url: '1'})
 })
 
+// TODO: You previously deleted this function.
+app.get('/:version/:id/:type', addVisitToDatabase, (req, res) => {
+    console.log("REQUEST PARAMS:")
+    console.log(req.params)
+    version = req.params.version
+    id = req.params.id
+    type = req.params.type
+    if (type == "vh")
+        res.render('pages/index', {id: id, version: version, type: type})
+    else if (type == "text")
+        res.render('pages/type/EducationalComponentText/introduction', {id: id, version: version, type: type})
+})
+
+// TODO: You previously deleted this function.
+app.get('/:version/:id/:type/Discover', (req, res) => {
+    console.log("REQUEST PARAMS:")
+    console.log(req.params)
+    version = req.params.version
+    id = req.params.id
+    type = req.params.type
+
+    sql.connect(config, function (err) {
+
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+
+        let queryString = 'UPDATE R24U01 SET Discover' + `='clicked' WHERE ID=` + `'` + id + `' AND VERSION='` + version + `'`;
+        console.log(queryString)
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+            // send records as a response
+            console.log("UPDATED! IN R24U01 TABLE:")
+            console.log(recordset);
+        }); 
+    
+    });
+
+    res.render('pages/discover', {id: id, version: version, type: type})
+})
+
 app.get('/2', registerClick, (req, res) => {
     res.render("pages/EducationalComponent/2", {vh: userInfo.VHType, buttons: buttons, url: '2'})
 })
@@ -124,6 +167,7 @@ function addVisitToDatabase(req, res, next) {
     console.log(req.params)
     version = req.params.version
     id = req.params.id
+    type = req.params.type
 
     sql.connect(config, function (err) {
         var request = new sql.Request();
@@ -169,9 +213,8 @@ function registerClick(req, res, next) {
         }); 
     
     });
-    // END DATABASE STUFF
-    next();
 }
+// END DATABASE STUFF
 
 function setVHType(req, res, next) {
     if (userInfo.Gender === 'Female' && userInfo.Race ==='Black') {
@@ -243,10 +286,46 @@ function extractInformation(req, res, next) {
     next();
 }
 
+// TODO: You previously deleted this function
+// Virtual Human Types
+const EducationalComponentRouter = require('./routes/EducationalComponent');
+app.use('/:version/:id/:type/EducationalComponent', function(req,res,next) {
+    req.id = id;
+    req.version = version
+    req.vh = vh
+    req.type = type
+    next();
+}, EducationalComponentRouter)
 
 const StudySearchRouter = require('./routes/StudySearch')
 app.use('/StudySearch', function(req,res,next){
     next();
 }, StudySearchRouter)
+
+// TODO: You previously deleted this function.
+// Text Types
+const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
+app.use('/:version/:id/:type/EducationalComponentText', function(req,res,next){
+    req.id = id;
+    req.version = version
+    req.vh = vh
+    req.type = type
+    next();
+}, EducationalComponentTextRouter)
+
+// TODO: You previously deleted this function.
+const StudySearchRouter = require('./routes/StudySearch')
+app.use('/:version/:id/:type/StudySearch', function(req,res,next){
+    req.id = id;
+    req.version = version
+    req.vh = vh
+    req.type = type
+    next();
+}, StudySearchRouter)
+
+// TODO: For Chris
+// 1. Add "type" (text or virtual human) to the SQL Table
+// 2. Add "type" to all the SQL insertions necessary inside the accesses to R24U01 Database
+
 
 app.listen(process.env.PORT || 3000);

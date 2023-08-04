@@ -13,23 +13,26 @@
 </head>
 <body>
     <header>
-        <%- include('../../partials/header'); %>
+        <%- include('../../../partials/header'); %>
     </header>
     <div class="container">
+        <div class="character-selection-area">
+            <a href="/<%=version%>/<%=id%>/<%=type%>">⬅ Character Selection</a>
+        </div>
         <video autoplay controls>
-            <source src="https://vpf2content.s3.amazonaws.com/Uploads/Videos/R24/<%=vh%>_4_03_16_23.mp4" type="video/mp4">
+            <source src="https://vpf2content.s3.amazonaws.com/Uploads/Videos/R24/<%=vh%>_2_03_16_23.mp4" type="video/mp4">
         </video>
         <br/>
         <div class="navigation-area">
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=buttons[i].url%>">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
                         <button class="education-navigation selected" >
                             <%= buttons[i].text %>
                         </button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=buttons[i].url%>">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
                         <button class="education-navigation" >
                             <%= buttons[i].text %>
                         </button>
@@ -38,7 +41,7 @@
             <% } %>
         </div>
         <div class="discover-button-area">
-            <a href="/Discover">
+            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
                 <button class="discover-button">Discover Research Opportunities</button>
             </a>
         </div>
