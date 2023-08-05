@@ -27,7 +27,7 @@ async function getResults() {
 
     var userInfo = {...JSON.parse(sessionStorage.getItem('background-info')), ...JSON.parse(sessionStorage.getItem('preferences-info'))}
 
-    let url = `/${sessionStorage.getItem("version")}/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/StudySearch/Results`;
+    let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/StudySearch/Results`;
     console.log(url)
     
     let res = await fetch(url, {

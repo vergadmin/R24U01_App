@@ -19,17 +19,10 @@
     <div class="container">
         <img class="logo" src="/images/logo.png" /> 
         <h1 class="title">Welcome to Research Studies with ALEX!</h1>
-        <p> Meet ALEX, your virtual guide to understanding and finding research studies. </p>
-        <div class="selection-area">
-            <p>To get started, <b>click on the ALEX character you prefer</b> to talk to about research. 
-            <br/> No matter your choice, the information  you receive remains the same. </p>
-            <div class="choose-alex">
-                <a onclick="sendVHData(`VHType`, `wf`)" href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/Introduction">  <img class="alex-snippet" src="/images/wf.png" /> </a>
-                <a onclick="sendVHData(`VHType`, `bf`)" href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/Introduction"> <img class="alex-snippet" src="/images/bf.png" /> </a>
-                <a onclick="sendVHData(`VHType`, `bm`)" href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/Introduction"> <img class="alex-snippet" src="/images/bm.png" /> </a>
-                <a onclick="sendVHData(`VHType`, `wm`)" href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/Introduction"> <img class="alex-snippet" src="/images/wm.png" /> </a>
-            </div>
-        </div>
+        <p>To get started, click the button below. </p>
+        <a href="/<%=id%>/<%=type%>/EducationalComponent/Introduction">
+            <button>Begin</button>
+        </a>
     </div>
 </body>
 </html>

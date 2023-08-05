@@ -47,23 +47,23 @@ const config = {
 // TODO: You removed "getInfo" function and all calls to it.
 // You also removed the {version and id}, type is new.
 router.get('/Background', getInfo, (req, res) => {
-    res.render("pages/StudySearch/background", {version: version, id: id, vh: vh, type: type})
+    res.render("pages/StudySearch/background", {id: id, vh: vh, type: type})
 })
 
 router.get('/Preferences', (req, res) => {
-  res.render("pages/StudySearch/preferences", {version: version, id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/preferences", {id: id, vh: vh, type: type})
 })
 
 router.get('/Registries', (req, res) => {
-  res.render("pages/StudySearch/registries", {version: version, id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/registries", {id: id, vh: vh, type: type})
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
-  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, type: type, trialsList: trialsList})
+  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList})
 })
 
 router.get('/Results', (req, res) => {
-  res.render("pages/StudySearch/results", {version: version, id: id, vh: vh, type: type, trialsList: trialsList})
+  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList})
 })
 
 function CTsWithDatabase(req, res, next) {
@@ -157,11 +157,10 @@ async function summarizeGPT(summary) {
   return result.data.choices[0].text;
 }
 
-// TODO: You deleted this function previously.
 function getInfo(req, res, next) {
     console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
-    version = req.version
+    userInfo = req.userInfo
     vh = req.vh
     type = req.type
     console.log("type is " + type);

@@ -3,7 +3,6 @@ const router = express.Router()
 var sql = require("mssql");
 
 var id = ''
-var version = ''
 var vh = ''
 var type = ''
 
@@ -50,40 +49,40 @@ let buttons = [
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/introduction", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
+    res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
     console.log("TYPE IS : " + type);
-    res.render("pages/type/EducationalComponent/1", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '1'})
+    res.render("pages/type/EducationalComponent/1", {id: id, vh: vh, type: type, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/2", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '2'})
+    res.render("pages/type/EducationalComponent/2", {id: id, vh: vh, type: type, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/3", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '3'})
+    res.render("pages/type/EducationalComponent/3", { id: id, vh: vh, type: type, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
     console.log("IN EDUCATIONAL COMPONENT ROUTER")
     console.log("VHType is: " + vh)
-    res.render("pages/type/EducationalComponent/4", {version: version, id: id, vh: vh, type: type, buttons: buttons, url: '4'})
+    res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, type: type, buttons: buttons, url: '4'})
 })
 
 function getInfo(req, res, next) {
     console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
-    version = req.version
     vh = req.vh
     type = req.type
+    userInfo = req.userInfo
     console.log("type is " + type);
     next()
 }
@@ -101,7 +100,7 @@ function updateDatabase(req, res, next) {
         // create Request object
         var request = new sql.Request();
 
-        let queryString = 'UPDATE R24U01 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + id + `' AND VERSION='` + version + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
+        let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
         console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
