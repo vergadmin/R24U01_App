@@ -25,3 +25,7 @@ h3 {
 .minor {
     font-size: 21px !important;
 }
+
+.red {
+    background-color: #B50000;
+}

@@ -26,7 +26,7 @@
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
                 <h3><%= trialsList[i].BriefTitle %> </h3>
-                <h4>Brief Summary:</h4>
+                <h4>Brief Summary*:</h4>
                 <p><%= trialsList[i].GPTSummary %></p>
                 <hr/>
                 <div class="study-row">
@@ -51,10 +51,13 @@
                     </div>
                    <div class="row">
                     <h4>Study Contact:</h4>
-                    <p>Name: <%= trialsList[i].CentralContactName %> </p>
-                    <p>Email: <%= trialsList[i].CentralContactEmail %> </p>
+                    <p>Name: <%= trialsList[i].CentralContactName[0] %> </p>
+                    <p>Email: <%= trialsList[i].CentralContactEMail[0] %> </p>
                    </div>
                 </div>
+                <p>If you're interested in this study, click the button below to copy text to email the central contact!</p>
+                <button onclick="copyEmailText(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
+                <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>
     </div>
