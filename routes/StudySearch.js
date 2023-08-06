@@ -13,10 +13,8 @@ const openai = new OpenAIApi(configuration);
 const COMPLETIONS_MODEL = "text-davinci-003";
 // SUMMARY_PROMPT, MAX_TOKENS, & TEMPERATURE can be modified as needed.
 // TODO: Move Summary Prompts into .env -- don't want any chance for user's to see prompt.
-const SUMMARY_PROMPT = "Re-explain the following to a population with an 8th grader's literacy while retaining accuracy: ";
 const MAX_TOKENS = 300;
 const TEMPERATURE = 0;
-const REGISTRY_PROMPT = `Rewrite the following text to make it more concise (around one brief paragraph) and at an 8th grade language level, but keep the accuracy of the text: `;
 // open ai constants --->
 
 // TODO: You previously deleted these variables.
@@ -145,15 +143,15 @@ function CTsWithDatabase(req, res, next) {
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(summary) {
-  console.log("IN SUMMARIZE GPT")
-  console.log(summary)
+  // console.log("IN SUMMARIZE GPT")
+  // console.log(summary)
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,
-          prompt: SUMMARY_PROMPT + summary,
+          prompt: process.env.SUMMARY_PROMPT + summary,
           max_tokens: MAX_TOKENS,
           temperature: TEMPERATURE,
   });
-  console.log(result.data.choices[0].text);
+  // console.log(result.data.choices[0].text);
   return result.data.choices[0].text;
 }
 
