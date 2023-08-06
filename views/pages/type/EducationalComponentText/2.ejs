@@ -12,9 +12,21 @@
     <title>ALEX</title>
 </head>
 <!-- Text Variables for Clarity :) -->
-<% var mainTitle = `Why Consider Participating?` %>
+<% var mainTitle = `What Are Research Registries?` %>
 
-<% var text1 = `We have learned a lot about improving people’s health and wellbeing with the help of research studies. But, there is still more work to be done. Doctors, scientists, and people like you are working together right now on research studies that will help you, your family, and future generations. There is still much to learn and you can help. People often have different or multiple reasons to consider participating in a research study. Some participate to receive a potentially helpful treatment that may benefit their health. Others participate so that study results found today may help people in the future. Sometimes people may even participate because they are interested in the study topic itself.  Whatever reasons you have to consider participating, it is important to know that it is always your choice to participate in a research study. It’s ok to ask questions and meet the research team as you make your decision to start participating. And even if you agree to participate,  you can change your mind at any time and stop your participation, no matter what your reason is.` %>
+<% var title1 = `Brief Overview of Research Registries` %>
+<% var text1 = `A research registry is a structured database that collects comprehensive information about individuals with specific medical conditions or traits. It serves as a valuable resource for researchers, providing real-world evidence to understand disease patterns, treatment effectiveness, and long-term outcomes. Research registries help identify potential research participants for studies and facilitate collaboration among researchers. Data privacy and ethical standards ensure participant confidentiality, contributing to improved patient care and public health outcomes.` %>
+
+<% var title2 = `More Information about Research Registries` %>
+<% var text2 = `Research registries are vital tools in scientific research, collecting comprehensive data about individuals with specific medical conditions or traits. They provide real-world evidence, offering insights into disease patterns, treatment effectiveness, and long-term outcomes. Observational in nature, these registries follow participants over time, allowing the study of disease progression and treatment responses. They are particularly valuable for studying rare diseases and identifying potential participants for research studies. Collaborative efforts among institutions and patient advocacy groups enhance data sharing and standardization. Ethical considerations ensure participant privacy and confidentiality, making research registries essential in advancing medical knowledge, improving patient care, and informing healthcare policies.` %>
+
+<% var title3 = `Example of Research Studies` %>
+<% var text3 = `Great! Research registries are valuable tools in scientific research, providing comprehensive data on individuals with specific medical conditions or traits. Examples of research registries include the Surveillance, Epidemiology, and End Results (SEER) Program, which collects cancer data, the National Birth Defects Prevention Network (NBDPN) tracking congenital anomalies, and the Cystic Fibrosis Foundation Patient Registry focusing on cystic fibrosis. Other registries like the National Patient Registry for Alzheimer's Disease and Related Dementias and the Global Rare Diseases Patient Registry and Data Repository (GRDR) target Alzheimer's disease and rare diseases, respectively. These registries enable researchers to study disease trends, treatment outcomes, and genotype-phenotype correlations.<br><br>Additionally, registries like the International Multiple Sclerosis Genetics Consortium (IMSGC) Registry gather genetic data to identify disease risk genes. Collaborative efforts, such as the National Cardiovascular Data Registry (NCDR) and the Global HIV Observational Database (GHOD), provide insights into cardiovascular care and clinical outcomes, as well as monitoring HIV trends and treatment effectiveness. The National Cancer Database (NCDB) supports cancer research, while the Parkinson's Progression Markers Initiative (PPMI) Registry tracks Parkinson's disease progression and biomarkers. These research registries are essential resources for advancing medical knowledge and improving healthcare outcomes.` %>
+
+<% var title4 = `Differences Between a Research Study and Research Registry` %>
+<% var text4 = `Research studies and research registries differ in design and purpose. A research study is a structured investigation with specific research questions and controlled interventions, aiming to test hypotheses and evaluate treatment effectiveness. In contrast, a research registry is a large-scale database that collects comprehensive data from individuals with specific medical conditions or traits over time, focusing on real-world evidence without specific interventions. Research studies involve active participant involvement and limited data collection, while research registries provide a broad range of information from a larger participant pool, guiding future research and generating hypotheses. Both contribute to advancing scientific knowledge, but they serve distinct roles in the research landscape.<br><br>Remember, research registries collect diverse data about people with specific health conditions over time, providing real-world evidence for better treatments and healthcare decisions. Long-term insights and patient involvement empower research efforts, especially in studying rare diseases. These collaborative databases also aid in clinical trial recruitment, quality improvement, and inform public health initiatives while ensuring strict data security and privacy measures. You can also ask your doctor if there are any research registries available right now or in the near future that you should consider. If there are, you can ask more specific questions based on what I shared with you today. When we’re done, you’ll have another option to complete an enrollment form, or contact the research study team.` %>
+
+
 <body>
     <header>
         <%- include('../../../partials/header'); %>
@@ -55,12 +67,19 @@
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
                 <div class ="discover-container discover-button-area">
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                    <a href="<%=id%>/<%=type%>/Discover">
                         <button class="discover-button">Discover Research Opportunities</button>
                     </a>
                 </div>
             </div>
+            <h2><%-title1%></h2>
             <text-p><%-text1%></text-p>
+            <h2><%-title2%></h2>
+            <text-p><%-text2%></text-p>
+            <h2><%-title3%></h2>
+            <text-p><%-text3%></text-p>
+            <h2><%-title4%></h2>
+            <text-p><%-text4%></text-p>
         </div>
         
     </div>

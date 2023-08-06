@@ -4,7 +4,7 @@ const app = express()
 const CryptoJS = require("crypto-js");
 
 require('dotenv').config()
-console.log(process.env)
+// console.log(process.env)
 
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
@@ -45,7 +45,7 @@ app.post('/updateDatabase', async (req, res) => {
         setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    console.log(setList)
+    // console.log(setList)
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -56,12 +56,12 @@ app.post('/updateDatabase', async (req, res) => {
         var request = new sql.Request();
 
         let queryString = 'UPDATE R24 SET ' + setList + ' WHERE ID=' + `'` + userInfo.ID + `'`;
-        console.log(queryString)
+        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
+            if (err) console.log(err) 
             // send records as a response
-            console.log("UPDATED! IN R24 TABLE:")
-            console.log(recordset);
+            // console.log("UPDATED! IN R24 TABLE:")
+            // console.log(recordset);
         }); 
     
     });
@@ -70,8 +70,8 @@ app.post('/updateDatabase', async (req, res) => {
 
 // TODO: You previously deleted this function.
 app.get('/:id/:type', extractInformation, setVHType, addVisitToDatabase, (req, res) => {
-    console.log("REQUEST PARAMS:")
-    console.log(req.params)
+    // console.log("REQUEST PARAMS:")
+    // console.log(req.params)
     id = req.params.id
     type = req.params.type
     if (type == "vh")
@@ -83,11 +83,10 @@ app.get('/:id/:type', extractInformation, setVHType, addVisitToDatabase, (req, r
 
 // TODO: You previously deleted this function.
 app.get('/:id/:type/Discover', (req, res) => {
-    console.log("REQUEST PARAMS:")
-    console.log(req.params)
+    // console.log("REQUEST PARAMS:")
+    // console.log(req.params)
     id = req.params.id
     type = req.params.type
-    console.log ("type is 2: " + type);
 
     sql.connect(config, function (err) {
 
@@ -97,12 +96,12 @@ app.get('/:id/:type/Discover', (req, res) => {
         var request = new sql.Request();
 
         let queryString = 'UPDATE R24 SET Discover' + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`;
-        console.log(queryString)
+        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            console.log("UPDATED! IN R24 TABLE:")
-            console.log(recordset);
+            // console.log("UPDATED! IN R24 TABLE:")
+            // console.log(recordset);
         }); 
     
     });
@@ -112,21 +111,21 @@ app.get('/:id/:type/Discover', (req, res) => {
 
 
 function addVisitToDatabase(req, res, next) {
-    console.log("IN MIDDLEWARE - REQUEST PARAMS:")
-    console.log(req.params)
+    // console.log("IN MIDDLEWARE - REQUEST PARAMS:")
+    // console.log(req.params)
     id = req.params.id
     type = req.params.type
 
     sql.connect(config, function (err) {
         var request = new sql.Request();
-        console.log("ADDING NEW ROW TO DATABASE FOR THIS VISIT")
+        // console.log("ADDING NEW ROW TO DATABASE FOR THIS VISIT")
         let queryString =  `INSERT INTO R24 (ID, VHType) VALUES ('` + userInfo.ID + `','` + userInfo.VHType + `')`;
-        console.log(queryString)
+        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            console.log("ADDED TO DATABSE:")
-            console.log(recordset)
+            // console.log("ADDED TO DATABSE:")
+            // console.log(recordset)
         })
     })
     next()
@@ -134,10 +133,11 @@ function addVisitToDatabase(req, res, next) {
 
 
 function setVHType(req, res, next) {
-    if (userInfo.Pref ===  'text') {
+    if (userInfo.Pref ===  'Text') {
         userInfo['VHType'] = 'text';
     }
     else {
+        // Change Black/White to contains Black/White potentially (based on answers for Survey Item)
         if (userInfo.Gender === 'Female' && userInfo.Race ==='Black') {
             userInfo['VHType'] = 'bf'
         }
@@ -159,17 +159,11 @@ function setVHType(req, res, next) {
 function extractInformation(req, res, next) {
     // fields is an array of objects formatted as such...
     // {"ID" : id, "Gender" : gender, ... "Pref" : video}
-    console.log("REQUEST PARAMS:")
-    console.log(req.params)
     var id = req.params.id;
     var bytes = CryptoJS.AES.decrypt(id, process.env.DECRYPTION_KEY);
-    // Test String
-    // id = "U2FsdGVkX1-65+k-+XeQ4sLoEHZfMYjDPhOrn2oklAJhbM05l-KyH97UOpiKSBtlSgeJgGPM1ECXKVOoOPTCv4SNykjhAdO-RN7H-xVR9Dc="
     var fixedID = id.replaceAll("-","/");
     var bytes = CryptoJS.AES.decrypt(fixedID, process.env.DECRYPTION_KEY);
     var info = bytes.toString(CryptoJS.enc.Utf8);
-    console.log("after decrypt: " + info)
-
     var fields = [];
 
     var numberOfStrings = 0;
@@ -203,7 +197,6 @@ function extractInformation(req, res, next) {
         }
         previousLocation = currentLocation + 1;
     }
-    console.log(fields);
     userInfo = fields;
     userInfo['originalID'] = req.params.id
     next();
@@ -237,7 +230,6 @@ app.use('/:id/:type/StudySearch', function(req,res,next){
     req.vh = userInfo.VHType
     req.type = type
     req.userInfo = userInfo
-    console.log("type is : "+ type);
     next();
 }, StudySearchRouter)
 
