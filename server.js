@@ -11,7 +11,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json())
 var sql = require("mssql");
 
-var vh = 'bf'
+var vh = ''
 var type = ''
 
 // Modify based on Miriam/Emma's Qualtrics:
@@ -77,7 +77,8 @@ app.get('/:id/:type', extractInformation, setVHType, addVisitToDatabase, (req, r
     if (type == "vh")
         res.render('pages/index', {id: id, type: type})
     else if (type == "text")
-        res.render('pages/type/EducationalComponentText/introduction', {id: id, type: type})
+        // vh = 'text';
+        res.render('pages/indexText', {id: id, type: type})
 })
 
 // TODO: You previously deleted this function.
@@ -133,19 +134,24 @@ function addVisitToDatabase(req, res, next) {
 
 
 function setVHType(req, res, next) {
-    if (userInfo.Gender === 'Female' && userInfo.Race ==='Black') {
-        userInfo['VHType'] = 'bf'
+    if (userInfo.Pref ===  'text') {
+        userInfo['VHType'] = 'text';
     }
-    else if (userInfo.Gender === 'Male' && userInfo.Race ==='Black') {
-        userInfo['VHType'] = 'bm'
-    }
-    else if (userInfo.Gender === 'Female' && userInfo.Race ==='White') {
-        userInfo['VHType'] = 'wf'
-    }
-    else if (userInfo.Gender === 'Male' && userInfo.Race ==='White') {
-        userInfo['VHType'] = 'wm'
-    } else {
-        userInfo['VHType'] = 'bf'
+    else {
+        if (userInfo.Gender === 'Female' && userInfo.Race ==='Black') {
+            userInfo['VHType'] = 'bf'
+        }
+        else if (userInfo.Gender === 'Male' && userInfo.Race ==='Black') {
+            userInfo['VHType'] = 'bm'
+        }
+        else if (userInfo.Gender === 'Female' && userInfo.Race ==='White') {
+            userInfo['VHType'] = 'wf'
+        }
+        else if (userInfo.Gender === 'Male' && userInfo.Race ==='White') {
+            userInfo['VHType'] = 'wm'
+        } else {
+            userInfo['VHType'] = 'bf'
+        }
     }
     next()
 }

@@ -8,37 +8,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
-    <link href="/css/educationalComponent.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
     <title>ALEX</title>
 </head>
+<!-- Text Variables for Clarity :) -->
+<% var mainTitle = `Why Consider Participating?` %>
+
+<% var text1 = `We have learned a lot about improving people’s health and wellbeing with the help of research studies. But, there is still more work to be done. Doctors, scientists, and people like you are working together right now on research studies that will help you, your family, and future generations. There is still much to learn and you can help. People often have different or multiple reasons to consider participating in a research study. Some participate to receive a potentially helpful treatment that may benefit their health. Others participate so that study results found today may help people in the future. Sometimes people may even participate because they are interested in the study topic itself.  Whatever reasons you have to consider participating, it is important to know that it is always your choice to participate in a research study. It’s ok to ask questions and meet the research team as you make your decision to start participating. And even if you agree to participate,  you can change your mind at any time and stop your participation, no matter what your reason is.` %>
 <body>
     <header>
         <%- include('../../../partials/header'); %>
     </header>
-    <div class="container">
-        <br/>
-        <div class="navigation-area">
+
+    <!-- Main Content -->
+    <div class="text-container">
+        
+        <!-- Left-side Navigation Pane -->
+        <div class = "gap-container"></div>
+
+        <!-- Main Buttons -->
+        <div class="navigation-container">
+            <text-p class = "navigation-header">On this site</text-p>
+            <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation selected" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area selected">
+                        <%= buttons[i].text %>
+                        </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area">
+                        <%= buttons[i].text %>
+                        </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-        </div>
-        <div class="discover-button-area">
-            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
-                <button class="discover-button">Discover Research Opportunities</button>
+            <a href="/<%=id%>/<%=type%>/Discover">
+                <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
+
+        <!-- Main Text Content -->
+        <div class ="content-container">
+            <div class = "title-container">
+                <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
+                <div class ="discover-container discover-button-area">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                        <button class="discover-button">Discover Research Opportunities</button>
+                    </a>
+                </div>
+            </div>
+            <text-p><%-text1%></text-p>
+        </div>
+        
     </div>
 </body>
 </html>

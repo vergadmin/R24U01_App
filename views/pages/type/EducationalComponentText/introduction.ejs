@@ -8,37 +8,89 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
-    <link href="/css/educationalComponent.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
     <title>ALEX</title>
 </head>
+<!-- Text Variables for Clarity :) -->
+<% var mainTitle = `Introduction` %>
+<% var text1 = `Hi, thanks for clicking on this site. We’ve shared this link because your healthcare team wanted us to talk to you about participating in research studies. Additionally, we would like to talk with you about how to become an active member of a research registry. There are differences between a research study and a research registry. We are happy to discuss them in further detail. And  we’re also happy to talk with your family and friends if they want information on research studies and research registries, too.<br><br>So, pick a starting point to learn more about research studies!` %>
 <body>
     <header>
         <%- include('../../../partials/header'); %>
     </header>
-    <div class="container">
-        <br/>
-        <div class="navigation-area">
+
+    <!-- Main Content -->
+    <div class="text-container">
+        
+        <!-- Left-side Navigation Pane -->
+        <div class = "gap-container"></div>
+
+        <!-- Main Buttons -->
+        <div class="navigation-container">
+            <text-p class = "navigation-header">On this site</text-p>
+            <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation selected" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area selected">
+                        <%= buttons[i].text %>
+                        </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area">
+                        <%= buttons[i].text %>
+                        </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-        </div>
-        <div class="discover-button-area">
-            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
-                <button class="discover-button">Discover Research Opportunities</button>
+            <a href="/<%=id%>/<%=type%>/Discover">
+                <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
+
+        <!-- Main Text Content -->
+        <div class ="content-container">
+            <div class = "title-container">
+                <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
+                <div class ="discover-container discover-button-area">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                        <button class="discover-button">Discover Research Opportunities</button>
+                    </a>
+                </div>
+            </div>
+            <text-p><%-text1%></text-p>
+            <% for (var i = 1; i < buttons.length; i++) { %>
+                <br>
+                <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                    <text-p>&emsp;&#x2022; <%= buttons[i].text %></text-p>
+                </a>
+            <% } %>
+            <br>
+            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                <text-p class="text-p-discover">&emsp;&#x2022; Discover Research Opportunities</text-p>
+            </a>
+        </div>
+        
     </div>
 </body>
 </html>
+
+<!-- Demo Code: Chris
+
+<div class="parent">
+    <div class="div1">
+        <h3>Research Studies Are Safe!</h3>
+        <p class="minor"></p>
+    </div>
+    <div class = div2>
+        <button onclick="expand()">More</button>
+    </div>
+
+    <div id = "intro" class="div3 hidden">
+        <h3>Research Studies Are Fun!</h3>
+        <p class="minor">Vitae purus faucibus ornare suspendisse sed nisi lacus sed viverra. Risus pretium quam vulputate dignissim. Ultricies mi quis hendrerit dolor magna eget est lorem. Massa eget egestas purus viverra accumsan in. Neque ornare aenean euismod elementum nisi quis eleifend. Ut consequat semper viverra nam libero justo laoreet sit amet. Id neque aliquam vestibulum morbi blandit. Orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt tortor. Laoreet id donec ultrices tincidunt. Aliquam vestibulum morbi blandit cursus.</p>
+    </div>
+</div>
+
+-->

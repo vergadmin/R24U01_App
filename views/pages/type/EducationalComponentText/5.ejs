@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
+    <title>ALEX</title>
+</head>
+<!-- Text Variables for Clarity :) -->
+<% var mainTitle = `What Are Research Registries?` %>
+
+<% var title1 = `Brief Overview of Research Registries` %>
+<% var text1 = `A research registry is a structured database that collects comprehensive information about individuals with specific medical conditions or traits. It serves as a valuable resource for researchers, providing real-world evidence to understand disease patterns, treatment effectiveness, and long-term outcomes. Research registries help identify potential research participants for studies and facilitate collaboration among researchers. Data privacy and ethical standards ensure participant confidentiality, contributing to improved patient care and public health outcomes.` %>
+
+<% var title2 = `More Information about Research Registries` %>
+<% var text2 = `Research registries are vital tools in scientific research, collecting comprehensive data about individuals with specific medical conditions or traits. They provide real-world evidence, offering insights into disease patterns, treatment effectiveness, and long-term outcomes. Observational in nature, these registries follow participants over time, allowing the study of disease progression and treatment responses. They are particularly valuable for studying rare diseases and identifying potential participants for research studies. Collaborative efforts among institutions and patient advocacy groups enhance data sharing and standardization. Ethical considerations ensure participant privacy and confidentiality, making research registries essential in advancing medical knowledge, improving patient care, and informing healthcare policies.` %>
+
+<% var title3 = `Example of Research Studies` %>
+<% var text3 = `Great! Research registries are valuable tools in scientific research, providing comprehensive data on individuals with specific medical conditions or traits. Examples of research registries include the Surveillance, Epidemiology, and End Results (SEER) Program, which collects cancer data, the National Birth Defects Prevention Network (NBDPN) tracking congenital anomalies, and the Cystic Fibrosis Foundation Patient Registry focusing on cystic fibrosis. Other registries like the National Patient Registry for Alzheimer's Disease and Related Dementias and the Global Rare Diseases Patient Registry and Data Repository (GRDR) target Alzheimer's disease and rare diseases, respectively. These registries enable researchers to study disease trends, treatment outcomes, and genotype-phenotype correlations.<br><br>Additionally, registries like the International Multiple Sclerosis Genetics Consortium (IMSGC) Registry gather genetic data to identify disease risk genes. Collaborative efforts, such as the National Cardiovascular Data Registry (NCDR) and the Global HIV Observational Database (GHOD), provide insights into cardiovascular care and clinical outcomes, as well as monitoring HIV trends and treatment effectiveness. The National Cancer Database (NCDB) supports cancer research, while the Parkinson's Progression Markers Initiative (PPMI) Registry tracks Parkinson's disease progression and biomarkers. These research registries are essential resources for advancing medical knowledge and improving healthcare outcomes.` %>
+
+<% var title4 = `Differences Between a Research Study and Research Registry` %>
+<% var text4 = `Research studies and research registries differ in design and purpose. A research study is a structured investigation with specific research questions and controlled interventions, aiming to test hypotheses and evaluate treatment effectiveness. In contrast, a research registry is a large-scale database that collects comprehensive data from individuals with specific medical conditions or traits over time, focusing on real-world evidence without specific interventions. Research studies involve active participant involvement and limited data collection, while research registries provide a broad range of information from a larger participant pool, guiding future research and generating hypotheses. Both contribute to advancing scientific knowledge, but they serve distinct roles in the research landscape.<br><br>Remember, research registries collect diverse data about people with specific health conditions over time, providing real-world evidence for better treatments and healthcare decisions. Long-term insights and patient involvement empower research efforts, especially in studying rare diseases. These collaborative databases also aid in clinical trial recruitment, quality improvement, and inform public health initiatives while ensuring strict data security and privacy measures. You can also ask your doctor if there are any research registries available right now or in the near future that you should consider. If there are, you can ask more specific questions based on what I shared with you today. When we’re done, you’ll have another option to complete an enrollment form, or contact the research study team.` %>
+
+
+<body>
+    <header>
+        <%- include('../../../partials/header'); %>
+    </header>
+
+    <!-- Main Content -->
+    <div class="text-container">
+        
+        <!-- Left-side Navigation Pane -->
+        <div class = "gap-container"></div>
+
+        <!-- Main Buttons -->
+        <div class="navigation-container">
+            <text-p class = "navigation-header">On this site</text-p>
+            <br>
+            <% for (var i = 0; i < buttons.length; i++) { %>
+                <% if (buttons[i].url === url) { %>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area selected">
+                        <%= buttons[i].text %>
+                        </text-button>
+                    </a>
+                <% } else { %>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area">
+                        <%= buttons[i].text %>
+                        </text-button>                       
+                    </a>
+                <% } %>
+            <% } %>
+            <a href="/<%=id%>/<%=type%>/Discover">
+                <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
+            </a>
+        </div>
+
+        <!-- Main Text Content -->
+        <div class ="content-container">
+            <div class = "title-container">
+                <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
+                <div class ="discover-container discover-button-area">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                        <button class="discover-button">Discover Research Opportunities</button>
+                    </a>
+                </div>
+            </div>
+            <h2><%-title1%></h2>
+            <text-p><%-text1%></text-p>
+            <h2><%-title2%></h2>
+            <text-p><%-text2%></text-p>
+            <h2><%-title3%></h2>
+            <text-p><%-text3%></text-p>
+            <h2><%-title4%></h2>
+            <text-p><%-text4%></text-p>
+        </div>
+        
+    </div>
+</body>
+</html>

@@ -34,3 +34,48 @@
 .alex-snippet {
     height: 250px;
 }
+
+/* -- Comments on August Release -- 
+    Creating a separate set of css in index.css for August Release
+    Separate css files created as well, but this felt appropriate for index.css
+    Main Reasons:
+    - I think button for discovery on same line as title makes sense? So title-container is that. 
+    - August Release text is left-aligned
+    - August Release has a navigation pane on the left
+*/
+.title-container-2 {
+    display: flex;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0px;
+}
+
+.title-container {  display: grid;
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: max-content;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "main-title-container discover-container";
+  }
+  
+  .main-title-container { grid-area: main-title-container; }
+  
+  .discover-container { grid-area: discover-container; }
+  
+
+.text-container {  
+    display: grid;
+    grid-template-columns: 2% 20% 1fr;
+    grid-template-rows: 1fr;
+    gap: 0px 15px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "gap-grid navigation-grid text-grid";
+  }
+  
+.gap-container { grid-area: gap-grid; }
+.navigation-container { grid-area: navigation-grid; }
+.content-container { grid-area: text-grid; }
+
+  

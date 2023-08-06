@@ -32,3 +32,31 @@ button:hover {
     cursor: pointer;
     transform: scale(1.1);
 }
+
+/* -- Comments on August Release -- 
+    Creating a separate set of css in index.css for August Release
+    Separate css files created as well, but this felt appropriate for index.css
+    Main Reasons:
+    - Text version has a nav pane on left for "buttons" (a hrefs).
+*/
+
+text-h1 {
+    font-weight: 900;
+    color: #015495;
+    padding: 0px;
+}
+
+text-p {
+    font-weight: 400;
+    font-size: 25px;
+}
+
+text-button {
+    background-color: white;
+    padding: 12px;
+    border: solid;
+    border-width: 0px 0px 1px 4px;
+    color: #015495;
+    border-color:white white grey white;
+    font-size: 20px;
+}

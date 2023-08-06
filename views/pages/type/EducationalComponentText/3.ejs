@@ -8,37 +8,62 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
-    <link href="/css/educationalComponent.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
     <title>ALEX</title>
 </head>
+<!-- Text Variables for Clarity :) -->
+<% var mainTitle = `Are Research Studies Safe?` %>
+
+<% var text1 = `In some cases, the types of things you are asked to do in a research study might not be any different than your regular care. For example, some research studies ask people for just a blood sample. Or, you might be asked to allow doctors and scientists to look at your medical records to see if there is something they can learn from your situation. In other cases, being in a research study might involve a new treatment that is only available to people in that study.<br><br>You should also know that every research study is reviewed many times before it is ever offered to a person. This ensures that it follows a very strict set of rules that require the study to be expertly designed and safe for people at every stage of the process. Once it is approved, a research study follows the same detailed set of instructions, called a <em>protocol</em>. So every carefully monitored participant in the study is guaranteed the tests, treatment, or care exactly as it was approved. Because of this, being involved in a research study brings extra attention to your care. In addition to your doctors and their clinical team, there is also a research study team that will be working with them. This extra attention to the details in your care is above and beyond what would otherwise be standard treatment.<br><br>In some cases, joining a research study may even simplify some otherwise challenging treatment choices. For example, sometimes there are two or more treatments available that are FDA approved for your situation. If there is no way to know if one is better for you than the other, it is usually reasonable for your doctor to offer you either treatment and let you decide.<br><br>But, a research study can compare the two such treatments and provide new insight on if or how one might be better, both for you and for other people in the future. In this case, every new person who joins the study may be put into one of the two treatment groups by chance. In other words, the treatment is chosen by randomization. This isn't a bad thing. This process of "random assignment" is only approved when the study team has no idea if one type or amount of treatment is better than another. Both are reasonable options, so the goal is to take a very close look at each one and compare them fairly. Some people find it helpful to think about random assignment like the sex of a new baby. Just like parents can’t choose whether their baby will be born male or female, people can’t choose their treatment group in a randomized study. But in the end, either option will work for you! The bottom line: every treatment offered in a research study must be an acceptable option for you and your care.` %>
+
 <body>
     <header>
         <%- include('../../../partials/header'); %>
     </header>
-    <div class="container">
-        <br/>
-        <div class="navigation-area">
+
+    <!-- Main Content -->
+    <div class="text-container">
+        
+        <!-- Left-side Navigation Pane -->
+        <div class = "gap-container"></div>
+
+        <!-- Main Buttons -->
+        <div class="navigation-container">
+            <text-p class = "navigation-header">On this site</text-p>
+            <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation selected" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area selected">
+                        <%= buttons[i].text %>
+                        </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=version%>/<%=id%>/<%=type%>/EducationalComponent/<%=buttons[i].url%>">
-                        <button class="education-navigation" >
-                            <%= buttons[i].text %>
-                        </button>
+                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                        <text-button class = "navigation-area">
+                        <%= buttons[i].text %>
+                        </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-        </div>
-        <div class="discover-button-area">
-            <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
-                <button class="discover-button">Discover Research Opportunities</button>
+            <a href="/<%=id%>/<%=type%>/Discover">
+                <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
+
+        <!-- Main Text Content -->
+        <div class ="content-container">
+            <div class = "title-container">
+                <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
+                <div class ="discover-container discover-button-area">
+                    <a href="/<%=version%>/<%=id%>/<%=type%>/Discover">
+                        <button class="discover-button">Discover Research Opportunities</button>
+                    </a>
+                </div>
+            </div>
+            <text-p><%-text1%></text-p>
+        </div>
+        
     </div>
 </body>
 </html>
