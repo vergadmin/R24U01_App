@@ -13,6 +13,7 @@ var sql = require("mssql");
 
 var vh = ''
 var type = ''
+var visitNum = -1;
 
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
@@ -45,6 +46,7 @@ app.post('/updateDatabase', async (req, res) => {
         setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
+    console.log(setList);
     // console.log(setList)
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
@@ -55,7 +57,12 @@ app.post('/updateDatabase', async (req, res) => {
         // create Request object
         var request = new sql.Request();
 
-        let queryString = 'UPDATE R24 SET ' + setList + ' WHERE ID=' + `'` + userInfo.ID + `'`;
+        // let queryString = 'UPDATE R24 SET ' + setList + ' WHERE ID=' + `'` + userInfo.ID + `'`;
+        let queryString = `
+        UPDATE R24
+        SET ` + setList + 
+        ` WHERE ID = '` + userInfo.ID + `' 
+        AND VisitNum = '` + userInfo.visitNum + `'`;
         // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err) 
@@ -69,7 +76,7 @@ app.post('/updateDatabase', async (req, res) => {
 })
 
 // TODO: You previously deleted this function.
-app.get('/:id/:type', extractInformation, setVHType, addVisitToDatabase, (req, res) => {
+app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisitToDatabase, (req, res) => {
     // console.log("REQUEST PARAMS:")
     // console.log(req.params)
     id = req.params.id
@@ -95,13 +102,18 @@ app.get('/:id/:type/Discover', (req, res) => {
         // create Request object
         var request = new sql.Request();
 
-        let queryString = 'UPDATE R24 SET Discover' + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`;
-        // console.log(queryString)
+        let queryString = `
+        UPDATE R24
+        SET Discover = 'clicked'
+        WHERE ID = '` + userInfo.ID + `' 
+        AND VisitNum = '` + userInfo.visitNum + `'`;
+        
+        console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            // console.log("UPDATED! IN R24 TABLE:")
-            // console.log(recordset);
+            console.log("UPDATED! IN R24 TABLE:")
+            console.log(recordset);
         }); 
     
     });
@@ -109,18 +121,47 @@ app.get('/:id/:type/Discover', (req, res) => {
     res.render('pages/discover', {id: id, type: type})
 })
 
+function checkPreviousVisit(req, res, next) {
+    var visitN = -1;
+    sql.connect(config, function (err) {
+        var request = new sql.Request();
+        
+        // Query Check for Existing Entry In Table
+        let checkString = `
+        SELECT VisitNum FROM R24
+        WHERE ID = '` + userInfo.ID + `'
+        AND DateTime = (
+                SELECT max(DateTime)
+                FROM R24
+                WHERE ID = '` + userInfo.ID + `' 
+        )`
+        request.query(checkString, function(err, recordset) {
+            if (err) console.log(err);
+            console.log(recordset.recordset);
+            console.log(recordset.recordset.length);
+            if (recordset.recordset.length === 0) {
+                visitN = 0;
+            }
+            else {
+                visitN = recordset.recordset[0].VisitNum + 1;
+            }
+            visitNum = visitN;
+            userInfo['visitNum'] = visitNum;
+            next();
+        })
+    })
+
+}
 
 function addVisitToDatabase(req, res, next) {
     // console.log("IN MIDDLEWARE - REQUEST PARAMS:")
     // console.log(req.params)
     id = req.params.id
     type = req.params.type
-
     sql.connect(config, function (err) {
         var request = new sql.Request();
-        // console.log("ADDING NEW ROW TO DATABASE FOR THIS VISIT")
-        let queryString =  `INSERT INTO R24 (ID, VHType) VALUES ('` + userInfo.ID + `','` + userInfo.VHType + `')`;
-        // console.log(queryString)
+        let queryString = `INSERT INTO R24 (ID, VisitNum, VHType) VALUES ('` + userInfo.ID + `',` + userInfo.visitNum + `,'` + userInfo.VHType + `')`;
+        console.log(queryString);
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response

@@ -92,6 +92,7 @@ function updateDatabase(req, res, next) {
     console.log(req.url)
     let dbEntry = req.url.slice(1)
     console.log(dbEntry)
+    userInfo = req.userInfo;
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
 
@@ -100,7 +101,13 @@ function updateDatabase(req, res, next) {
         // create Request object
         var request = new sql.Request();
 
-        let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
+        // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
+        let queryString = `
+        UPDATE R24
+        SET Educational_` + dbEntry + `= 'clicked'
+        WHERE ID = '` + userInfo.ID + `' 
+        AND VisitNum = '` + userInfo.visitNum + `'`;
+
         console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
