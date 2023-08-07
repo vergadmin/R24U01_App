@@ -52,4 +52,16 @@ hr {
 
     width: 100%;
 }
-  
+
+#cities-list {
+    list-style: none;
+}
+
+#cities-list li {
+    list-style: none;
+    padding: 0;
+}
+
+#cities-list li:hover {
+    background-color: grey;
+}

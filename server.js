@@ -1,8 +1,8 @@
 const express = require('express')
 const app = express()
-
 const CryptoJS = require("crypto-js");
 
+const Geonames  = require('geonames.js');
 require('dotenv').config()
 // console.log(process.env)
 
@@ -14,6 +14,13 @@ var sql = require("mssql");
 var vh = ''
 var type = ''
 var visitNum = -1;
+
+const geonames = Geonames({
+    username: process.env.GEONAMES_USER,
+    lan: 'en',
+    encoding: 'JSON'
+  });
+
 
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
@@ -196,6 +203,37 @@ function setVHType(req, res, next) {
     }
     next()
 }
+app.post('/:id/:type/RetrieveCities', (req, res) => {
+    // console.log("REQUEST PARAMS:")
+    // console.log(req.params)
+    console.log("Here!");
+    id = req.params.id
+    type = req.params.type
+    let state = (Object.entries(req.body)[0][1])
+    retrieveCities(state).then((result) => {
+        res.json(result);    
+    }).catch((error) => {
+        console.error('Error:', error);
+        res.status(500).json({error:'Failed to wait for promise.'});
+    });
+});
+
+async function retrieveCities(state) {
+    try {
+      const resp = await geonames.search({
+        q: state,
+        style: 'SHORT',
+        country: 'US',
+        cities: 'cities500'
+      }); //get continents
+  
+      // console.log(resp.geonames);
+      return resp.geonames;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 
 function extractInformation(req, res, next) {
     // fields is an array of objects formatted as such...

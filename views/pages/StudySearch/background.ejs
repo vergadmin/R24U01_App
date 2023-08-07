@@ -11,6 +11,7 @@
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
+    <script src="/scripts/StudySearch/background.js"></script>
     <title>ALEX</title>
 </head>
 <body>
@@ -51,6 +52,8 @@
                 <fieldset>
                     <legend>&nbsp; What city are you located in? &nbsp;</legend>
                     <input type="text" id="LocationCity" name="LocationCity">
+                    <ul id="cities-list" name="cities-list"></ul>
+    
                 </fieldset>
             </form>
             <a href="/<%=id%>/<%=type%>/StudySearch/Preferences" onclick="sendFormData(`background-info`)">
