@@ -11,6 +11,7 @@
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
+    <script src="/scripts/registerClicks.js"></script>
     <title>ALEX</title>
 </head>
 <body>
@@ -55,8 +56,11 @@
                     <p>Email: <%= trialsList[i].CentralContactEMail[0] %> </p>
                    </div>
                 </div>
-                <p>If you're interested in this study, click the button below to copy text to email the central contact!</p>
-                <button onclick="copyEmailText(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
+                <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
+                <div class="row">
+                    <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
+                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= trialsList[i].CentralContactEMail[0] %>`);"">Send Email</button>
+                </div>
                 <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>

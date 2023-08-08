@@ -54,7 +54,6 @@ app.post('/updateDatabase', async (req, res) => {
     }
     setList = setList.slice(0, -2); 
     console.log(setList);
-    // console.log(setList)
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -64,28 +63,22 @@ app.post('/updateDatabase', async (req, res) => {
         // create Request object
         var request = new sql.Request();
 
-        // let queryString = 'UPDATE R24 SET ' + setList + ' WHERE ID=' + `'` + userInfo.ID + `'`;
         let queryString = `
         UPDATE R24
         SET ` + setList + 
         ` WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
-        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err) 
-            // send records as a response
-            // console.log("UPDATED! IN R24 TABLE:")
-            // console.log(recordset);
+
         }); 
     
     });
     // END DATABASE STUFF
 })
 
-// TODO: You previously deleted this function.
+
 app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisitToDatabase, (req, res) => {
-    // console.log("REQUEST PARAMS:")
-    // console.log(req.params)
     id = req.params.id
     type = req.params.type
     if (type == "vh")
@@ -95,10 +88,8 @@ app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisi
         res.render('pages/indexText', {id: id, type: type})
 })
 
-// TODO: You previously deleted this function.
+
 app.get('/:id/:type/Discover', (req, res) => {
-    // console.log("REQUEST PARAMS:")
-    // console.log(req.params)
     id = req.params.id
     type = req.params.type
 
@@ -144,6 +135,7 @@ function checkPreviousVisit(req, res, next) {
         )`
         request.query(checkString, function(err, recordset) {
             if (err) console.log(err);
+            console.log("HERE")
             console.log(recordset.recordset);
             console.log(recordset.recordset.length);
             if (recordset.recordset.length === 0) {
@@ -161,8 +153,6 @@ function checkPreviousVisit(req, res, next) {
 }
 
 function addVisitToDatabase(req, res, next) {
-    // console.log("IN MIDDLEWARE - REQUEST PARAMS:")
-    // console.log(req.params)
     id = req.params.id
     type = req.params.type
     sql.connect(config, function (err) {
@@ -171,9 +161,6 @@ function addVisitToDatabase(req, res, next) {
         console.log(queryString);
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
-            // send records as a response
-            // console.log("ADDED TO DATABSE:")
-            // console.log(recordset)
         })
     })
     next()
