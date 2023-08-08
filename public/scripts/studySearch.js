@@ -62,7 +62,7 @@ async function getResults() {
     });
     if (res.ok) {
         console.log(res)
-        window.location.href = res.url
+        // window.location.href = res.url
     } else {
         return `HTTP error: ${res.status}`;
     }

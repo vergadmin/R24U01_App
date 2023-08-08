@@ -20,21 +20,27 @@
     </header>
     <div class="container">
         <img class="logo" src="/images/logo.png" /> 
-        <h1 class="title">Results</h1>
-        <p> Thank you for all that information! Here are some research studies we found for you.</p>
-        <p> After you’ve downloaded your “Liked Studies”, please click the following button to continue to our survey. </p>
-    
+        <h1 class="title">Study Results</h1>
+        <p> Thank you for all that information! Here are some research studies we found for you. You can view information on the studies and contact the study team for studies you are interested in.</p>
+        <p> You can also click “Download Studies List” and your browser will ask you to save this page as a PDF. </p>
+        <p><strong>Before leaving this page, please be sure to click on the "Complete Survey" button to be directed to our survey.</strong></p>
+        
+        <hr/>
+        <br/>
+        <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
+        <br/>
+        <button class="red" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">Complete Survey</button>
+        
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
                 <h3><%= trialsList[i].BriefTitle %> </h3>
                 <h4>Brief Summary*:</h4>
                 <p><%= trialsList[i].GPTSummary %></p>
                 <hr/>
+                <h4>Condition(s): </h4>
+                <p><%= trialsList[i].Condition %></p>
+                <hr/>
                 <div class="study-row">
-                    <div class="row">
-                        <h4>Condition(s): </h4>
-                        <p><%= trialsList[i].Condition %></p>
-                    </div>
                    <div class="row">
                     <h4>Intervention/Treatment:</h4>
                     <p><%= trialsList[i].InterventionType %> </p>
@@ -47,8 +53,8 @@
                 <hr/>
                 <div class="study-row">
                     <div class="row">
-                        <h4>Study Location: </h4>
-                        <p><%= trialsList[i].Condition %></p>
+                        <h4>Study Location(s): </h4>
+                        <p><%= trialsList[i].FilteredFacilities %></p>
                     </div>
                    <div class="row">
                     <h4>Study Contact:</h4>
@@ -56,14 +62,22 @@
                     <p>Email: <%= trialsList[i].CentralContactEMail[0] %> </p>
                    </div>
                 </div>
+                <hr/>
                 <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
-                <div class="row">
+                <div class="center">
                     <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
-                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= trialsList[i].CentralContactEMail[0] %>`);"">Send Email</button>
+                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= trialsList[i].CentralContactEMail[0] %>`);"">Send Email</button>         
                 </div>
+                <br/>
+                <hr/>
                 <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>
+
+        <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
+        <br/>
+        <button class="red" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">Complete Survey</button>
+        <br/>
     </div>
 </body>
 </html>

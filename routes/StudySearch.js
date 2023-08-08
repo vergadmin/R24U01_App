@@ -57,7 +57,8 @@ router.get('/Registries', (req, res) => {
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
-  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList})
+  // No longer rendering page here, this is just a post request!
+  // console.log(trialsList)
 })
 
 router.get('/Results', (req, res) => {
@@ -188,8 +189,29 @@ async function searchForCT(req, res, next) {
   .catch(err => {
     console.log('Error: ', err.message);
   });
-  console.log(trialsList)
   trialsList = trialsList.slice(0,5)
+  var locationIndeces = [];
+  var facilities = []
+  // GETTING FACILITIES LIST -- loop through all trials
+  for (var i = 0; i < trialsList.length; i++) {
+    // remove duplications from InterventionType while we're here
+    trialsList[i].InterventionType = [...new Set(trialsList[i].InterventionType )];
+    locationIndeces = [];
+    facilities = []
+    // get indeces of locations from cities array
+    trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
+    // condense down to 5 locations if more than 5
+    if (locationIndeces.length > 5) {
+      locationIndeces = locationIndeces.slice(0,5);
+    }
+    // iterate through indeces and extract those facilities from facilities array
+    for (var j = 0; j < locationIndeces.length; j++) {
+      facilities.push(trialsList[i].LocationFacility[locationIndeces[j]])
+    }
+    // set new property on trialsList for filtered facilities
+    trialsList[i]['FilteredFacilities'] = facilities;
+  }
+
   next()
 }
 

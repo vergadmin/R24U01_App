@@ -21,6 +21,7 @@
     <div class="container">
         <img class="logo" src="/images/logo.png" /> 
         <h1 class="title">Registry Results</h1>        
+        <p>Here is a registry you might be interested in joining!</p>
         
         <div class="study-card">
             <h3>JAX-ASCENT Registry</h3>
@@ -35,7 +36,7 @@
             <hr/>
             <h4>How to Join:</h4>
             <p>Complete the enrollment form at UFJaxAgingStudy.com. If you have questions, call (866) 386-7730.</p>
-            <a target="_blank" rel="noopener noreferrer" onclick="sendToDatabase(`RegistriesCompleteEnrollmentForm`, `clicked`)" href="http://ufjaxagingstudy.com/">
+            <a class="center" target="_blank" rel="noopener noreferrer" onclick="sendToDatabase(`RegistriesCompleteEnrollmentForm`, `clicked`)" href="http://ufjaxagingstudy.com/">
                 <button>Complete Enrollment Form</button>
             </a>
             
@@ -43,7 +44,7 @@
 
         <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a href="https://med.jax.ufl.edu/institute-population-health/projects-and-initiatives/jaxascent-registry/">https://med.jax.ufl.edu/institute-population-health/projects-and-initiatives/jaxascent-registry/</a></p>
         
-        <a onclick="getResults()">
+        <a href="/<%=id%>/<%=type%>/StudySearch/Results">
             <button>See Study Results</button>
         </a>
     </div>
