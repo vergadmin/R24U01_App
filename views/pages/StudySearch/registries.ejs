@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
+    <script src="/scripts/registries.js"></script>
     <title>ALEX</title>
 </head>
 <body>
@@ -44,8 +45,9 @@
 
         <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a href="https://med.jax.ufl.edu/institute-population-health/projects-and-initiatives/jaxascent-registry/">https://med.jax.ufl.edu/institute-population-health/projects-and-initiatives/jaxascent-registry/</a></p>
         
+        <p id = "disabled-text">Your tailored list of clinical trials are loading. This may take up to 30 seconds...</p>
         <a href="/<%=id%>/<%=type%>/StudySearch/Results">
-            <button>See Study Results</button>
+            <button id = "results" disabled class = "disabled">Loading...</button>
         </a>
     </div>
 </body>

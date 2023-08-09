@@ -25,12 +25,12 @@
         <div class="form-area">
             <form onsubmit="return false" id="background-info">
                 <fieldset>
-                    <legend>&nbsp; What is your age? &nbsp;</legend>
+                    <legend class = "age-legend">&nbsp; What is your age?<span class="red-validator">*</span> &nbsp;</legend>
                     <input type="number" min="18" max="150" id="Age" name="Age">
                 </fieldset>
 
                 <fieldset>
-                    <legend>&nbsp; What is your gender? &nbsp;</legend>
+                    <legend class = "gender-legend">&nbsp; What is your gender?<span class="red-validator">*</span> &nbsp;</legend>
                     <input type="radio" id="female" name="Gender" value="female" />
                     <label for="female">Female</label>
                     <input type="radio" id="male" name="Gender" value="male" />
@@ -56,9 +56,7 @@
     
                 </fieldset>
             </form>
-            <a href="/<%=id%>/<%=type%>/StudySearch/Preferences" onclick="sendFormData(`background-info`)">
-                <button>Next</button>
-            </a>
+                <button onclick="validateAndSendFormData(`background-info`)">Next</button>
         </div>
     </div>
 </body>

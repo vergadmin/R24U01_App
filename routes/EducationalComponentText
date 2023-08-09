@@ -46,7 +46,7 @@ let buttons = [
     },
     {
         url: '5',
-        text: "How to participate in research and where to start?"
+        text: "Am I eligible and where to start?"
     },
 
 ]
