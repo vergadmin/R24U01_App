@@ -9,6 +9,7 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <title>ALEX</title>
@@ -18,7 +19,13 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
-        <img class="logo" src="/images/logo.png" /> 
+        <div class="progress-container">
+            <div class="progress" id="progress"> </div>
+            <div class="circle visited">✓ <br/> Background</div>
+            <div class="circle active">2 <br/> Preferences</div>
+            <div class="circle">3  <br/>Registries</div>
+            <div class="circle">4 <br/>Studies</div>
+          </div>
         <h1 class="title">Preferences</h1>
         <p> Please fill out the following information to identify research studies you may be eligible for.  </p>
         <div class="form-area">

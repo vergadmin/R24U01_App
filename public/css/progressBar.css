@@ -1,0 +1,57 @@
+.progress-container::before {
+    content: "";
+    background: #015495;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 100%;
+    z-index: -1;
+  }
+  
+  .progress-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 30px;
+    max-width: 100%;
+    width: 65%;
+  }
+  
+  .progress {
+    background: #015495;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 0%;
+    z-index: -1;
+    transition: 0.4s ease;
+  }
+  
+  .circle {
+    border: 1px solid #015495;
+    background: white;
+    color: #015495;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .4s ease;
+    font-size: 15px;
+  }
+  
+  .circle.active {
+    border-color: #EE7E38;
+    background: #EE7E38;
+    color: white;
+  }
+
+  .circle.visited {
+    background: #015495;
+    color: white;
+  }

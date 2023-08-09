@@ -9,6 +9,7 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
@@ -19,10 +20,15 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
-        <img class="logo" src="/images/logo.png" /> 
+        <div class="progress-container">
+            <div class="progress" id="progress"> </div>
+            <div class="circle visited">✓ <br/> Background</div>
+            <div class="circle visited">✓ <br/> Preferences</div>
+            <div class="circle active">3  <br/>Registries</div>
+            <div class="circle">4 <br/>Studies</div>
+          </div>
         <h1 class="title">Registry Results</h1>        
         <p>Here you can read about research registries -- which are special lists gathering information from people like you interested in research participation -- suitable for you, and choose to join!</p>
-        
         <div class="study-card">
             <h3>JAX-ASCENT Registry</h3>
             <h4>Official Title:</h4>

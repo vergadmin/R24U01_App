@@ -9,6 +9,7 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
@@ -19,7 +20,13 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
-        <img class="logo" src="/images/logo.png" /> 
+        <div class="progress-container">
+            <div class="progress" id="progress"> </div>
+            <div class="circle visited">✓ <br/> Background</div>
+            <div class="circle visited">✓ <br/> Preferences</div>
+            <div class="circle visited">✓  <br/>Registries</div>
+            <div class="circle active">4 <br/>Studies</div>
+          </div>
         <h1 class="title">Study Results</h1>
         <div class="information">
             <p>Thank you for all that information! Here are some research studies we found for you. </p>
