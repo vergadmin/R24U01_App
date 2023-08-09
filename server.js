@@ -1,4 +1,6 @@
 const express = require('express')
+const session = require('express-session');
+
 const app = express()
 const CryptoJS = require("crypto-js");
 
@@ -44,6 +46,12 @@ const config = {
     }
 }
 
+app.use(session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: true
+}))
+
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
     for (const [key, value] of Object.entries(req.body)) {
@@ -81,7 +89,7 @@ app.post('/updateDatabase', async (req, res) => {
 app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisitToDatabase, (req, res) => {
     id = req.params.id
     type = req.params.type
-    if (type == "vh")
+    if (type == "vh") 
         res.render('pages/index', {id: id, type: type})
     else if (type == "text")
         // vh = 'text';
@@ -120,6 +128,10 @@ app.get('/:id/:type/Discover', (req, res) => {
 })
 
 function checkPreviousVisit(req, res, next) {
+    if (req.session.visitedIndex) {
+        next();
+        return;
+    }
     var visitN = -1;
     sql.connect(config, function (err) {
         var request = new sql.Request();
@@ -153,6 +165,14 @@ function checkPreviousVisit(req, res, next) {
 }
 
 function addVisitToDatabase(req, res, next) {
+    // After first time, we mark visitedIndex as true, and then we don't want to do it again.
+    if (!req.session.visitedIndex) {
+        req.session.visitedIndex = true;
+    }
+    else {
+        next();
+        return;
+    }
     id = req.params.id
     type = req.params.type
     sql.connect(config, function (err) {
@@ -168,6 +188,10 @@ function addVisitToDatabase(req, res, next) {
 
 
 function setVHType(req, res, next) {
+    if (req.session.visitedIndex) {
+        next();
+        return;
+    }
     if (userInfo.Pref ===  'Text') {
         userInfo['VHType'] = 'text';
     }
@@ -193,7 +217,6 @@ function setVHType(req, res, next) {
 app.post('/:id/:type/RetrieveCities', (req, res) => {
     // console.log("REQUEST PARAMS:")
     // console.log(req.params)
-    console.log("Here!");
     id = req.params.id
     type = req.params.type
     let state = (Object.entries(req.body)[0][1])
@@ -223,6 +246,10 @@ async function retrieveCities(state) {
   }
 
 function extractInformation(req, res, next) {
+    if (req.session.visitedIndex) {
+        next();
+        return;
+    }
     // fields is an array of objects formatted as such...
     // {"ID" : id, "Gender" : gender, ... "Pref" : video}
     var id = req.params.id;

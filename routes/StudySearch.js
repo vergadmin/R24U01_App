@@ -19,7 +19,6 @@ const TEMPERATURE = 0;
 
 // TODO: You previously deleted these variables.
 var id = ''
-var version = ''
 var vh = ''
 var type = ''
 
@@ -67,9 +66,10 @@ router.get('/Registries', (req, res) => {
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
-  // No longer rendering page here, this is just a post request!
-  // console.log(trialsList)
-})
+  // All middleware have executed in order by this point
+  // You can send the response here 
+  res.send('Dummy Response after both functions.');
+});
 
 router.get('/Results', (req, res) => {
   res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList, sponsoredList: sponsoredList})
@@ -88,14 +88,16 @@ function CTsWithDatabase(req, res, next) {
       if (i == trialsList.length) {
           // TODO: Replace this line of code with your code to render the trialsList
           // trialsList should contain all the same info and a new GPTSummary item
-          console.log("=======Simplified Versions======");
+          // console.log("=======Simplified Versions======");
           // console.log(trialsList);
+          console.log("Number of Trials: " + trialsList.length);
           next();
+          // return;
       }
       if (i < iterations) {
           // We do a sql.connect in every iteration of the loop because the table doesn't update until you disconnect and reconnect
           // Basically, I'm trying to avoid weird interactions with multiple users + it doesn't throttle speed a whole ton.
-          console.log("GOING TO MAKE SQL REQUEST IN GPT STUFF")
+          
           sql.connect(config, function (err) {
               var request = new sql.Request();
               // I created a table called ClinicalTrials -- that's where we will store CT ID's and GPTSummary's
@@ -110,13 +112,13 @@ function CTsWithDatabase(req, res, next) {
                   // This can happen in very rare cases where the recordset length returns 0, after an entry for it was added moments before.
                   if (recordset.recordset.length === 0 && !idTracker.includes(trialsList[i].NCTId)) {
                       console.log("HERE")
-                      summarizeGPT(trialsList[i].BriefSummary).then((summary) => {
+                      summarizeGPT(trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((summary) => {
                         console.log("SUMMARIZED GPT")
                           // Console logs for Debugging.
                           // console.log("CASE 1: " + summary);
 
                           // Convert summary into a SQL friendly string and put in trialsList
-                          summary = summary.replace("'", "''");
+                          summary = summary.replace(/'/g, "''");
                           trialsList[i]['GPTSummary'] = summary;
 
                           // Keep track of IDs already seen.
@@ -124,6 +126,7 @@ function CTsWithDatabase(req, res, next) {
                           // Insert new entry into table
                           // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
                           let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + summary + `')`;
+                          console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
                               if (err) 
                                   console.log(err);
@@ -153,38 +156,66 @@ function CTsWithDatabase(req, res, next) {
 }
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
-async function summarizeGPT(summary) {
-  // console.log("IN SUMMARIZE GPT")
-  // console.log(summary)
+async function summarizeGPT(briefSummary, detailedDescription) {
+  console.log("IN SUMMARIZE GPT")
+  console.log(briefSummary, detailedDescription);
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,
-          prompt: process.env.SUMMARY_PROMPT + summary,
+          prompt: process.env.SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
           max_tokens: MAX_TOKENS,
           temperature: TEMPERATURE,
   });
-  // console.log(result.data.choices[0].text);
+  console.log(result.data.choices[0].text);
   return result.data.choices[0].text;
 }
 
 function getInfo(req, res, next) {
-    console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
+    // console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
     userInfo = req.userInfo
     vh = req.vh
     type = req.type
-    console.log("type is " + type);
+    // console.log("type is " + type);
     next()
 }
 
-async function searchForCT(req, res, next) {
-  let expression = `${req.body.Condition} AND SEARCH[Location](AREA[LocationState] ${req.body.LocationState} AND AREA[LocationCity] ${req.body.LocationCity} AND AREA[LocationStatus] Recruiting) AND AREA[Gender] ${req.body.Gender} AND AREA[HealthyVolunteers] ${req.body.HealthyVolunteer }`
-  console.log("EXPRESSION IS: " + expression)
-  const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
 
+async function createClinicalTrialsString(fields) {
+  // return new Promise((resolve) => {
+    let expression = "";
+    if (fields.Condition && fields.Condition != "") {
+      expression += fields.Condition + " AND "; 
+    }
+    expression += "SEARCH[Location]("; 
+    if (fields.LocationState != "---") {
+      expression += "AREA[LocationState] " + fields.LocationState + " AND ";
+    }
+    if (fields.LocationCity && fields.LocationCity != "") {
+      expression += "AREA[LocationCity] " + fields.LocationCity + " AND ";
+    }
+    expression += "AREA[LocationStatus] Recruiting)";
+    if (fields.Gender && fields.Gender != "not_say" && fields.Gender != "not_listed") {
+      expression += " AND SEARCH[Study](AREA[Gender] " + fields.Gender + " OR AREA[Gender] All)";
+    }
+    
+    if (fields.HealthyVolunteer) {
+      expression += " AND SEARCH[Study](AREA[HealthyVolunteers] " + fields.HealthyVolunteer + ")";
+    }
+    return expression;
+    // resolve(expression);
+  // });
+}
+
+async function searchForCT(req, res, next) {
+  console.log(req.body);
+  // let expression = `${req.body.Condition} AND SEARCH[Location](AREA[LocationState] ${req.body.LocationState} AND AREA[LocationCity] ${req.body.LocationCity} AND AREA[LocationStatus] Recruiting) AND AREA[Gender] ${req.body.Gender} AND AREA[HealthyVolunteers] ${req.body.HealthyVolunteer }`
+  let expression = await createClinicalTrialsString(req.body);
+  console.log("EXPRESSION IS: " + expression)
+  const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
+  console.log(apiUrl);
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.StudyFieldsResponse.StudyFields
-      console.log("IN REQUEST")
       let list = []
       console.log(list)
       if (list.length > 0) {
@@ -196,19 +227,20 @@ async function searchForCT(req, res, next) {
           // console.log(minNum)
           return (age >= minNum && age <= maxNum)
         })
-        console.log("DONE")
       } 
       return list
   })
   .catch(err => {
     console.log('Error: ', err.message);
   });
-  console.log("TRIALS LIST")
-  console.log(trialsList)
 
   if(trialsList.length > 0) {
     if (trialsList.length > 5) {
+      // Random Trial Added to End
+      let randomInt = Math.floor(Math.random() * (trialsList.length - 5 + 1) + 5);
+      let randomTrial = trialsList[randomInt];
       trialsList = trialsList.slice(0,5)
+      trialsList.push(randomTrial);
     } 
     var locationIndeces = [];
     var facilities = []
