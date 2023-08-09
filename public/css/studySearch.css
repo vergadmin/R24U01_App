@@ -62,13 +62,18 @@ hr {
 
 #cities-list {
     list-style: none;
+    font-size: 21px;
 }
 
 #cities-list li {
     list-style: none;
-    padding: 0;
+    padding: 3px;
+    transition: .2s ease-in-out;
 }
 
 #cities-list li:hover {
-    background-color: grey;
+    background-color: #1e4a97;
+    color: white;
+    cursor: pointer;
+    font-size: 23px;
 }
