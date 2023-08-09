@@ -34,47 +34,44 @@ let buttons = [
     },
     {
         url: '2',
-        text: "Why consider participating?"
+        text: "What are research registries?"
     },
     {
         url: '3',
-        text: "Are research studies safe?"
+        text: "Why consider participating?"
     },
     {
         url: '4',
+        text: "Are research studies safe?"
+    },
+    {
+        url: '5',
         text: "How to participate in research and where to start?"
     }
 ]
 
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
-    console.log("IN EDUCATIONAL COMPONENT ROUTER")
-    console.log("VHType is: " + vh)
     res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
-    console.log("IN EDUCATIONAL COMPONENT ROUTER")
-    console.log("VHType is: " + vh)
-    console.log("TYPE IS : " + type);
     res.render("pages/type/EducationalComponent/1", {id: id, vh: vh, type: type, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
-    console.log("IN EDUCATIONAL COMPONENT ROUTER")
-    console.log("VHType is: " + vh)
     res.render("pages/type/EducationalComponent/2", {id: id, vh: vh, type: type, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
-    console.log("IN EDUCATIONAL COMPONENT ROUTER")
-    console.log("VHType is: " + vh)
     res.render("pages/type/EducationalComponent/3", { id: id, vh: vh, type: type, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
-    console.log("IN EDUCATIONAL COMPONENT ROUTER")
-    console.log("VHType is: " + vh)
     res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, type: type, buttons: buttons, url: '4'})
+})
+
+router.get('/5', updateDatabase, (req, res) => {
+    res.render("pages/type/EducationalComponent/5", {id: id, vh: vh, type: type, buttons: buttons, url: '5'})
 })
 
 function getInfo(req, res, next) {

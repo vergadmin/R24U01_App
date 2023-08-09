@@ -25,6 +25,16 @@ var type = ''
 
 var trialsList = []
 
+var sponsoredList = [
+  {
+    "Title": "Cancer Prevention Research Study",
+    "Summary": "Adults between 50 - 73 years old are eligible to participate in a University of Florida study to develop and test messages about nutrition risk factors and colorectal cancer prevention.",
+    "ContactName": "Dr. Melissa Vilaro",
+    "ContactEMail": "mgraveley@ufl.edu",
+    "Link": "https://research-studies-with-alex.s3.amazonaws.com/SponsoredStudies/STAMPEDNutrition_Module_CRC_Flyer_12.5.19.pdf"
+  }
+]
+
 const config = {
     user: 'VergAdmin',
     password: process.env.PASSWORD,
@@ -62,7 +72,7 @@ router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
 })
 
 router.get('/Results', (req, res) => {
-  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList})
+  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
 function CTsWithDatabase(req, res, next) {
@@ -174,43 +184,55 @@ async function searchForCT(req, res, next) {
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.StudyFieldsResponse.StudyFields
-      // console.log(studies)
+      console.log("IN REQUEST")
       let list = []
-      list = studies.filter(study => {
-        let age = parseInt(req.body.Age)
-        // console.log(age)
-        let minNum = study.MinimumAge[0] ? parseInt(study.MinimumAge[0].replace(/[^0-9]/g, '')) : 0;
-        let maxNum = study.MaximumAge[0] ? parseInt(study.MaximumAge[0].replace(/[^0-9]/g, '')) : 150;
-        // console.log(minNum)
-        return (age >= minNum && age <= maxNum)
-      })
+      console.log(list)
+      if (list.length > 0) {
+        list = studies.filter(study => {
+          let age = parseInt(req.body.Age)
+          // console.log(age)
+          let minNum = study.MinimumAge[0] ? parseInt(study.MinimumAge[0].replace(/[^0-9]/g, '')) : 0;
+          let maxNum = study.MaximumAge[0] ? parseInt(study.MaximumAge[0].replace(/[^0-9]/g, '')) : 150;
+          // console.log(minNum)
+          return (age >= minNum && age <= maxNum)
+        })
+        console.log("DONE")
+      } 
       return list
   })
   .catch(err => {
     console.log('Error: ', err.message);
   });
-  trialsList = trialsList.slice(0,5)
-  var locationIndeces = [];
-  var facilities = []
-  // GETTING FACILITIES LIST -- loop through all trials
-  for (var i = 0; i < trialsList.length; i++) {
-    // remove duplications from InterventionType while we're here
-    trialsList[i].InterventionType = [...new Set(trialsList[i].InterventionType )];
-    locationIndeces = [];
-    facilities = []
-    // get indeces of locations from cities array
-    trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
-    // condense down to 5 locations if more than 5
-    if (locationIndeces.length > 5) {
-      locationIndeces = locationIndeces.slice(0,5);
+  console.log("TRIALS LIST")
+  console.log(trialsList)
+
+  if(trialsList.length > 0) {
+    if (trialsList.length > 5) {
+      trialsList = trialsList.slice(0,5)
+    } 
+    var locationIndeces = [];
+    var facilities = []
+    // GETTING FACILITIES LIST -- loop through all trials
+    for (var i = 0; i < trialsList.length; i++) {
+      // remove duplications from InterventionType while we're here
+      trialsList[i].InterventionType = [...new Set(trialsList[i].InterventionType )];
+      locationIndeces = [];
+      facilities = []
+      // get indeces of locations from cities array
+      trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
+      // condense down to 5 locations if more than 5
+      if (locationIndeces.length > 5) {
+        locationIndeces = locationIndeces.slice(0,5);
+      }
+      // iterate through indeces and extract those facilities from facilities array
+      for (var j = 0; j < locationIndeces.length; j++) {
+        facilities.push(trialsList[i].LocationFacility[locationIndeces[j]])
+      }
+      // set new property on trialsList for filtered facilities
+      trialsList[i]['FilteredFacilities'] = facilities;
     }
-    // iterate through indeces and extract those facilities from facilities array
-    for (var j = 0; j < locationIndeces.length; j++) {
-      facilities.push(trialsList[i].LocationFacility[locationIndeces[j]])
-    }
-    // set new property on trialsList for filtered facilities
-    trialsList[i]['FilteredFacilities'] = facilities;
   }
+  
 
   next()
 }

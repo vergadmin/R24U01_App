@@ -9,6 +9,7 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
@@ -19,17 +20,51 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
-        <img class="logo" src="/images/logo.png" /> 
+        <div class="progress-container">
+            <div class="progress" id="progress"> </div>
+            <div class="circle visited">✓ <br/> Background</div>
+            <div class="circle visited">✓ <br/> Preferences</div>
+            <div class="circle visited">✓  <br/>Registries</div>
+            <div class="circle active">4 <br/>Studies</div>
+          </div>
         <h1 class="title">Study Results</h1>
-        <p> Thank you for all that information! Here are some research studies we found for you. You can view information on the studies and contact the study team for studies you are interested in.</p>
-        <p> You can also click “Download Studies List” and your browser will ask you to save this page as a PDF. </p>
-        <p><strong>Before leaving this page, please be sure to click on the "Complete Survey" button to be directed to our survey.</strong></p>
+        <div class="information">
+            <p>Thank you for all that information! Here are some research studies we found for you. </p>
+            <ul>
+                <li>You can view information on the studies and contact the study team for studies you are interested in.</li>
+                <li>You can also click “Download Studies List” and your browser will ask you to save this page as a PDF.</li>
+                <li><strong>Before leaving this page, please be sure to click on the "Complete Survey" button to be directed to our survey.</strong></li>
+            </ul>
+        </div>
         
         <hr/>
         <br/>
         <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
         <br/>
         <button class="red" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">Complete Survey</button>
+
+        <% for(var i=0; i<sponsoredList.length; i++) { %>
+            <div class="study-card">
+                <div class="heading"><h3><%= sponsoredList[i].Title %></h3> <p class="sponsored">Sponsored Study</p></div>
+                <h4>Summary:</h4>
+                <p><%= sponsoredList[i].Summary %></p>
+                <hr/>
+                <h4>Study Contact:</h4>
+                <div class="row">
+                    <p>Name: <%= sponsoredList[i].ContactName %> </p>
+                    <p>Email: <%= sponsoredList[i].ContactEMail %> </p>
+                </div>
+                <hr/>
+                <h4>More Information:</h4>
+                <a target="_blank" rel="noopener noreferrer" href=`<%= sponsoredList[i].Link %>` > <p>Click here to view more information about this study in a new tab.</p> </a>
+                <hr/>
+                <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
+                <div class="center">
+                    <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= sponsoredList[i].ContactName %>`, `<%= sponsoredList[i].Title %>`, `<%= sponsoredList[i].Summary%>`)">Copy Email Text</button>
+                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= sponsoredList[i].ContactEMail %>`);"">Send Email</button>         
+                </div>
+            </div>
+        <% } %>
         
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
@@ -70,7 +105,7 @@
                 </div>
                 <br/>
                 <hr/>
-                <p>*This summary was prepared by the ALEX Research Team. See the full study description at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
+                <p>*This summary was prepared by the ALEX Research Team. See the full study descriptio in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>
 

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
@@ -19,7 +20,13 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
-        <img class="logo" src="/images/logo.png" /> 
+        <div class="progress-container">
+            <div class="progress" id="progress"> </div>
+            <div class="circle active">1 <br/> Background</div>
+            <div class="circle">2 <br/> Preferences</div>
+            <div class="circle">3  <br/>Registries</div>
+            <div class="circle">4 <br/>Studies</div>
+          </div>
         <h1 class="title">Background</h1>
         <p> Please fill out the following information to identify research studies you may be eligible for.  </p>
         <div class="form-area">
@@ -44,7 +51,7 @@
                 <fieldset>
                     <legend>&nbsp; What state are you located in? &nbsp;</legend>
                     <select id="LocationState" name="LocationState">
-                        <option value="---">---</option>
+                        <option value="---">Please select a state ...</option>
                         <option value="Alabama">Alabama</option><option value="Alaska">Alaska</option><option value="Arizona">Arizona</option><option value="Arkansas">Arkansas</option><option value="California">California</option><option value="Colorado">Colorado</option><option value="Connecticut">Connecticut</option><option value="Delaware">Delaware</option><option value="District of Columbia">District of Columbia</option><option value="Florida">Florida</option><option value="Georgia">Georgia</option><option value="Guam">Guam</option><option value="Hawaii">Hawaii</option><option value="Idaho">Idaho</option><option value="Illinois">Illinois</option><option value="Indiana">Indiana</option><option value="Iowa">Iowa</option><option value="Kansas">Kansas</option><option value="Kentucky">Kentucky</option><option value="Louisiana">Louisiana</option><option value="Maine">Maine</option><option value="Maryland">Maryland</option><option value="Massachusetts">Massachusetts</option><option value="Michigan">Michigan</option><option value="Minnesota">Minnesota</option><option value="Mississippi">Mississippi</option><option value="Missouri">Missouri</option><option value="Montana">Montana</option><option value="Nebraska">Nebraska</option><option value="Nevada">Nevada</option><option value="New Hampshire">New Hampshire</option><option value="New Jersey">New Jersey</option><option value="New Mexico">New Mexico</option><option value="New York">New York</option><option value="North Carolina">North Carolina</option><option value="North Dakota">North Dakota</option><option value="Northern Marianas Islands">Northern Marianas Islands</option><option value="Ohio">Ohio</option><option value="Oklahoma">Oklahoma</option><option value="Oregon">Oregon</option><option value="Pennsylvania">Pennsylvania</option><option value="Puerto Rico">Puerto Rico</option><option value="Rhode Island">Rhode Island</option><option value="South Carolina">South Carolina</option><option value="South Dakota">South Dakota</option><option value="Tennessee">Tennessee</option><option value="Texas">Texas</option><option value="Utah">Utah</option><option value="Vermont">Vermont</option><option value="Virginia">Virginia</option><option value="Virgin Islands">Virgin Islands</option><option value="Washington">Washington</option><option value="West Virginia">West Virginia</option><option value="Wisconsin">Wisconsin</option><option value="Wyoming">Wyoming</option>
                     </select>
                 </fieldset>
@@ -52,8 +59,7 @@
                 <fieldset>
                     <legend>&nbsp; What city are you located in? &nbsp;</legend>
                     <input type="text" id="LocationCity" name="LocationCity">
-                    <ul id="cities-list" name="cities-list"></ul>
-    
+                    <ul class="cities-list" id="cities-list" name="cities-list"></ul>
                 </fieldset>
             </form>
             <a href="/<%=id%>/<%=type%>/StudySearch/Preferences" onclick="sendFormData(`background-info`)">
