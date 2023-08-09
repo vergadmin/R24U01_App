@@ -186,15 +186,18 @@ async function searchForCT(req, res, next) {
       var studies = response.data.StudyFieldsResponse.StudyFields
       console.log("IN REQUEST")
       let list = []
-      list = studies.filter(study => {
-        let age = parseInt(req.body.Age)
-        // console.log(age)
-        let minNum = study.MinimumAge[0] ? parseInt(study.MinimumAge[0].replace(/[^0-9]/g, '')) : 0;
-        let maxNum = study.MaximumAge[0] ? parseInt(study.MaximumAge[0].replace(/[^0-9]/g, '')) : 150;
-        // console.log(minNum)
-        return (age >= minNum && age <= maxNum)
-      })
-      console.log("DONE")
+      console.log(list)
+      if (list.length > 0) {
+        list = studies.filter(study => {
+          let age = parseInt(req.body.Age)
+          // console.log(age)
+          let minNum = study.MinimumAge[0] ? parseInt(study.MinimumAge[0].replace(/[^0-9]/g, '')) : 0;
+          let maxNum = study.MaximumAge[0] ? parseInt(study.MaximumAge[0].replace(/[^0-9]/g, '')) : 150;
+          // console.log(minNum)
+          return (age >= minNum && age <= maxNum)
+        })
+        console.log("DONE")
+      } 
       return list
   })
   .catch(err => {
