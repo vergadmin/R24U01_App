@@ -60,6 +60,35 @@ hr {
     background-color: #B50000;
 }
 
+.info {
+    font-size: 17px;
+}
+
+.information {
+    width: 75%;
+    font-size: 21px;
+    text-align: left;
+}
+
+li {
+    padding: 3px;
+}
+
+.heading {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sponsored {
+    background-color: #EE7E38;
+    color: white;
+    margin-left: 9px;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 19px;
+}
+
 #cities-list {
     list-style: none;
     font-size: 21px;
@@ -67,7 +96,6 @@ hr {
 
 #cities-list li {
     list-style: none;
-    padding: 3px;
     transition: .2s ease-in-out;
 }
 

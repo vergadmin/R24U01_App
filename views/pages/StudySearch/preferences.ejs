@@ -24,12 +24,26 @@
         <div class="form-area">
             <form id="preferences-info">
                 <fieldset>
-                    <legend>&nbsp; What is your condition? (for example, "cancer" or "heart") &nbsp;</legend>
-                    <input type="text" id="Condition" name="Condition">
+                    <legend>&nbsp; What condition are you most interested in participating in a research study for? &nbsp;</legend>
+                    <select id="Condition" name="Condition">
+                        <option value="---">Please select a condition...</option>
+                        <option value="Heart Disease">Heart Disease</option>
+                        <option value="Cancer">Cancer</option>
+                        <option value="Respiratory Disease">Respiratory Diseases (like asthma, ephysema, and chronic bronchitis)</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Obesity">Obesity</option>
+                        <option value="Alzheimer's Disease">Alzheimer's Disease</option>
+                        <option value="Dementia">Dementia</option>
+                        <option value="Substance Abuse">Substance Abuse</option>
+                        <option value="Chronic Kidney Disease">Chronic Kidney Disease</option>
+                        <option value="Mental Health">Mental Health Condition</option>
+                        <option value="Arthritis">Arthritis</option>
+                    </select>    
                 </fieldset>
 
                 <fieldset>
                     <legend>&nbsp; Are you a healthy volunteer? &nbsp;</legend>
+                    <p class="info">Healthy volunteers are people who <b>do not</b> have the condition/disease being studied, but still want to participate in research studies.</p>
                     <input type="radio" id="yes" name="HealthyVolunteer" value="yes" />
                     <label for="yes">Yes</label>
                     <input type="radio" id="no" name="HealthyVolunteer" value="no" />
