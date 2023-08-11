@@ -4,9 +4,9 @@ window.addEventListener("load", () => {
     const fieldset = document.getElementById('LocationState');
     const input = document.getElementById('LocationCity');
     const list = document.getElementById('cities-list');
-
+    fieldset.selectedIndex = 0;
     input.disabled = true;
-
+    input.value = "";
     fieldset.addEventListener('change', retrieveCities);
     
 
@@ -30,6 +30,7 @@ window.addEventListener("load", () => {
             i++;
             const listItem = document.createElement('li');
             listItem.textContent = item;
+            // listItem.name = "cities-list";
             listItem.addEventListener('click', function() {
               input.value = item;
               list.style.display = 'none'; // Hide the list after selecting an item
@@ -58,14 +59,17 @@ window.addEventListener("load", () => {
 function retrieveCities(event) {
     const selectedState = event.target.value;
     state = selectedState;
+    const input = document.getElementById('LocationCity');
+    input.value = "";
+    input.disabled = true;
     getResults(state).then((result) => {
-        console.log(result);
+        // console.log(result);
         cities = [];
         for (var i = 0; i < result.length; i++) {
             cities.push(result[i].name);
         }
-        document.getElementById('LocationCity').disabled = false;
-        console.log(cities);
+        input.disabled = false;
+        // console.log(cities);
     }).catch((error) => {
         console.error('Error:', error);
         res.status(500).json({error:'Failed to wait for promise.'});
@@ -75,11 +79,11 @@ function retrieveCities(event) {
 
 async function getResults(selectedState) {
     let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/RetrieveCities`;
-    console.log(url)
+    // console.log(url)
 
     let data = {};
     data['selectedState'] = selectedState
-    console.log(data['selectedState']);
+    // console.log(data['selectedState']);
     
     let res = await fetch(url, {
         method: 'POST',

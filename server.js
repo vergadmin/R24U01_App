@@ -22,7 +22,7 @@ const geonames = Geonames({
     lan: 'en',
     encoding: 'JSON'
   });
-
+const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
 
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
@@ -61,7 +61,7 @@ app.post('/updateDatabase', async (req, res) => {
         setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    console.log(setList);
+    // console.log(setList);
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -85,6 +85,30 @@ app.post('/updateDatabase', async (req, res) => {
     // END DATABASE STUFF
 })
 
+app.post("/:id/:type/RetrieveConditions", (req, res) => {
+    let searchValue = (Object.entries(req.body)[0][1])
+    // console.log(searchValue);
+    const columnConditions = columnNames.map(column => `${column} LIKE '%${searchValue}%'`).join(' OR ')
+    // const finalConditions = columnConditions.slice(0, -3);
+    let queryString = `
+    SELECT TOP 10 diseases FROM Diseases
+    WHERE ${columnConditions}
+    `;
+
+    // console.log(queryString)
+
+    sql.connect(config, function (err) {
+        if (err) console.log(err)
+
+        var request = new sql.Request();
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+            // send records as a response
+            // console.log(recordset.recordset[0]);
+            res.json(recordset.recordset);    
+        }); 
+    })
+})
 
 app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisitToDatabase, (req, res) => {
     id = req.params.id
@@ -114,12 +138,12 @@ app.get('/:id/:type/Discover', (req, res) => {
         WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
         
-        console.log(queryString)
+        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            console.log("UPDATED! IN R24 TABLE:")
-            console.log(recordset);
+            // console.log("UPDATED! IN R24 TABLE:")
+            // console.log(recordset);
         }); 
     
     });
@@ -147,9 +171,9 @@ function checkPreviousVisit(req, res, next) {
         )`
         request.query(checkString, function(err, recordset) {
             if (err) console.log(err);
-            console.log("HERE")
-            console.log(recordset.recordset);
-            console.log(recordset.recordset.length);
+            // console.log("HERE")
+            // console.log(recordset.recordset);
+            // console.log(recordset.recordset.length);
             if (recordset.recordset.length === 0) {
                 visitN = 0;
             }
@@ -178,7 +202,7 @@ function addVisitToDatabase(req, res, next) {
     sql.connect(config, function (err) {
         var request = new sql.Request();
         let queryString = `INSERT INTO R24 (ID, VisitNum, VHType) VALUES ('` + userInfo.ID + `',` + userInfo.visitNum + `,'` + userInfo.VHType + `')`;
-        console.log(queryString);
+        // console.log(queryString);
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
         })
@@ -317,7 +341,8 @@ app.use('/:id/text/EducationalComponentText', function(req,res,next){
 }, EducationalComponentTextRouter)
 
 // Clinical Trials/study search router
-const StudySearchRouter = require('./routes/StudySearch')
+const StudySearchRouter = require('./routes/StudySearch');
+const { json } = require('body-parser');
 app.use('/:id/:type/StudySearch', function(req,res,next){
     req.id = id;
     req.vh = userInfo.VHType

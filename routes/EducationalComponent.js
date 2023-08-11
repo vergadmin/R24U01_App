@@ -75,20 +75,20 @@ router.get('/5', updateDatabase, (req, res) => {
 })
 
 function getInfo(req, res, next) {
-    console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
+    // console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
     vh = req.vh
     type = req.type
     userInfo = req.userInfo
-    console.log("type is " + type);
+    // console.log("type is " + type);
     next()
 }
 
 function updateDatabase(req, res, next) {
-    console.log("IN UPDATE DATABASE")
-    console.log(req.url)
+    // console.log("IN UPDATE DATABASE")
+    // console.log(req.url)
     let dbEntry = req.url.slice(1)
-    console.log(dbEntry)
+    // console.log(dbEntry)
     userInfo = req.userInfo;
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -105,12 +105,12 @@ function updateDatabase(req, res, next) {
         WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
 
-        console.log(queryString)
+        // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
             // send records as a response
-            console.log("UPDATED! IN R24U01 TABLE:")
-            console.log(recordset);
+            /// console.log("UPDATED! IN R24U01 TABLE:")
+            // console.log(recordset);
         }); 
     
     });

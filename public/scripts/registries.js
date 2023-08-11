@@ -18,7 +18,7 @@ async function getResults() {
         body: JSON.stringify(userInfo),
     });
     if (res.ok) {
-        console.log(res);
+        // console.log(res);
         var button = document.getElementById("results");
         button.className = "enabled enabled-hover";
         button.innerText = "See Study Results";

@@ -1,31 +1,28 @@
 window.addEventListener("load", () => {
-    console.log("SAVING SESSION INFO LOCALLY")
-    console.log(document.URL)
+    // console.log("SAVING SESSION INFO LOCALLY")
+    // console.log(document.URL)
 
     let browserInfo = ""
     let dateTime = ""
     var type = document.URL.split('/').reverse()[0]
     var id = document.URL.split('/').reverse()[1]
-    console.log("ID IS " + id);
-    console.log("TYPE IS " + type);
     sessionStorage.setItem("id", id)
     sessionStorage.setItem("type", type)
-    console.log("IN GET INFO")
 
     // (B1) PARSE USER AGENT
     browserInfo = navigator.userAgent;
-    console.log(browserInfo)
+    // console.log(browserInfo)
 
-    console.log("TIME")
+    // console.log("TIME")
     dateTime = new Date().toLocaleString() + " " + Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log(dateTime)
+    // console.log(dateTime)
     sendGeneralData(browserInfo, dateTime)
 
     
 });
 
 async function sendGeneralData(browserInfo, dateTime) {
-    console.log("IN SEND TO SERVER GENERAL DATA")
+    // console.log("IN SEND TO SERVER GENERAL DATA")
 
     let url = '/updateDatabase';
     let data = {

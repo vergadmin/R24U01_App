@@ -5,16 +5,18 @@ var axios = require("axios")
 
 // <--- openai constants
 const { Configuration, OpenAIApi } = require("openai");
+const e = require('express');
 const configuration = new Configuration({
     // TODO: replace apiKey
     apiKey: process.env.VERG_OPENAI_KEY,
 });
 const openai = new OpenAIApi(configuration);
-const COMPLETIONS_MODEL = "text-davinci-003";
 // SUMMARY_PROMPT, MAX_TOKENS, & TEMPERATURE can be modified as needed.
 // TODO: Move Summary Prompts into .env -- don't want any chance for user's to see prompt.
-const MAX_TOKENS = 300;
-const TEMPERATURE = 0;
+const COMPLETIONS_MODEL = process.env.COMPLETIONS_MODEL;
+const SUMMARY_PROMPT = process.env.SUMMARY_PROMPT;
+const MAX_TOKENS = 300
+const TEMPERATURE = 0
 // open ai constants --->
 
 // TODO: You previously deleted these variables.
@@ -23,6 +25,9 @@ var vh = ''
 var type = ''
 
 var trialsList = []
+
+var currentExpression = "";
+var lastExpression = "";
 
 var sponsoredList = [
   {
@@ -80,6 +85,13 @@ function CTsWithDatabase(req, res, next) {
   // summarizeGPT don't return out of order -- it's a glorified for loop.
   // processNext() checks if we've already recorded the CT, if we have, retrieves it and stores in trialsList.GPTSummary
   // if we have not recorded it, it calls summarizeGPT, stores it in trialsList.GPTSummary and then inserts it into the ClinicalTrials table
+  if (currentExpression == lastExpression) {
+    next();
+    return;
+  }
+  lastExpression = currentExpression;
+  if (!trialsList) 
+    trialsList = []
   let iterations = trialsList.length;
   let i = 0;
   // idTracker is a temp variable to make sure we have no duplicates stored in the table
@@ -90,7 +102,8 @@ function CTsWithDatabase(req, res, next) {
           // trialsList should contain all the same info and a new GPTSummary item
           // console.log("=======Simplified Versions======");
           // console.log(trialsList);
-          console.log("Number of Trials: " + trialsList.length);
+          // console.log("Number of Trials: " + trialsList.length);
+          // console.log("End of search.");
           next();
           // return;
       }
@@ -111,9 +124,9 @@ function CTsWithDatabase(req, res, next) {
                   // If we somehow have duplicates in the trialsList, we don't want to store it in the table twice.
                   // This can happen in very rare cases where the recordset length returns 0, after an entry for it was added moments before.
                   if (recordset.recordset.length === 0 && !idTracker.includes(trialsList[i].NCTId)) {
-                      console.log("HERE")
+                      // console.log("HERE")
                       summarizeGPT(trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((summary) => {
-                        console.log("SUMMARIZED GPT")
+                        // console.log("SUMMARIZED GPT")
                           // Console logs for Debugging.
                           // console.log("CASE 1: " + summary);
 
@@ -126,7 +139,7 @@ function CTsWithDatabase(req, res, next) {
                           // Insert new entry into table
                           // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
                           let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + summary + `')`;
-                          console.log(updateString);
+                          // console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
                               if (err) 
                                   console.log(err);
@@ -135,7 +148,7 @@ function CTsWithDatabase(req, res, next) {
                           i++;
                           processNext();
                       }).catch((error) => {
-                          console.error(error);
+                          console.error("Erroor in SQL Insertion of New Trials...", error);
                       })
                   }
                   // CASE 2: The Study ID is already in the table, so we can just grab it from the table and store it in our array.
@@ -157,15 +170,15 @@ function CTsWithDatabase(req, res, next) {
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(briefSummary, detailedDescription) {
-  console.log("IN SUMMARIZE GPT")
-  console.log(briefSummary, detailedDescription);
+  // console.log("IN SUMMARIZE GPT")
+  // console.log(briefSummary, detailedDescription);
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,
-          prompt: process.env.SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
+          prompt: SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
           max_tokens: MAX_TOKENS,
           temperature: TEMPERATURE,
   });
-  console.log(result.data.choices[0].text);
+  // console.log(result.data.choices[0].text);
   return result.data.choices[0].text;
 }
 
@@ -183,10 +196,32 @@ function getInfo(req, res, next) {
 async function createClinicalTrialsString(fields) {
   // return new Promise((resolve) => {
     let expression = "";
-    if (fields.Condition && fields.Condition != "") {
-      expression += fields.Condition + " AND "; 
+    let conditions = [false, false, false]
+    if (fields.ConditionText1 && fields.ConditionText1 != "") {
+      expression += "(" + fields.ConditionText1
+      conditions[0] = true;
     }
-    expression += "SEARCH[Location]("; 
+    if (fields.ConditionText2 && fields.ConditionText2 != "") {
+      if (!conditions[0])
+        expression += "("
+      else 
+        expression += " OR "
+      expression += fields.ConditionText2
+      conditions[1] = true
+    }
+    if (fields.ConditionText3 && fields.ConditionText3 != "") {
+      if (!conditions[0] && !conditions[1]) 
+        expression += "("
+      else 
+        expression += " OR "
+      expression += fields.ConditionText3 += ") AND "
+      conditions[2] = true
+    }
+    if (!conditions[2] && (conditions[0] || conditions[1])) {
+      expression += ") AND ";
+    }
+  
+    expression += "SEARCH[Location](AREA[LocationCountry] United States "; 
     if (fields.LocationState != "---") {
       expression += "AREA[LocationState] " + fields.LocationState + " AND ";
     }
@@ -207,18 +242,23 @@ async function createClinicalTrialsString(fields) {
 }
 
 async function searchForCT(req, res, next) {
-  console.log(req.body);
-  // let expression = `${req.body.Condition} AND SEARCH[Location](AREA[LocationState] ${req.body.LocationState} AND AREA[LocationCity] ${req.body.LocationCity} AND AREA[LocationStatus] Recruiting) AND AREA[Gender] ${req.body.Gender} AND AREA[HealthyVolunteers] ${req.body.HealthyVolunteer }`
+  // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
-  console.log("EXPRESSION IS: " + expression)
-  const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
-  console.log(apiUrl);
+  currentExpression = expression;
+  if (currentExpression == lastExpression) {
+    next();
+    return;
+  }
+  const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
+  // const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=SEARCH[Study](AREA[NCTId] NCT03839940)&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`
+  // console.log(apiUrl);
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.StudyFieldsResponse.StudyFields
+      // console.log(studies);
       let list = []
-      console.log(list)
-      if (list.length > 0) {
+      // console.log(list)
+      if (studies && studies.length > 0) {
         list = studies.filter(study => {
           let age = parseInt(req.body.Age)
           // console.log(age)
@@ -231,29 +271,47 @@ async function searchForCT(req, res, next) {
       return list
   })
   .catch(err => {
-    console.log('Error: ', err.message);
+    console.error('Error in retrieving trials...: ', err.message, apiUrl);
   });
 
-  if(trialsList.length > 0) {
+  if(trialsList && trialsList.length > 0) {
     if (trialsList.length > 5) {
       // Random Trial Added to End
-      let randomInt = Math.floor(Math.random() * (trialsList.length - 5 + 1) + 5);
+      let randomInt = Math.floor(Math.random() * (trialsList.length - 1 - 5 + 1) + 5);
       let randomTrial = trialsList[randomInt];
+      // console.log(randomInt);
       trialsList = trialsList.slice(0,5)
       trialsList.push(randomTrial);
     } 
-    var locationIndeces = [];
-    var facilities = []
+    // console.log(trialsList[5]);
     // GETTING FACILITIES LIST -- loop through all trials
     for (var i = 0; i < trialsList.length; i++) {
       // remove duplications from InterventionType while we're here
+      // console.log(trialsList[i].NCTId);
+      // console.log(trialsList[i].InterventionType);
       trialsList[i].InterventionType = [...new Set(trialsList[i].InterventionType )];
       locationIndeces = [];
       facilities = []
+      var remaining = -1;
       // get indeces of locations from cities array
-      trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
+      // If no city provided, we'll go by state, and if no state provided, we'll go by country (United States only)
+      if (req.body.LocationCity && req.body.LocationCity != "") {
+        // console.log(req.body.LocationCity);
+        trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
+      }
+      else if (req.body.LocationState && req.body.LocationState != "---") {
+        // console.log(req.body.LocationState);
+        trialsList[i].LocationState.forEach((state, index) => state === req.body.LocationState ? locationIndeces.push(index) : null)
+      }
+      else {
+        // console.log(req.body.LocationCountry);
+        for (var j = 0; j < trialsList[i].LocationCountry.length; j++) {
+          locationIndeces.push(j);
+        }
+      }
       // condense down to 5 locations if more than 5
       if (locationIndeces.length > 5) {
+        remaining = locationIndeces.length - 5;
         locationIndeces = locationIndeces.slice(0,5);
       }
       // iterate through indeces and extract those facilities from facilities array
@@ -261,7 +319,9 @@ async function searchForCT(req, res, next) {
         facilities.push(trialsList[i].LocationFacility[locationIndeces[j]])
       }
       // set new property on trialsList for filtered facilities
-      trialsList[i]['FilteredFacilities'] = facilities;
+      if (remaining != -1)
+        trialsList[i]['RemainingFacilities'] = `... and ${remaining} other locations.`
+      trialsList[i]['FilteredFacilities'] = facilities;      
     }
   }
   

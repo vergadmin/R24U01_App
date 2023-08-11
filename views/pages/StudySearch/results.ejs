@@ -73,29 +73,54 @@
                 <p><%= trialsList[i].GPTSummary %></p>
                 <hr/>
                 <h4>Condition(s): </h4>
-                <p><%= trialsList[i].Condition %></p>
+                <p>
+                    <% for (var j = 0; j < trialsList[i].Condition.length - 1; j++) { %>
+                        <%= trialsList[i].Condition[j]%>,  
+                    <% } %>
+                    <%= trialsList[i].Condition[trialsList[i].Condition.length - 1]%>
+                </p>
                 <hr/>
                 <div class="study-row">
                    <div class="row">
                     <h4>Intervention/Treatment:</h4>
-                    <p><%= trialsList[i].InterventionType %> </p>
+                    <p>
+                        <% for (var j = 0; j < trialsList[i].InterventionType.length - 1; j++) { %>
+                            <%= trialsList[i].InterventionType[j]%>,  
+                        <% } %>
+                        <%= trialsList[i].InterventionType[trialsList[i].InterventionType.length - 1]%>
+                    </p>
                    </div>
+                   <div class = "gap"></div>
                    <div class="row">
                     <h4>Study Type:</h4>
-                    <p><%= trialsList[i].StudyType %></p>
+                    <p>
+                        <% for (var j = 0; j < trialsList[i].StudyType.length - 1; j++) { %>
+                            <%= trialsList[i].StudyType[j]%>,  
+                        <% } %>
+                        <%= trialsList[i].StudyType[trialsList[i].StudyType.length - 1]%>
+                    </p>
                    </div>
                 </div>
                 <hr/>
                 <div class="study-row">
                     <div class="row">
                         <h4>Study Location(s): </h4>
-                        <p><%= trialsList[i].FilteredFacilities %></p>
+                        <% trialsList[i].FilteredFacilities.forEach(function(facility, index) { %>
+                        <p><%=facility%></p>
+                        <% }) %>
+                        <% if (trialsList[i].RemainingFacilities) %>
+                        <p><%= trialsList[i].RemainingFacilities %></p>
                     </div>
-                   <div class="row">
-                    <h4>Study Contact:</h4>
-                    <p>Name: <%= trialsList[i].CentralContactName[0] %> </p>
-                    <p>Email: <%= trialsList[i].CentralContactEMail[0] %> </p>
-                   </div>
+                    <div class = "gap"></div>
+                    <div class="row">
+                        <h4>Study Contact:</h4>
+                        <% if (trialsList[i].CentralContactEMail.length === 0) { %>
+                        <p>We could not find a primary study contact for this study. Please visit <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">this link (click here)</a> and look under "Contacts and Locations" to find a contact or location closest to you.</p>
+                        <% } else { %>
+                        <p>Name: <%= trialsList[i].CentralContactName[0] %> </p>
+                        <p>Email: <%= trialsList[i].CentralContactEMail[0] %> </p>
+                        <% } %>
+                    </div>
                 </div>
                 <hr/>
                 <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
@@ -105,7 +130,7 @@
                 </div>
                 <br/>
                 <hr/>
-                <p>*This summary was prepared by the ALEX Research Team. See the full study descriptio in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
+                <p>* This summary was prepared by the ALEX Research Team. See the full study description in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>
 

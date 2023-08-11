@@ -1,11 +1,11 @@
 async function sendToDatabase(column, value) {
-    console.log("IN REGISTER CLICK FROM CLIENT")
-    console.log(column + ": " + value)
+    // console.log("IN REGISTER CLICK FROM CLIENT")
+    // console.log(column + ": " + value)
 
     let url = '/updateDatabase';
     let data = {};
     data[column] = value
-    console.log(data)
+    // console.log(data)
 
     let res = await fetch(url, {
         method: 'POST',

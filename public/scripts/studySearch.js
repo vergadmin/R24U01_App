@@ -1,14 +1,14 @@
 window.addEventListener("load", () => {
-    console.log("SESSION STORAGE")
+    // console.log("SESSION STORAGE")
     const form = document.getElementById('background-info');
     const ageInput = form.querySelector('#Age');
-    console.log(ageInput);
+    // console.log(ageInput);
     const ageValue = parseInt(ageInput.value); // Convert input value to integer
-    console.log(ageValue);
+    // console.log(ageValue);
 });
 
 function validateAndSendFormData(id) {
-    console.log("Here!");
+    // console.log("Here!");
     const form = document.getElementById('background-info');
     const ageInput = form.querySelector('#Age');
     const genderInputs = form.querySelectorAll('input[type="radio"][name="Gender"]');
@@ -26,12 +26,12 @@ function validateAndSendFormData(id) {
         if (!ageValid) {
             if (!document.getElementById('age-info')) {
                 const ageLegend = document.querySelector('.age-legend');
-                console.log(ageLegend);
+                // console.log(ageLegend);
                 const pElementAge = document.createElement('p');
                 pElementAge.textContent = "This field is required."
                 pElementAge.classList.add('small-text-red');
                 pElementAge.id = 'age-info';
-                console.log(ageLegend.nextElementSibling);
+                // console.log(ageLegend.nextElementSibling);
                 const ageInput = ageLegend.nextElementSibling;
                 ageInput.insertAdjacentElement('beforebegin', pElementAge);
             }
@@ -64,7 +64,7 @@ async function sendFormData(id) {
 
     var htmlForm = document.getElementById(id)
     var formData = new FormData(htmlForm)
-    console.log(Object.fromEntries(formData))
+    // console.log(Object.fromEntries(formData))
     let data = Object.fromEntries(formData)
 
     sessionStorage.setItem(id, JSON.stringify(data))
@@ -96,7 +96,7 @@ function copyEmailText(contactName, studyTitle, briefSummary) {
     
     [YOUR EMAIL]`
 
-    console.log(text)
+    // console.log(text)
 
     alert("The following text was successfully copied!\n\n" + text)
 }
