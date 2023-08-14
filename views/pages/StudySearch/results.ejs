@@ -68,7 +68,8 @@
         
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
-                <h3><%= trialsList[i].BriefTitle %> </h3>
+                <h3><%= trialsList[i].GPTTitle %>*</h3>
+                <p class="info"><strong>Official Title:</strong> <%= trialsList[i].BriefTitle %></p>
                 <h4>Brief Summary*:</h4>
                 <p><%= trialsList[i].GPTSummary %></p>
                 <hr/>
@@ -130,7 +131,7 @@
                 </div>
                 <br/>
                 <hr/>
-                <p>* This summary was prepared by the ALEX Research Team. See the full study description in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
+                <p>* This title and summary was prepared by the ALEX Research Team. See the official study description in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
             </div>
         <% } %>
 

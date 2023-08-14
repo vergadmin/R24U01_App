@@ -7,7 +7,14 @@ function download() {
 function copyLink() {
     let link = String(window.location).slice(0,-9)
     navigator.clipboard.writeText(link).then(function() {
-        alert("Copied the text: " + link);
-        sendToDatabase(`ShareLink`, `clicked`)
+        // alert("Copied the text: " + link);
+        sendToDatabase(`ShareLink`, `clicked`);
+        var button = document.getElementById("copyLink");
+        button.innerHTML = "&#x2713; Link Copied!";
+        button.style.backgroundColor = "green";
+    }).catch(function(error) {
+        // Error - handle the error here
+        console.error('An error occurred while copying to clipboard:', error);
     });
+    
 }

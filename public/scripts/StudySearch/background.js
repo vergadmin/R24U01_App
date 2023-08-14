@@ -1,5 +1,6 @@
 
 var cities = [];
+var lastLetter = "";
 window.addEventListener("load", () => {
     const fieldset = document.getElementById('LocationState');
     const input = document.getElementById('LocationCity');
@@ -7,40 +8,57 @@ window.addEventListener("load", () => {
     fieldset.selectedIndex = 0;
     input.disabled = true;
     input.value = "";
-    fieldset.addEventListener('change', retrieveCities);
+    lastLetter = "";
+    fieldset.addEventListener('change', function() {
+        input.disabled = false;
+    });
     
-
-
     // Autocomplete Feature
-    input.addEventListener('input', function () {
-        const searchText = input.value.toLowerCase();
-        const matchedItems = cities.filter(item => item.toLowerCase().includes(searchText));
-    
-        list.innerHTML = ''
-
-        if (matchedItems.length > 0) {
-            list.style.display = 'block';
-          } else {
-            list.style.display = 'none';
-          }
+    input.addEventListener('input', async () => {
+        if (input.value === "") {
+            lastLetter = "";
+            list.innerHTML = '';
+            list.style.display = 'none'; 
+            return;
+        }
+        if (lastLetter != input.value[0]) {
+            await retrieveCities(input, fieldset);
+        }
         
+        // console.log(cities[0])
+        lastLetter = input.value[0];
 
-          var i = 0;
-          matchedItems.forEach(item => {
-            i++;
+        const cityVal = input.value.toLowerCase();
+        const maxResults = 10; // Maximum number of results
+        let count = 0;
+        
+        const filteredValues = [];
+        
+        for (const key in cities[0]) {
+            // console.log(count)
+            if (count >= maxResults) {
+                break;
+            }
+            // console.log(cities[0][key])
+            if(cities[0][key] && ((cities[0][key]).toLowerCase()).startsWith(cityVal)) {
+                filteredValues.push(cities[0][key]);
+                count++;
+            }
+        }
+
+        list.innerHTML = ''
+        filteredValues.forEach(item => {
             const listItem = document.createElement('li');
             listItem.textContent = item;
             // listItem.name = "cities-list";
             listItem.addEventListener('click', function() {
-              input.value = item;
-              list.style.display = 'none'; // Hide the list after selecting an item
+                input.value = item;
+                list.style.display = 'none'; // Hide the list after selecting an item
             });
             list.appendChild(listItem);
-            if (i === 10) {
-                return;
-            }
             
-          });
+        });
+        list.style.display = "";
     });
 
     // Click outside of dropdown, closes menu.
@@ -53,23 +71,12 @@ window.addEventListener("load", () => {
 });
 
 
-
-
-
-function retrieveCities(event) {
-    const selectedState = event.target.value;
-    state = selectedState;
-    const input = document.getElementById('LocationCity');
-    input.value = "";
-    input.disabled = true;
-    getResults(state).then((result) => {
-        // console.log(result);
-        cities = [];
-        for (var i = 0; i < result.length; i++) {
-            cities.push(result[i].name);
-        }
-        input.disabled = false;
-        // console.log(cities);
+async function retrieveCities(city, state) {
+    let cityVal = city.value;
+    let stateVal = state.value;
+    await getResults(cityVal, stateVal).then((result) => {
+        console.log(result);
+        cities = result;
     }).catch((error) => {
         console.error('Error:', error);
         res.status(500).json({error:'Failed to wait for promise.'});
@@ -77,12 +84,13 @@ function retrieveCities(event) {
 }
 
 
-async function getResults(selectedState) {
+async function getResults(cityVal, stateVal) {
     let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/RetrieveCities`;
     // console.log(url)
 
     let data = {};
-    data['selectedState'] = selectedState
+    data['stateVal'] = stateVal
+    data['cityVal'] = cityVal
     // console.log(data['selectedState']);
     
     let res = await fetch(url, {

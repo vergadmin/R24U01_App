@@ -1,5 +1,6 @@
 const express = require('express')
 const session = require('express-session');
+const stringSimilarity = require('string-similarity');
 
 const app = express()
 const CryptoJS = require("crypto-js");
@@ -26,6 +27,9 @@ const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4',
 
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
+const columnsInAG = 369
+const columnsInHO = 305
+const columnsInPZ = 355
 
 var userInfo = []
 
@@ -105,7 +109,12 @@ app.post("/:id/:type/RetrieveConditions", (req, res) => {
             if (err) console.log(err)
             // send records as a response
             // console.log(recordset.recordset[0]);
-            res.json(recordset.recordset);    
+            let conditions = recordset.recordset;
+              // Sort items based on similarity score (higher score means more similar)
+            const sortedItems = conditions.sort((a, b) => stringSimilarity.compareTwoStrings(searchValue, b.diseases) - stringSimilarity.compareTwoStrings(searchValue, a.diseases));
+              
+              // Get the top 10 most similar items
+            res.json(sortedItems);    
         }); 
     })
 })
@@ -243,13 +252,48 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
     // console.log(req.params)
     id = req.params.id
     type = req.params.type
-    let state = (Object.entries(req.body)[0][1])
+    let stateVal = (Object.entries(req.body)[0][1])
+    let cityVal =(Object.entries(req.body)[1][1])
+    // console.log(stateVal)
+    // console.log(cityVal)
+    // console.log(Object.entries(req.body)[1])
+    // console.log(searchValue);
+    const code = cityVal.charCodeAt(0)
+    let database = "StatesAndCitiesAG"
+    if ((code >= 97 && code <= 103) || (code >= 65 && code <= 71)) {
+        database = "StatesAndCitiesAG"
+    }
+    else if ((code >= 104 && code <= 111) || (code >= 72 && code <= 79)) {
+        database = "StatesAndCitiesHO"
+    }
+    else {
+        database = "StatesAndCitiesPZ"
+    }
+    
+    const queryString = `
+    SELECT * FROM ${database}
+    WHERE State = '${stateVal}' 
+    `;
+
+    sql.connect(config, function (err) {
+        if (err) console.log(err)
+
+        var request = new sql.Request();
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+            // send records as a response
+            // console.log(recordset.recordset[0]);
+            res.json(recordset.recordset);    
+        }); 
+    })
+    /*
     retrieveCities(state).then((result) => {
         res.json(result);    
     }).catch((error) => {
         console.error('Error:', error);
         res.status(500).json({error:'Failed to wait for promise.'});
     });
+    */
 });
 
 async function retrieveCities(state) {

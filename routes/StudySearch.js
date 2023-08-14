@@ -15,7 +15,9 @@ const openai = new OpenAIApi(configuration);
 // TODO: Move Summary Prompts into .env -- don't want any chance for user's to see prompt.
 const COMPLETIONS_MODEL = process.env.COMPLETIONS_MODEL;
 const SUMMARY_PROMPT = process.env.SUMMARY_PROMPT;
+const TITLE_PROMPT = process.env.TITLE_PROMPT;
 const MAX_TOKENS = 300
+const MAX_TITLE_TOKENS = 50
 const TEMPERATURE = 0
 // open ai constants --->
 
@@ -126,20 +128,24 @@ function CTsWithDatabase(req, res, next) {
                   if (recordset.recordset.length === 0 && !idTracker.includes(trialsList[i].NCTId)) {
                       // console.log("HERE")
                       summarizeGPT(trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((summary) => {
-                        // console.log("SUMMARIZED GPT")
+                        titleizeGPT(trialsList[i].BriefTitle, trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((title) => {
+                          // console.log("SUMMARIZED GPT")
                           // Console logs for Debugging.
                           // console.log("CASE 1: " + summary);
 
                           // Convert summary into a SQL friendly string and put in trialsList
+                          title = title.replace(/'/g, "''");
                           summary = summary.replace(/'/g, "''");
+                          trialsList[i]['GPTTitle'] = title;
                           trialsList[i]['GPTSummary'] = summary;
+                          
 
                           // Keep track of IDs already seen.
                           idTracker.push(trialsList[i].NCTId);
                           // Insert new entry into table
                           // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
-                          let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + summary + `')`;
-                          // console.log(updateString);
+                          let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTTitle, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + title + `','` + summary + `')`;
+                          console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
                               if (err) 
                                   console.log(err);
@@ -147,14 +153,18 @@ function CTsWithDatabase(req, res, next) {
                           // Update for loop and call it again until we looped through all items in trialsList
                           i++;
                           processNext();
+                        }).catch((error) => {
+                          console.error("Error in title GPT:", error);
+                        })
                       }).catch((error) => {
-                          console.error("Erroor in SQL Insertion of New Trials...", error);
+                          console.error("Error in summarize GPT:", error);
                       })
                   }
                   // CASE 2: The Study ID is already in the table, so we can just grab it from the table and store it in our array.
                   else if (recordset.recordset.length !== 0) {
                       // Console logs for Debugging.
                       // console.log("CASE 2: " + recordset.recordset[0].GPTSummary);
+                      trialsList[i]['GPTTitle'] = recordset.recordset[0].GPTTitle;
                       trialsList[i]['GPTSummary'] = recordset.recordset[0].GPTSummary;
                       i++;
                       processNext();
@@ -170,12 +180,25 @@ function CTsWithDatabase(req, res, next) {
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(briefSummary, detailedDescription) {
-  // console.log("IN SUMMARIZE GPT")
-  // console.log(briefSummary, detailedDescription);
+  console.log("IN SUMMARIZE GPT")
+  // console.log(title, briefSummary, detailedDescription);
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,
           prompt: SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
           max_tokens: MAX_TOKENS,
+          temperature: TEMPERATURE,
+  });
+  // console.log(result.data.choices[0].text);
+  return result.data.choices[0].text;
+}
+
+async function titleizeGPT(title, briefSummary, detailedDescription) {
+  console.log("IN TITLEIZE GPT")
+  // console.log(title, briefSummary, detailedDescription);
+  const result = await openai.createCompletion({
+          model: COMPLETIONS_MODEL,
+          prompt: TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
+          max_tokens: MAX_TITLE_TOKENS,
           temperature: TEMPERATURE,
   });
   // console.log(result.data.choices[0].text);

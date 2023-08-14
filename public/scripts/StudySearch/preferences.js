@@ -17,6 +17,24 @@ window.addEventListener("load", () => {
     input1.addEventListener('input', () => retrieveConditions(input1, list1, true, false));
     input2.addEventListener('input', () => retrieveConditions(input2, list2, true, true));
     input3.addEventListener('input', () => retrieveConditions(input3, list3, false, true));
+    input1.addEventListener('keydown', function(event) {
+        if(event.key === "Enter") { 
+            event.preventDefault();
+            list1.style.display = 'none';
+        }
+    });
+    input2.addEventListener('keydown',function(event) {
+        if(event.key === "Enter") { 
+            event.preventDefault();
+            list2.style.display = 'none';
+        }
+    });
+    input3.addEventListener('keydown',function(event) {
+        if(event.key === "Enter") { 
+            event.preventDefault();
+            list3.style.display = 'none';
+        }
+    });
 
     add1.addEventListener('click', () => addButton(1));
     add2.addEventListener('click', () => addButton(2));
@@ -35,7 +53,7 @@ window.addEventListener("load", () => {
         input3.style.display = "none"
     }
     else if (input1.value && input1.value != "") {
-        input1.style.disply = ""
+        input1.style.display = ""
         input2.style.display = "none"
         input3.style.display = "none"
     }

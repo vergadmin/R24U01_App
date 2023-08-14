@@ -21,7 +21,8 @@
     "geonames.js": "^3.0.6",
     "https": "^1.0.0",
     "mssql": "^9.1.1",
-    "openai": "^3.3.0"
+    "openai": "^3.3.0",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
