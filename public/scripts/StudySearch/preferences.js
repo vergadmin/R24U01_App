@@ -46,16 +46,20 @@ window.addEventListener("load", () => {
         input1.style.display = ""
         input2.style.display = ""
         input3.style.display = ""
+        remove3.style.display = "";
     }
     else if (input2.value && input2.value != "") {
         input1.style.display = ""
         input2.style.display = ""
         input3.style.display = "none"
+        add2.style.display = "";
+        remove2.style.display = "";
     }
     else if (input1.value && input1.value != "") {
         input1.style.display = ""
         input2.style.display = "none"
         input3.style.display = "none"
+        add1.style.display = "";
     }
 
 
