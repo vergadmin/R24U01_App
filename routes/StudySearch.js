@@ -145,7 +145,7 @@ function CTsWithDatabase(req, res, next) {
                           // Insert new entry into table
                           // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
                           let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTTitle, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + title + `','` + summary + `')`;
-                          console.log(updateString);
+                          // console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
                               if (err) 
                                   console.log(err);
@@ -180,7 +180,7 @@ function CTsWithDatabase(req, res, next) {
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(briefSummary, detailedDescription) {
-  console.log("IN SUMMARIZE GPT")
+  // console.log("IN SUMMARIZE GPT")
   // console.log(title, briefSummary, detailedDescription);
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,
@@ -193,7 +193,7 @@ async function summarizeGPT(briefSummary, detailedDescription) {
 }
 
 async function titleizeGPT(title, briefSummary, detailedDescription) {
-  console.log("IN TITLEIZE GPT")
+  // console.log("IN TITLEIZE GPT")
   // console.log(title, briefSummary, detailedDescription);
   const result = await openai.createCompletion({
           model: COMPLETIONS_MODEL,

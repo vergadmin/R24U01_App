@@ -5,7 +5,6 @@ const stringSimilarity = require('string-similarity');
 const app = express()
 const CryptoJS = require("crypto-js");
 
-const Geonames  = require('geonames.js');
 require('dotenv').config()
 // console.log(process.env)
 
@@ -18,15 +17,10 @@ var vh = ''
 var type = ''
 var visitNum = -1;
 
-const geonames = Geonames({
-    username: process.env.GEONAMES_USER,
-    lan: 'en',
-    encoding: 'JSON'
-  });
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
-
+const vhTypes = ["bf", "bm", "wf", "wm", "hf", "hm"];
 // Modify based on Miriam/Emma's Qualtrics:
-const orderOfInfo =  ["ID", "Gender", "Age", "State", "Race", "City", "HV", "Cond", "Pref"];
+const orderOfInfo =  ["I", "G", "E", "R"];
 const columnsInAG = 369
 const columnsInHO = 305
 const columnsInPZ = 355
@@ -53,11 +47,18 @@ const config = {
 app.use(session({
     secret: process.env.SESSION_KEY,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    rolling: true,
+    cookie: {
+        maxAge: 1000 * 60 * 15,
+        secure: false, // switch to true
+    }
 }))
 
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
+    console.log(userInfo)
+    console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
         if (key==="VHType") {
             vh = value
@@ -83,6 +84,7 @@ app.post('/updateDatabase', async (req, res) => {
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err) 
 
+            res.send("Updated.");
         }); 
     
     });
@@ -119,14 +121,22 @@ app.post("/:id/:type/RetrieveConditions", (req, res) => {
     })
 })
 
-app.get('/:id/:type', extractInformation, setVHType, checkPreviousVisit, addVisitToDatabase, (req, res) => {
+app.get('/:id/:type', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     id = req.params.id
     type = req.params.type
-    if (type == "vh") 
-        res.render('pages/index', {id: id, type: type})
-    else if (type == "text")
-        // vh = 'text';
+    vh = type
+    if (type == "text") 
         res.render('pages/indexText', {id: id, type: type})
+    else if (vhTypes.includes(type))
+        // vh = 'text';
+        res.render('pages/index', {id: id, type: type})
+    else {
+        console.log("Improper input (bf assigned)...");
+        vh = "bf";
+        type = "bf";
+        res.render('pages/index', {id: id, type: type})
+    } 
+
 })
 
 
@@ -166,17 +176,18 @@ function checkPreviousVisit(req, res, next) {
         return;
     }
     var visitN = -1;
+    // console.log(userInfo);
     sql.connect(config, function (err) {
         var request = new sql.Request();
         
         // Query Check for Existing Entry In Table
         let checkString = `
         SELECT VisitNum FROM R24
-        WHERE ID = '` + userInfo.ID + `'
+        WHERE ID = '` + req.params.id + `'
         AND DateTime = (
                 SELECT max(DateTime)
                 FROM R24
-                WHERE ID = '` + userInfo.ID + `' 
+                WHERE ID = '` + req.params.id + `' 
         )`
         request.query(checkString, function(err, recordset) {
             if (err) console.log(err);
@@ -208,6 +219,10 @@ function addVisitToDatabase(req, res, next) {
     }
     id = req.params.id
     type = req.params.type
+    if (!userInfo["ID"])
+        userInfo["ID"] = id;
+    if (!userInfo["VHType"])
+        userInfo["VHType"] = type;
     sql.connect(config, function (err) {
         var request = new sql.Request();
         let queryString = `INSERT INTO R24 (ID, VisitNum, VHType) VALUES ('` + userInfo.ID + `',` + userInfo.visitNum + `,'` + userInfo.VHType + `')`;
@@ -220,26 +235,27 @@ function addVisitToDatabase(req, res, next) {
 }
 
 
+// Potentially Deprecated
 function setVHType(req, res, next) {
     if (req.session.visitedIndex) {
         next();
         return;
     }
-    if (userInfo.Pref ===  'Text') {
+    if (userInfo.P ===  'Text') {
         userInfo['VHType'] = 'text';
     }
     else {
         // Change Black/White to contains Black/White potentially (based on answers for Survey Item)
-        if (userInfo.Gender === 'Female' && userInfo.Race ==='Black') {
+        if (userInfo.G === 'Female' && userInfo.R ==='Black') {
             userInfo['VHType'] = 'bf'
         }
-        else if (userInfo.Gender === 'Male' && userInfo.Race ==='Black') {
+        else if (userInfo.G === 'Male' && userInfo.R ==='Black') {
             userInfo['VHType'] = 'bm'
         }
-        else if (userInfo.Gender === 'Female' && userInfo.Race ==='White') {
+        else if (userInfo.G === 'Female' && userInfo.R ==='White') {
             userInfo['VHType'] = 'wf'
         }
-        else if (userInfo.Gender === 'Male' && userInfo.Race ==='White') {
+        else if (userInfo.G === 'Male' && userInfo.R ==='White') {
             userInfo['VHType'] = 'wm'
         } else {
             userInfo['VHType'] = 'bf'
@@ -286,33 +302,10 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
             res.json(recordset.recordset);    
         }); 
     })
-    /*
-    retrieveCities(state).then((result) => {
-        res.json(result);    
-    }).catch((error) => {
-        console.error('Error:', error);
-        res.status(500).json({error:'Failed to wait for promise.'});
-    });
-    */
 });
 
-async function retrieveCities(state) {
-    try {
-      const resp = await geonames.search({
-        q: state,
-        style: 'SHORT',
-        country: 'US',
-        cities: 'cities500'
-      }); //get continents
-  
-      // console.log(resp.geonames);
-      return resp.geonames;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
 
+// Potentially Deprecated
 function extractInformation(req, res, next) {
     if (req.session.visitedIndex) {
         next();
@@ -328,7 +321,7 @@ function extractInformation(req, res, next) {
     var fields = [];
 
     var numberOfStrings = 0;
-    var previousLocation = 0
+    var previousLocation = 0;
     while (true) {
         // Find "_" -- 3 cases.
         let currentLocation = info.indexOf("_", previousLocation);
@@ -365,7 +358,7 @@ function extractInformation(req, res, next) {
 
 // Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent');
-app.use('/:id/vh/EducationalComponent', function(req,res,next) {
+app.use('/:id/:type/EducationalComponent', function(req,res,next) {
     req.id = id;
     req.vh = userInfo.VHType
     req.type = type
@@ -376,7 +369,7 @@ app.use('/:id/vh/EducationalComponent', function(req,res,next) {
 
 // Text Types
 const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
-app.use('/:id/text/EducationalComponentText', function(req,res,next){
+app.use('/:id/:type/EducationalComponentText', function(req,res,next){
     req.id = id;
     req.vh = userInfo.VHType
     req.type = type

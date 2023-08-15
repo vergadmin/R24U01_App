@@ -112,6 +112,7 @@ function updateDatabase(req, res, next) {
             /// console.log("UPDATED! IN R24U01 TABLE:")
             // console.log(recordset);
         }); 
+        // res.send("Updated.");
     
     });
     // END DATABASE STUFF
