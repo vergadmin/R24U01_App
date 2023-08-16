@@ -51,7 +51,7 @@ app.use(session({
     rolling: true,
     cookie: {
         maxAge: 1000 * 60 * 15,
-        secure: false, // switch to true
+        secure: true, // switch to true
     }
 }))
 
