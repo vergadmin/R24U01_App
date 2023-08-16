@@ -360,7 +360,7 @@ function extractInformation(req, res, next) {
 const EducationalComponentRouter = require('./routes/EducationalComponent');
 app.use('/:id/:type/EducationalComponent', function(req,res,next) {
     req.id = id;
-    req.vh = userInfo.VHType
+    req.vh = vh
     req.type = type
     req.userInfo = userInfo
     next();
@@ -371,7 +371,7 @@ app.use('/:id/:type/EducationalComponent', function(req,res,next) {
 const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
 app.use('/:id/:type/EducationalComponentText', function(req,res,next){
     req.id = id;
-    req.vh = userInfo.VHType
+    req.vh = vh
     req.type = type
     req.userInfo = userInfo
     next();
@@ -382,7 +382,7 @@ const StudySearchRouter = require('./routes/StudySearch');
 const { json } = require('body-parser');
 app.use('/:id/:type/StudySearch', function(req,res,next){
     req.id = id;
-    req.vh = userInfo.VHType
+    req.vh = vh
     req.type = type
     req.userInfo = userInfo
     next();
