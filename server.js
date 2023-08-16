@@ -63,7 +63,7 @@ https
 		// Provide the private and public key to the server by reading each
 		// file's content with the readFileSync() method.
     {
-      key: fs.readFileSync("/etc/letsencrypt/live/alexr24.us-east-1.elasticbeanstalk.com/key.pem"),
+      key: fs.readFileSync("/etc/letsencrypt/live/alexr24.us-east-1.elasticbeanstalk.com/privkey.pem"),
       cert: fs.readFileSync("/etc/letsencrypt/live/alexr24.us-east-1.elasticbeanstalk.com/cert.pem"),
     },
     app
