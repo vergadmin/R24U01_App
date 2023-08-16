@@ -1,5 +1,7 @@
 const express = require('express')
 const session = require('express-session');
+const https = require('https')
+const fs = require("fs");
 const stringSimilarity = require('string-similarity');
 
 const app = express()
@@ -55,6 +57,20 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }))
+
+https
+  .createServer(
+		// Provide the private and public key to the server by reading each
+		// file's content with the readFileSync() method.
+    {
+      key: fs.readFileSync("/etc/letsencrypt/live/alexr24.us-east-1.elasticbeanstalk.com/key.pem"),
+      cert: fs.readFileSync("/etc/letsencrypt/live/alexr24.us-east-1.elasticbeanstalk.com/cert.pem"),
+    },
+    app
+  )
+  .listen(process.env.PORT || 4000, () => {
+    console.log("serever is runing at port 4000");
+  });
 
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
