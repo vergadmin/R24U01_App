@@ -60,7 +60,7 @@
                 <hr/>
                 <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
                 <div class="center">
-                    <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= sponsoredList[i].ContactName %>`, `<%= sponsoredList[i].Title %>`, `<%= sponsoredList[i].Summary%>`)">Copy Email Text</button>
+                    <button id="copyLink" onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= sponsoredList[i].ContactName %>`, `<%= sponsoredList[i].Title %>`, `<%= sponsoredList[i].Summary%>`)">Copy Email Text</button>
                     <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= sponsoredList[i].ContactEMail %>`);"">Send Email</button>         
                 </div>
             </div>

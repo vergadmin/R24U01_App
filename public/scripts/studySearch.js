@@ -98,6 +98,16 @@ function copyEmailText(contactName, studyTitle, briefSummary) {
 
     // console.log(text)
 
-    alert("The following text was successfully copied!\n\n" + text)
+    // alert("The following text was successfully copied!\n\n" + text)
+
+    navigator.clipboard.writeText(text).then(function() {
+        // alert("Copied the text: " + link);
+        var button = document.getElementById("copyLink");
+        button.innerHTML = "&#x2713; Email Text Copied!";
+        button.style.backgroundColor = "green";
+    }).catch(function(error) {
+        // Error - handle the error here
+        console.error('An error occurred while copying to clipboard:', error);
+    });
 }
 
