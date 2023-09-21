@@ -56,12 +56,12 @@
                 </div>
                 <hr/>
                 <h4>More Information:</h4>
-                <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Link %>" > <p>Click here to view more information about this study in a new tab.</p> </a>
+                <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Info %>" > <p>Click here to view more information about this study in a new tab.</p> </a>
                 <hr/>
-                <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
+                <p>If you're interested in this study, click the "Enroll Now" button to get started.</p>
                 <div class="center">
-                    <button id="copyLink" onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= sponsoredList[i].ContactName %>`, `<%= sponsoredList[i].Title %>`, `<%= sponsoredList[i].Summary%>`)">Copy Email Text</button>
-                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= sponsoredList[i].ContactEMail %>`);"">Send Email</button>         
+                    <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Link %>" > 
+                        <button>Enroll Now</button> </a>
                 </div>
             </div>
         <% } %>

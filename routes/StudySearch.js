@@ -34,9 +34,10 @@ var lastExpression = "";
 var sponsoredList = [
   {
     "Title": "Cancer Prevention Research Study",
-    "Summary": "Adults between 50 - 73 years old are eligible to participate in a University of Florida study to develop and test messages about nutrition risk factors and colorectal cancer prevention.",
+    "Summary": "Adults between 45 -- 73 years old may be eligible to participate in in a University of Florida study to test messages about nutrition risk factors and colorectal cancer prevention in a one-time, web-based, interaction with a virtual health assistant.",
     "ContactName": "Dr. Melissa Vilaro",
     "ContactEMail": "mgraveley@ufl.edu",
+    "Info": "https://research-studies-with-alex.s3.amazonaws.com/SponsoredStudies/STAMPEDNutrition_Module_CRC_Flyer_12.5.19.pdf",
     "Link": "https://research-studies-with-alex.s3.amazonaws.com/SponsoredStudies/STAMPEDNutrition_Module_CRC_Flyer_12.5.19.pdf"
   }
 ]
