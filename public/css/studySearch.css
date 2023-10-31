@@ -196,6 +196,10 @@ li {
     font-size: 23px;
 }
 
+#conditions-box {
+    display: none;
+}
+
 .more-conditions-button {
     background-color: #3498db;
     color: white;

@@ -14,6 +14,25 @@ window.addEventListener("load", () => {
     const remove2 = document.getElementById('remove-2');
     const remove3 = document.getElementById('remove-3');
 
+    // For showing/hiding conditions based on if healthy volunteer 
+    const yesHV = document.getElementById("yes-hv");
+    const noHV = document.getElementById("no-hv");
+    // Add an event listener to the radio button
+    yesHV.addEventListener("change", function () {
+        if (yesHV.checked) {
+            document.getElementById("conditions-box").style.display = "none";
+        } else {
+            document.getElementById("conditions-box").style.display = "block";
+        }
+    });
+    noHV.addEventListener("change", function () {
+        if (noHV.checked) {
+            document.getElementById("conditions-box").style.display = "block";
+        } else {
+            document.getElementById("conditions-box").style.display = "none";
+        }
+    });
+
     input1.addEventListener('input', () => retrieveConditions(input1, list1, true, false));
     input2.addEventListener('input', () => retrieveConditions(input2, list2, true, true));
     input3.addEventListener('input', () => retrieveConditions(input3, list3, false, true));
@@ -136,10 +155,6 @@ function removeButton(num) {
     }
 }
 
-
-
-
-
 function retrieveConditions(input, list, add, remove) {
     const conditionText = input.value.toLowerCase();
     if (conditionText === "") {
@@ -194,7 +209,6 @@ function retrieveConditions(input, list, add, remove) {
         res.status(500).json({error:'Failed to wait for promise.'});
     });
 }
-
 
 async function getResults(conditionText) {
     let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/RetrieveConditions`;
