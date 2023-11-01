@@ -46,3 +46,11 @@ async function sendGeneralData(browserInfo, dateTime) {
     }
 }
 
+function playVideo() {
+    document.getElementById("intro-area").style.display = "flex"
+    document.getElementById("begin-text-area").style.display = "none"
+    document.getElementById("discover-button-area").style.display = "flex"
+    document.getElementById("intro-video").play();
+  }
+  
+

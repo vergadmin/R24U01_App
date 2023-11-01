@@ -29,3 +29,7 @@ h3 {
 .red {
     background-color: #B50000;
 }
+
+video {
+    width: 75%;
+}

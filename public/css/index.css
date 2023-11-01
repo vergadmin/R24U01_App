@@ -7,12 +7,31 @@
     justify-content: center;
 }
 
+#intro-video {
+    width: 75%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+#intro-area {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-choose {
+    display: flex;
+    width: 75%;
+    justify-content: space-evenly;
+}
+
 .logo {
-    height: 105px;
+    height: 75px;
 }
 
 .title {
-    font-size: 55px !important;
+    font-size: 41px !important;
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -79,3 +98,19 @@
 .content-container { grid-area: text-grid; }
 
   
+#discover-button-area {
+    width: 85%;
+    display: flex;
+    justify-content: flex-end;
+    margin: 15px;
+    display: none;
+}
+
+.discover-button {
+    background-color: #B50000;
+    padding: 15px;
+    border: 0px;
+    border-radius: 11px;
+    color: white;
+    font-size: 21px;
+}

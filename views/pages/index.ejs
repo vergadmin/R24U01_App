@@ -19,10 +19,33 @@
     <div class="container">
         <img class="logo" src="/images/logo.png" /> 
         <h1 class="title">Welcome to Research Studies with ALEX!</h1>
-        <p>To get started, click the button below. </p>
-        <a href="/<%=id%>/<%=type%>/EducationalComponent/Introduction">
-            <button>Begin</button>
-        </a>
+
+        <div id="begin-text-area">
+            <p>To get started, click the button below. </p>
+            <button onClick="playVideo()">Begin</button>
+        </div>
+
+        <div id="intro-area">
+            <video id="intro-video" controls>
+                <source src="https://research-studies-with-alex.s3.amazonaws.com/VirtualHCW/Welcome_VHCW.mp4" type="video/mp4">
+            </video>
+
+            <div class="button-choose">
+                <a href="/<%=id%>/<%=type%>/EducationalComponent/Introduction">
+                    <button>Tell Me More</button>
+                </a>
+                <a href="/<%=id%>/<%=type%>/EducationalComponent/Ask">
+                    <button>Ask me questions</button>
+                </a>
+            </div>
+            
+        </div>
+
+        <div id="discover-button-area">
+            <a href="/<%=id%>/<%=type%>/Discover">
+                <button class="discover-button">Continue</button>
+            </a>
+        </div>
     </div>
 </body>
 </html>

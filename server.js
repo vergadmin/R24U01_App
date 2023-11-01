@@ -170,6 +170,36 @@ app.get('/:id/:type/Discover', (req, res) => {
     res.render('pages/discover', {id: id, type: type})
 })
 
+app.get('/:id/:type/Start', (req, res) => {
+    id = req.params.id
+    type = req.params.type
+
+    sql.connect(config, function (err) {
+
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+
+        let queryString = `
+        UPDATE R24
+        SET Start = 'clicked'
+        WHERE ID = '` + userInfo.ID + `' 
+        AND VisitNum = '` + userInfo.visitNum + `'`;
+        
+        // console.log(queryString)
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+            // send records as a response
+            // console.log("UPDATED! IN R24 TABLE:")
+            // console.log(recordset);
+        }); 
+    
+    });
+
+    res.render('pages/start', {id: id, type: type})
+})
+
 function checkPreviousVisit(req, res, next) {
     if (req.session.visitedIndex) {
         next();
