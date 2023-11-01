@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/discover.css" rel="stylesheet" type="text/css">
+    <link href="/css/ask.css" rel="stylesheet" type="text/css">
+    <script src="/scripts/discover.js"></script>
+    <script src="/scripts/ask.js"></script>
+    <script src="/scripts/registerClicks.js"></script>
+    <title>ALEX</title>
+</head>
+<body>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <div class="container">
+        <h1 class="title">Ask Questions</h1>
+        <br/>
+        <div class="column">
+            <div class="vh-area">
+                <h4>You are chatting with:</h4>
+                <h3>Virtual Vanessa</h3>
+                <img class="vh-logo" src="/images/VHCW.png" /> 
+            </div>
+            <div class="chatbox">
+                <div id="chat-container">
+                    <div class="bot-message">
+                        <strong>Vanessa:</strong> Here you can ask me any specific questions you might have. Type your questions into the box below!
+                    </div>
+                </div>
+                <div class="typing-animation">
+                    <span class="dot-1"></span>
+                    <span class="dot-2"></span>
+                    <span class="dot-3"></span>
+                </div>
+                <div class="user-input-container">
+                    <input type="text" id="user-input" placeholder="Ask a question...">
+                    <div id="send-button" class="send-icon" onclick="sendMessage()">
+                        <img class="icon" src="/images/send-icon.png" alt="Send">
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+       
+        <audio id="audio-response" src="/images/response-audio.mp3"></audio>
+
+        <a id="corner" onclick="sendToDatabase(`SearchStudies`, `clicked`)" href="/<%=id%>/<%=type%>/Start"><button class="red">Continue</button>
+    
+        
+    </div>
+</body>
+</html>
