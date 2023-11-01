@@ -25,6 +25,8 @@ async function getResults() {
         button.disabled = false;
         var disabledText = document.getElementById("disabled-text");
         disabledText.innerText = "Your tailored list of trials are ready. Press the button below to see your list!"
+        var loadedTitle = document.getElementById("loaded-title");
+        loadedTitle.innerText = "Your Results are Ready!"
         // window.location.href = res.url
     } else {
         return `HTTP error: ${res.status}`;
