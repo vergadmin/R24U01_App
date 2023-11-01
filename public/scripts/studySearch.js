@@ -111,3 +111,39 @@ function copyEmailText(contactName, studyTitle, briefSummary) {
     });
 }
 
+
+var userInfo = {...JSON.parse(sessionStorage.getItem('background-info'))}
+console.log(userInfo)
+
+function openModal(contactName, contactEmail, studyTitle, briefSummary) {
+    var hasContact
+    contactName === "" ? contactName = "ALEX Research Team" : contactName = contactName
+    contactEmail === "" ? hasContact = false : hasContact = true
+
+    const subjectLine = "Interest In Research Study: " + studyTitle
+    let text= `Hi ${contactName},
+
+    My name is Janice. I saw your study: ${studyTitle} through the Research Studies section on the ALEX website. I’m interested in participating and would like more information. Here’s the description of your study that I read:
+    ${briefSummary}
+
+    Thank you,
+    
+    Janice
+    
+    krieger.janice@mayo.edu`
+
+    const modal = document.getElementById("modal");
+    modal.style.display = "block";
+    document.getElementById("subject").value = subjectLine;
+    document.getElementById("message").value = text;
+
+    if (!hasContact) {
+        document.getElementById("notice").innerHTML = "*Note: We were not able to find a study contact for this research study, so we will connect you to our ALEX Team!";
+    } else {
+        document.getElementById("notice").innerHTML = "*Note: This message will be sent to " + contactEmail + " as well as the ALEX Research Team.";
+    }
+}
+
+function closeModal() {
+   document.getElementById("modal").style.display = "none";
+};

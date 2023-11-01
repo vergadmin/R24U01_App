@@ -10,6 +10,7 @@
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
+    <link href="/css/modal.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
@@ -42,30 +43,25 @@
         <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
         <br/>
         <button class="red" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">Complete Survey</button>
-
-        <% for(var i=0; i<sponsoredList.length; i++) { %>
-            <div class="study-card">
-                <div class="heading"><h3><%= sponsoredList[i].Title %></h3> <p class="sponsored">Sponsored Study</p></div>
-                <h4>Summary:</h4>
-                <p><%= sponsoredList[i].Summary %></p>
-                <hr/>
-                <h4>Study Contact:</h4>
-                <div class="row">
-                    <p>Name: <%= sponsoredList[i].ContactName %> </p>
-                    <p>Email: <%= sponsoredList[i].ContactEMail %> </p>
-                </div>
-                <hr/>
-                <h4>More Information:</h4>
-                <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Info %>" > <p>Click here to view more information about this study in a new tab.</p> </a>
-                <hr/>
-                <p>If you're interested in this study, click the "Enroll Now" button to get started.</p>
-                <div class="center">
-                    <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Link %>" > 
-                        <button>Enroll Now</button> </a>
-                </div>
-            </div>
-        <% } %>
         
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeModalBtn" onclick="closeModal()"">&times;</span>
+                <h2>Send Email to Research Coordinator</h2>
+                <hr />
+                <form id="results-sendemail">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" required>
+                    <br/>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <br/>
+                    <button type="submit">Send</button>
+                    <p id="notice"></p>
+                </form>
+                </div>
+        </div>
+
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
                 <h3><%= trialsList[i].GPTTitle %>*</h3>
@@ -124,14 +120,36 @@
                     </div>
                 </div>
                 <hr/>
-                <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
+                <p>If you're interested in this study, "Send Email" to get in contact with a research coordinator!</p>
                 <div class="center">
-                    <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
-                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= trialsList[i].CentralContactEMail[0] %>`);"">Send Email</button>         
+                    <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openModal(`<%= trialsList[i].CentralContactName[0] %>`, `<%= trialsList[i].CentralContactEMail[0] %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Send Email</button>         
                 </div>
                 <br/>
                 <hr/>
                 <p class="info">* This title and summary was prepared by the ALEX Research Team. See the official study description in a new tab at: <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %></a></p>
+            </div>
+        <% } %>
+
+        <% for(var i=0; i<sponsoredList.length; i++) { %>
+            <div class="study-card">
+                <div class="heading"><h3><%= sponsoredList[i].Title %></h3> <p class="sponsored">Sponsored Study</p></div>
+                <h4>Summary:</h4>
+                <p><%= sponsoredList[i].Summary %></p>
+                <hr/>
+                <h4>Study Contact:</h4>
+                <div class="row">
+                    <p>Name: <%= sponsoredList[i].ContactName %> </p>
+                    <p>Email: <%= sponsoredList[i].ContactEMail %> </p>
+                </div>
+                <hr/>
+                <h4>More Information:</h4>
+                <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Info %>" > <p>Click here to view more information about this study in a new tab.</p> </a>
+                <hr/>
+                <p>If you're interested in this study, click the "Enroll Now" button to get started.</p>
+                <div class="center">
+                    <a target="_blank" rel="noopener noreferrer" href="<%= sponsoredList[i].Link %>" > 
+                        <button>Enroll Now</button> </a>
+                </div>
             </div>
         <% } %>
 
