@@ -12,7 +12,7 @@ function sendMessage() {
     setTimeout(() => {
         // Remove typing animation and show bot's response
         typingAnimation.style.display = "none";
-        const botResponse = "In a clinical trial, the treatment isn't risk-free, and there's no guarantee it will cure your mom's cancer. But standard treatments have their own risks and aren't guaranteed either. The benefit of a clinical trial is that you'll receive extra attention from your medical team, who closely monitor your well-being, making your treatment more comfortable. Plus, multiple organizations ensure your safety during the trial. If you want to see what studies are out there, click on the red box and we can start.";
+        const botResponse = "In a clinical trial, the treatment isn't risk-free, and there's no guarantee it will cure your mom's cancer. But standard treatments have their own risks and aren't guaranteed either. The benefit of a clinical trial is that you'll receive extra attention from your medical team, who closely monitor your well-being, making your treatment more comfortable. Plus, multiple organizations ensure your safety during the trial. If you want to see what studies are out there, click on the red button in the bottom right corner of this page and we can start.";
         addMessage("Vanessa", botResponse);
 
          // Play the audio response
