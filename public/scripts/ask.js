@@ -12,7 +12,7 @@ function sendMessage() {
     setTimeout(() => {
         // Remove typing animation and show bot's response
         typingAnimation.style.display = "none";
-        const botResponse = "Great question Janice! In a research study, the treatment isn't risk-free, and there's no guarantee it will cure your mom's cancer. But standard treatments have their own risks and aren't guaranteed either. The benefit of a research study is that you'll receive extra attention from your medical team, who closely monitor your well-being, making your treatment more comfortable. Plus, multiple organizations ensure your safety during the study. If you want to see what studies are out there, click on the red button in the bottom right corner of this page and we can start.";
+        const botResponse = "Great question Janice! In a research study, the treatment isn't risk-free, and there's no guarantee it will cure cancer. But standard treatments have their own risks and aren't guaranteed either. The benefit of a research study is that you'll receive extra attention from your medical team, who closely monitor your well-being, making your treatment more comfortable. Plus, multiple organizations ensure your safety during the study. If you want to see what studies are out there, click on the continue button in the bottom right corner of this page and we can start.";
         addMessage("Vanessa", botResponse);
 
          // Play the audio response

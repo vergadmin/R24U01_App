@@ -60,3 +60,7 @@ text-button {
     border-color:white white grey white;
     font-size: 20px;
 }
+
+.green {
+    background-color: green !important;
+}

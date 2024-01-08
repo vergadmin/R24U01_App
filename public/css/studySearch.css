@@ -64,6 +64,10 @@ hr {
     background-color: #B50000;
 }
 
+.green {
+    background-color: green;
+}
+
 .info {
     font-size: 17px;
 }

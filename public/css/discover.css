@@ -30,6 +30,10 @@ h3 {
     background-color: #B50000;
 }
 
+.green {
+    background-color: green;
+}
+
 video {
     width: 75%;
 }
