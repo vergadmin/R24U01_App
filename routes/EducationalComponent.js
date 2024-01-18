@@ -34,18 +34,14 @@ let buttons = [
     },
     {
         url: '2',
-        text: "What are research registries?"
-    },
-    {
-        url: '3',
         text: "Why consider participating?"
     },
     {
-        url: '4',
+        url: '3',
         text: "Are research studies safe?"
     },
     {
-        url: '5',
+        url: '4',
         text: "How to participate in research and where to start?"
     }
 ]
@@ -68,10 +64,6 @@ router.get('/3', updateDatabase, (req, res) => {
 
 router.get('/4', updateDatabase, (req, res) => {
     res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, type: type, buttons: buttons, url: '4'})
-})
-
-router.get('/5', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/5", {id: id, vh: vh, type: type, buttons: buttons, url: '5'})
 })
 
 function getInfo(req, res, next) {
