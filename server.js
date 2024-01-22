@@ -18,7 +18,7 @@ var type = ''
 var visitNum = -1;
 
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
-const vhTypes = ["bf", "bm", "wf", "wm", "hf", "hm"];
+const vhTypes = ["bfe", "bme", "wfe", "wme", "hfe", "hme", "hfs", "hms"];
 // Modify based on Miriam/Emma's Qualtrics:
 const orderOfInfo =  ["I", "G", "E", "R"];
 const columnsInAG = 369
@@ -132,8 +132,8 @@ app.get('/:id/:type', checkPreviousVisit, addVisitToDatabase, (req, res) => {
         res.render('pages/index', {id: id, type: type})
     else {
         console.log("Improper input (bf assigned)...");
-        vh = "bf";
-        type = "bf";
+        vh = "bfe";
+        type = "bfe";
         res.render('pages/index', {id: id, type: type})
     } 
 
@@ -247,18 +247,18 @@ function setVHType(req, res, next) {
     else {
         // Change Black/White to contains Black/White potentially (based on answers for Survey Item)
         if (userInfo.G === 'Female' && userInfo.R ==='Black') {
-            userInfo['VHType'] = 'bf'
+            userInfo['VHType'] = 'bfe'
         }
         else if (userInfo.G === 'Male' && userInfo.R ==='Black') {
-            userInfo['VHType'] = 'bm'
+            userInfo['VHType'] = 'bme'
         }
         else if (userInfo.G === 'Female' && userInfo.R ==='White') {
-            userInfo['VHType'] = 'wf'
+            userInfo['VHType'] = 'wfe'
         }
         else if (userInfo.G === 'Male' && userInfo.R ==='White') {
-            userInfo['VHType'] = 'wm'
+            userInfo['VHType'] = 'wme'
         } else {
-            userInfo['VHType'] = 'bf'
+            userInfo['VHType'] = 'bfe'
         }
     }
     next()
