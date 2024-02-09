@@ -1,10 +1,11 @@
 window.addEventListener("load", () => {
-    // console.log("SESSION STORAGE")
-    const form = document.getElementById('background-info');
-    const ageInput = form.querySelector('#Age');
-    // console.log(ageInput);
-    const ageValue = parseInt(ageInput.value); // Convert input value to integer
-    // console.log(ageValue);
+    console.log("SESSION STORAGE", sessionStorage)
+    // const form = document.getElementById('background-info');
+    // console.log(form)
+    // const ageInput = form.querySelector('#Age');
+    // // console.log(ageInput);
+    // const ageValue = parseInt(ageInput.value); // Convert input value to integer
+    // // console.log(ageValue);
 });
 
 function validateAndSendFormData(id) {

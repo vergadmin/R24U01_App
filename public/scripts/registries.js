@@ -3,12 +3,12 @@ window.addEventListener("load", () => {
 });
 
 async function getResults() {
-    // console.log("GOING TO SEARCH FOR CT")
+    console.log("GOING TO SEARCH FOR CT")
 
     var userInfo = {...JSON.parse(sessionStorage.getItem('background-info')), ...JSON.parse(sessionStorage.getItem('preferences-info'))}
-
+    console.log(userInfo)
     let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/StudySearch/Results`;
-    // console.log(url)
+    console.log(url)
     
     let res = await fetch(url, {
         method: 'POST',
