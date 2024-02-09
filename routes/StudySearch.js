@@ -179,31 +179,54 @@ function CTsWithDatabase(req, res, next) {
   processNext();
 }
 
+
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(briefSummary, detailedDescription) {
   // console.log("IN SUMMARIZE GPT")
   // console.log(title, briefSummary, detailedDescription);
-  const result = await openai.createCompletion({
-          model: COMPLETIONS_MODEL,
-          prompt: SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
-          max_tokens: MAX_TOKENS,
-          temperature: TEMPERATURE,
-  });
-  // console.log(result.data.choices[0].text);
-  return result.data.choices[0].text;
+  const headers = {
+      'Authorization': `Bearer ${process.env.VERG_OPENAI_KEY}`
+    };
+  const prompt = SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
+  try {
+      const result = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+          model: 'gpt-3.5-turbo',
+          messages: [{role: 'user', content: `${prompt}`}],
+          },
+          { headers }
+      );
+      const botResponse = result.data.choices[0].message.content;
+      // console.log(botResponse);
+      return botResponse;
+  } catch (err) {
+      console.log(err);
+  }
 }
 
 async function titleizeGPT(title, briefSummary, detailedDescription) {
   // console.log("IN TITLEIZE GPT")
   // console.log(title, briefSummary, detailedDescription);
-  const result = await openai.createCompletion({
-          model: COMPLETIONS_MODEL,
-          prompt: TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]",
-          max_tokens: MAX_TITLE_TOKENS,
-          temperature: TEMPERATURE,
-  });
-  // console.log(result.data.choices[0].text);
-  return result.data.choices[0].text;
+  const headers = {
+      'Authorization': `Bearer ${process.env.VERG_OPENAI_KEY}`
+    };
+  const prompt = TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
+  try {
+      const result = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+          model: 'gpt-3.5-turbo',
+          messages: [{role: 'user', content: `${prompt}`}],
+          },
+          { headers }
+      );
+      const botResponse = result.data.choices[0].message.content;
+      // console.log(botResponse);
+      return botResponse;
+  } catch (err) {
+      console.log(err);
+  }
 }
 
 function getInfo(req, res, next) {
