@@ -315,7 +315,7 @@ async function searchForCT(req, res, next) {
   }
   const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
   // const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=SEARCH[Study](AREA[NCTId] NCT03839940)&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`
-  console.log(apiUrl);
+  // console.log(apiUrl);
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.StudyFieldsResponse.StudyFields
