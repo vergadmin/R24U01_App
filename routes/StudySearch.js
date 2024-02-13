@@ -244,31 +244,37 @@ async function createClinicalTrialsString(fields) {
   // return new Promise((resolve) => {
     let expression = "";
     let conditions = [false, false, false]
+    let healthConditions = "";
+
+    // Health Condition Builder
     if (fields.ConditionText1 && fields.ConditionText1 != "") {
-      expression += "(" + fields.ConditionText1
+      healthConditions += "(" + fields.ConditionText1
       conditions[0] = true;
     }
     if (fields.ConditionText2 && fields.ConditionText2 != "") {
       if (!conditions[0])
-        expression += "("
+        healthConditions += "("
       else 
-        expression += " OR "
-      expression += fields.ConditionText2
+        healthConditions += " OR "
+      healthConditions += fields.ConditionText2
       conditions[1] = true
     }
     if (fields.ConditionText3 && fields.ConditionText3 != "") {
       if (!conditions[0] && !conditions[1]) 
-        expression += "("
+        healthConditions += "("
       else 
-        expression += " OR "
-      expression += fields.ConditionText3 += ") AND "
+        healthConditions += " OR "
+        healthConditions += fields.ConditionText3
       conditions[2] = true
     }
+    healthConditions
     if (!conditions[2] && (conditions[0] || conditions[1])) {
       expression += ") AND ";
     }
-  
-    expression += "SEARCH[Location](AREA[LocationCountry] United States "; 
+    if (conditions[0] || conditions[1] || conditions[2])
+      healthConditions += ")";
+
+    expression = "SEARCH[Location](AREA[LocationCountry] United States "; 
     if (fields.LocationState != "---") {
       expression += "AREA[LocationState] " + fields.LocationState + " AND ";
     }
@@ -276,13 +282,24 @@ async function createClinicalTrialsString(fields) {
       expression += "AREA[LocationCity] " + fields.LocationCity + " AND ";
     }
     expression += "AREA[LocationStatus] Recruiting)";
-    if (fields.Gender && fields.Gender != "not_say" && fields.Gender != "not_listed") {
+    // Comment that Rashi said to include:
+    // If a user put in Male or Female, we'll give them studies for Male or Female (and also studies that include all genders)
+    // If a user put in Not listed or Prefer not to say, we'll just return all studies regardless of gender
+    if (fields.Gender && (fields.Gender == "Male" || fields.Gender == "Female")) {
       expression += " AND SEARCH[Study](AREA[Gender] " + fields.Gender + " OR AREA[Gender] All)";
     }
     
-    if (fields.HealthyVolunteer) {
+    // Append the Health Conditinos to end depending on option.
+    if (fields.HealthyVolunteer == "Accepts Healthy Volunteers") {
       expression += " AND SEARCH[Study](AREA[HealthyVolunteers] " + fields.HealthyVolunteer + ")";
     }
+    else if (fields.HealthyVolunteer == "Both") {
+      expression += " AND (SEARCH[Study](AREA[HealthyVolunteers] Accepts Healthy Volunteers) OR " + healthConditions + ")";
+    }
+    else if (fields.HealthyVolunteer == "No") {
+      expression += " AND SEARCH[Study](AREA[HealthyVolunteers] " + fields.HealthyVolunteer + ") AND " + healthConditions;
+    }
+
     return expression;
     // resolve(expression);
   // });
@@ -298,7 +315,7 @@ async function searchForCT(req, res, next) {
   }
   const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
   // const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=SEARCH[Study](AREA[NCTId] NCT03839940)&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`
-  // console.log(apiUrl);
+  console.log(apiUrl);
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.StudyFieldsResponse.StudyFields

@@ -16,20 +16,30 @@ window.addEventListener("load", () => {
 
     // For showing/hiding conditions based on if healthy volunteer 
     const yesHV = document.getElementById("yes-hv");
+    const bothHV = document.getElementById("both-hv");
     const noHV = document.getElementById("no-hv");
     // Add an event listener to the radio button
     yesHV.addEventListener("change", function () {
         if (yesHV.checked) {
-            document.getElementById("conditions-box").style.display = "none";
-        } else {
             document.getElementById("conditions-box").style.display = "block";
+        } else {
+            document.getElementById("conditions-box").style.display = "none";
         }
     });
-    noHV.addEventListener("change", function () {
-        if (noHV.checked) {
+
+    bothHV.addEventListener("change", function () {
+        if (bothHV.checked) {
             document.getElementById("conditions-box").style.display = "block";
         } else {
             document.getElementById("conditions-box").style.display = "none";
+        }
+    });
+
+    noHV.addEventListener("change", function () {
+        if (noHV.checked) {
+            document.getElementById("conditions-box").style.display = "none";
+        } else {
+            document.getElementById("conditions-box").style.display = "block";
         }
     });
 
