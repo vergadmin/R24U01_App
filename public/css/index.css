@@ -78,4 +78,15 @@
 .navigation-container { grid-area: navigation-grid; }
 .content-container { grid-area: text-grid; }
 
-  
+
+
+  .goog-te-combo   {
+    font-size: 25px !important;
+    padding: 10px;
+    border-radius: 15px;
+    border: 0px;
+    background-color: #015495;
+    color: white;
+ }
+
+ img {height: 25px !important}

@@ -21,6 +21,30 @@ window.addEventListener("load", () => {
     
 });
 
+setTimeout(function() {
+    document.getElementById("load").style.display = "none"
+}, 1500); // 3000 milliseconds = 3 seconds
+
+// Function to handle language change
+function handleLanguageChange(mutationsList, observer) {
+    mutationsList.forEach(mutation => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'lang') {
+            console.log('Language changed to:', mutation.target.lang);
+            sessionStorage.setItem("language", mutation.target.lang)
+        }
+    });
+}
+
+// Create a new MutationObserver to watch for changes to the lang attribute
+const observer = new MutationObserver(handleLanguageChange);
+
+// Start observing changes to the attributes of the root HTML element
+observer.observe(document.documentElement, { attributes: true });
+
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({includedLanguages: "en,es", layout: google.translate.TranslateElement.InlineLayout}, 'google_translate_element')
+}
+
 async function sendGeneralData(browserInfo, dateTime) {
     // console.log("IN SEND TO SERVER GENERAL DATA")
 
@@ -45,4 +69,3 @@ async function sendGeneralData(browserInfo, dateTime) {
         return `HTTP error: ${res.status}`;
     }
 }
-
