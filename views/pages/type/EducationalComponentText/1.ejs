@@ -9,6 +9,8 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
+    <script src="/scripts/checkLanguage.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
 </head>
 <!-- Text Variables for Clarity :) -->
@@ -19,6 +21,9 @@
 <% var text2 = `The most important thing to remember is that research studies are the way we discover new treatments and tools we will use to take care of people in the future. In fact, research studies done in the past have given us most of the treatments and tools we use to take care of people today. For example, we learned that mammograms are a good way to screen for breast cancer through a research study to improve screening and diagnosis. We also recently learned of a new drug that can delay the onset of Type 1 diabetes and a virtual reality system that can relieve chronic back pain. In each of these examples, it was only through research studies that we now know how best to screen, diagnose, treat, and help people.` %>
 
 <body>
+    <div id="load">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+    </div>
     <header>
         <%- include('../../../partials/header'); %>
     </header>

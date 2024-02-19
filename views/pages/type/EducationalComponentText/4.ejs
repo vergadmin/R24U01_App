@@ -9,6 +9,8 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
+    <script src="/scripts/checkLanguage.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
 </head>
 <!-- Text Variables for Clarity :) -->
@@ -18,6 +20,9 @@
 
 <% var text2 = `You can discuss these studies with your doctor or directly contact the study team for more information. And remember: even if you reach out to a study team, your participation is always voluntary. You can choose not to participate or drop out of a study at any time. You can also ask your doctor if there are any research studies happening right now that you should consider. If there are, you can ask more specific questions based on what I shared with you today. When we’re done, you’ll have another option to download our guide, which includes a list of questions you may want to ask.`%>
 <body>
+    <div id="load">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+    </div>
     <header>
         <%- include('../../../partials/header'); %>
     </header>

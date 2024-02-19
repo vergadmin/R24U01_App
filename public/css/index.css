@@ -7,8 +7,8 @@
     justify-content: center;
 }
 
-.logo {
-    height: 105px;
+.alex-logo {
+    height: 105px !important;
 }
 
 .title {
@@ -89,4 +89,4 @@
     color: white;
  }
 
- img {height: 25px !important}
+ img {height: 21px !important}

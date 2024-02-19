@@ -9,6 +9,8 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
+    <script src="/scripts/checkLanguage.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
 </head>
 <!-- Text Variables for Clarity :) -->
@@ -16,6 +18,9 @@
 
 <% var text1 = `We have learned a lot about improving people’s health and wellbeing with the help of research studies. But, there is still more work to be done. Doctors, scientists, and people like you are working together right now on research studies that will help you, your family, and future generations. There is still much to learn and you can help. People often have different or multiple reasons to consider participating in a research study. Some participate to receive a potentially helpful treatment that may benefit their health. Others participate so that study results found today may help people in the future. Sometimes people may even participate because they are interested in the study topic itself.  Whatever reasons you have to consider participating, it is important to know that it is always your choice to participate in a research study. It’s ok to ask questions and meet the research team as you make your decision to start participating. And even if you agree to participate, you can change your mind at any time and stop your participation, no matter what your reason is.` %>
 <body>
+    <div id="load">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+    </div>
     <header>
         <%- include('../../../partials/header'); %>
     </header>
