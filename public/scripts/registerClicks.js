@@ -1,6 +1,8 @@
 async function sendToDatabase(column, value) {
     // console.log("IN REGISTER CLICK FROM CLIENT")
     // console.log(column + ": " + value)
+    console.log("IN SEND TO DATABSE")
+    console.log(column, value)
 
     let url = '/updateDatabase';
     let data = {};

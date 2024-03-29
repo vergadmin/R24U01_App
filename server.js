@@ -17,6 +17,7 @@ var vh = ''
 var type = ''
 var visitNum = -1;
 
+
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
 const vhTypes = ["bfe", "bme", "wfe", "wme", "hfe", "hme", "hfs", "hms"];
 // Modify based on Miriam/Emma's Qualtrics:
@@ -58,10 +59,15 @@ app.use(session({
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
     console.log(userInfo)
-    console.log(req.session.visitedIndex);
+    console.log("IN UPDATE DATABASE")
+    // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
-        if (key==="VHType") {
+        if (key==="Character") {
+            console.log("GOT VH TYPE")
             vh = value
+            userInfo["vh"] = vh;
+            console.log("UDPATED USER INFO", userInfo)
+            console.log("VH is:", vh)
         }
         setList += key + `='` + value + `', `
     }
@@ -121,28 +127,27 @@ app.post("/:id/:type/RetrieveConditions", (req, res) => {
     })
 })
 
+// ID is userID from qualtrics, type is vh or text from Qualtrics
 app.get('/:id/:type', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     id = req.params.id
     type = req.params.type
-    vh = type
+    console.log("TYPE IS: ", type)
     if (type == "text") 
         res.render('pages/indexText', {id: id, type: type})
-    else if (vhTypes.includes(type))
-        // vh = 'text';
+    else 
         res.render('pages/index', {id: id, type: type})
-    else {
-        console.log("Improper input (bf assigned)...");
-        vh = "bfe";
-        type = "bfe";
-        res.render('pages/index', {id: id, type: type})
-    } 
+})
 
+// TO DO: ADD DATABASE CONNECTION
+app.get('/:id/:type/characters', (req, res) => {
+    res.render("pages/selectCharacter", {id: id, type: type})
 })
 
 
-app.get('/:id/:type/Discover', (req, res) => {
+app.get('/:id/:type/:vh/Discover', (req, res) => {
     id = req.params.id
     type = req.params.type
+    vh = req.params.vh
 
     sql.connect(config, function (err) {
 
@@ -167,7 +172,7 @@ app.get('/:id/:type/Discover', (req, res) => {
     
     });
 
-    res.render('pages/discover', {id: id, type: type})
+    res.render('pages/discover', {id: id, vh: vh, type: type})
 })
 
 function checkPreviousVisit(req, res, next) {
@@ -191,9 +196,6 @@ function checkPreviousVisit(req, res, next) {
         )`
         request.query(checkString, function(err, recordset) {
             if (err) console.log(err);
-            // console.log("HERE")
-            // console.log(recordset.recordset);
-            // console.log(recordset.recordset.length);
             if (recordset.recordset.length === 0) {
                 visitN = 0;
             }
@@ -226,7 +228,6 @@ function addVisitToDatabase(req, res, next) {
     sql.connect(config, function (err) {
         var request = new sql.Request();
         let queryString = `INSERT INTO R24 (ID, VisitNum, VHType) VALUES ('` + userInfo.ID + `',` + userInfo.visitNum + `,'` + userInfo.VHType + `')`;
-        // console.log(queryString);
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
         })
@@ -234,6 +235,32 @@ function addVisitToDatabase(req, res, next) {
     next()
 }
 
+function updateDatabase(req, res, next) {
+    let dbEntry = req.url.slice(1)
+    // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
+    sql.connect(config, function (err) {
+
+        if (err) console.log(err);
+
+        // create Request object
+        var request = new sql.Request();
+
+        // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
+        let queryString = `
+        UPDATE R24
+        SET Educational_` + dbEntry + `= 'clicked'
+        WHERE ID = '` + userInfo.ID + `' 
+        AND VisitNum = '` + userInfo.visitNum + `'`;
+        request.query(queryString, function (err, recordset) {
+            if (err) console.log(err)
+        }); 
+        // res.send("Updated.");
+    
+    });
+    // END DATABASE STUFF
+
+    next();
+}
 
 // Potentially Deprecated
 function setVHType(req, res, next) {
@@ -264,16 +291,10 @@ function setVHType(req, res, next) {
     next()
 }
 app.post('/:id/:type/RetrieveCities', (req, res) => {
-    // console.log("REQUEST PARAMS:")
-    // console.log(req.params)
     id = req.params.id
     type = req.params.type
     let stateVal = (Object.entries(req.body)[0][1])
     let cityVal =(Object.entries(req.body)[1][1])
-    // console.log(stateVal)
-    // console.log(cityVal)
-    // console.log(Object.entries(req.body)[1])
-    // console.log(searchValue);
     const code = cityVal.charCodeAt(0)
     let database = "StatesAndCitiesAG"
     if ((code >= 97 && code <= 103) || (code >= 65 && code <= 71)) {
@@ -304,61 +325,9 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
     })
 });
 
-
-// Potentially Deprecated
-function extractInformation(req, res, next) {
-    if (req.session.visitedIndex) {
-        next();
-        return;
-    }
-    // fields is an array of objects formatted as such...
-    // {"ID" : id, "Gender" : gender, ... "Pref" : video}
-    var id = req.params.id;
-    var bytes = CryptoJS.AES.decrypt(id, process.env.DECRYPTION_KEY);
-    var fixedID = id.replaceAll("-","/");
-    var bytes = CryptoJS.AES.decrypt(fixedID, process.env.DECRYPTION_KEY);
-    var info = bytes.toString(CryptoJS.enc.Utf8);
-    var fields = [];
-
-    var numberOfStrings = 0;
-    var previousLocation = 0;
-    while (true) {
-        // Find "_" -- 3 cases.
-        let currentLocation = info.indexOf("_", previousLocation);
-        // Case 1: We're at the end of the string, in that case insert
-        // the remaining substring. This also accounts for if a user
-        // did not answer the question.
-        if (currentLocation === -1) {
-            let item = info.substring(previousLocation);
-            let field = orderOfInfo[numberOfStrings];
-            fields[field] = item;
-            break;
-        }
-        // Case 2: Two _'s next to each other -- the user skipped a question.
-        // Simply insert the proper field and a blank ""        
-        else if (currentLocation == previousLocation + 1) {
-            let field = orderOfInfo[numberOfStrings];
-            fields[field] = "";
-            numberOfStrings++;
-        }
-        // Case 3: Base case. User properly entered an answer for the field
-        // Grab the substring and insert into fields list.
-        else {
-            let item = info.substring(previousLocation, currentLocation);
-            let field = orderOfInfo[numberOfStrings];
-            fields[field] = item;
-            numberOfStrings++;
-        }
-        previousLocation = currentLocation + 1;
-    }
-    userInfo = fields;
-    userInfo['originalID'] = req.params.id
-    next();
-}
-
 // Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent');
-app.use('/:id/:type/EducationalComponent', function(req,res,next) {
+app.use('/:id/:type/:vh/EducationalComponent', function(req,res,next) {
     req.id = id;
     req.vh = vh
     req.type = type
@@ -369,10 +338,10 @@ app.use('/:id/:type/EducationalComponent', function(req,res,next) {
 
 // Text Types
 const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
-app.use('/:id/:type/EducationalComponentText', function(req,res,next){
+app.use('/:id/:type/:vh/EducationalComponentText', function(req,res,next){
     req.id = id;
-    req.vh = vh
-    req.type = type
+    req.vh = vh;
+    req.type = type;
     req.userInfo = userInfo
     next();
 }, EducationalComponentTextRouter)
@@ -380,7 +349,7 @@ app.use('/:id/:type/EducationalComponentText', function(req,res,next){
 // Clinical Trials/study search router
 const StudySearchRouter = require('./routes/StudySearch');
 const { json } = require('body-parser');
-app.use('/:id/:type/StudySearch', function(req,res,next){
+app.use('/:id/:type/:vh/StudySearch', function(req,res,next){
     req.id = id;
     req.vh = vh
     req.type = type

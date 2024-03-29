@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
+    <script src="/scripts/registerClicks.js"></script>
+    <script src="/scripts/checkLanguage.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <title>ALEX</title>
+</head>
+<body>
+    <div id="load">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+    </div>
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+    <div class="container">
+        <img class="alex-logo" src="/images/logo.png" /> 
+        <h1 class="title">Welcome to Research Studies with ALEX!</h1>
+        <p>Please select who you would like to talk to below!</p>
+        <div class="selection-area" id="english">
+            <div class="choose-alex">
+                <a onclick="sendToDatabase(`Character`, `bfe`)" href="/<%=id%>/<%=type%>/bfe/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/bf.png"/>
+                </a>
+                <a onclick="sendToDatabase(`Character`, `bme`)" href="/<%=id%>/<%=type%>/bme/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/bm.png"/>
+                </a>
+            </div>
+            <div class="choose-alex">
+                <a onclick="sendToDatabase(`Character`, `hfe`)" href="/<%=id%>/<%=type%>/hfe/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/hf.png"/>
+                </a>
+                <a onclick="sendToDatabase(`Character`, `hme`)" href="/<%=id%>/<%=type%>/hme/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/hm.png"/>
+                </a>
+            </div>
+            <div class="choose-alex">
+                <a onclick="sendToDatabase(`Character`, `wfe`)" href="/<%=id%>/<%=type%>/wfe/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/wf.png"/>
+                </a>
+                <a onclick="sendToDatabase(`Character`, `wme`)" href="/<%=id%>/<%=type%>/wme/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/wm.png"/>
+                </a>
+            </div>
+        </div>
+
+        <div class="selection-area" id="spanish">
+            <div class="choose-alex">
+                <a onclick="sendToDatabase(`Character`, `hfs`)" href="/<%=id%>/<%=type%>/hfs/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/hf.png"/>
+                </a>
+                <a onclick="sendToDatabase(`Character`, `hms`)" href="/<%=id%>/<%=type%>/hms/EducationalComponent/Introduction">
+                    <img class="character-select" src="/images/characters/hm.png"/>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="/scripts/selectCharacter.js"></script>
+    </body>
+</html>

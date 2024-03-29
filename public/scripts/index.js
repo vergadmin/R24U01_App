@@ -30,6 +30,13 @@ function handleLanguageChange(mutationsList, observer) {
     mutationsList.forEach(mutation => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'lang') {
             console.log('Language changed to:', mutation.target.lang);
+            
+            if (mutation.target.lang == 'es') {
+                sessionStorage.setItem("literallanguage", 'es')
+            } if (mutation.target.lang == 'en') {
+                sessionStorage.setItem("literallanguage", 'en')
+            }
+
             sessionStorage.setItem("language", mutation.target.lang)
         }
     });

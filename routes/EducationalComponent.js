@@ -67,12 +67,11 @@ router.get('/4', updateDatabase, (req, res) => {
 })
 
 function getInfo(req, res, next) {
-    // console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
     vh = req.vh
     type = req.type
     userInfo = req.userInfo
-    // console.log("type is " + type);
+    console.log("IN EDUCATIONAL ROUTER, vh is:", vh)
     next()
 }
 
