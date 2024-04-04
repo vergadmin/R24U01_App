@@ -3,6 +3,10 @@ async function sendToDatabase(column, value) {
     // console.log(column + ": " + value)
     console.log("IN SEND TO DATABSE")
     console.log(column, value)
+    if (column === "Character") {
+        sessionStorage.setItem("vh", value)
+        console.log(sessionStorage)
+    }
 
     let url = '/updateDatabase';
     let data = {};

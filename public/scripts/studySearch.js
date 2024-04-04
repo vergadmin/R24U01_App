@@ -21,7 +21,7 @@ function validateAndSendFormData(id) {
     if (ageValid && genderSelected) {
         // Redirect the user if inputs are valid
         sendFormData(id);
-        window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/StudySearch/Preferences`
+        window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vh}/StudySearch/Preferences`
     }
     else {
         if (!ageValid) {
