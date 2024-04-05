@@ -37,20 +37,20 @@
             <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area selected">
                         <%= buttons[i].text %>
                         </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=id%>/<%=type%>/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area">
                         <%= buttons[i].text %>
                         </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-            <a href="/<%=id%>/<%=type%>/Discover">
+            <a href="/<%=id%>/<%=type%>/t/Discover">
                 <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
@@ -60,7 +60,7 @@
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
                 <div class ="discover-container discover-button-area">
-                    <a href="/<%=id%>/<%=type%>/Discover">
+                    <a href="/<%=id%>/<%=type%>/t/Discover">
                         <button class="discover-button">Discover Research Opportunities</button>
                     </a>
                 </div>
