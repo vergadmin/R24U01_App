@@ -51,9 +51,8 @@ app.use(session({
     saveUninitialized: true,
     rolling: true,
     cookie: {
-        maxAge: 1000 * 60 * 15,
-        secure: true, // switch to true
-    }
+        maxAge: 1000 * 60 * 15
+        }
 }))
 
 app.post('/updateDatabase', async (req, res) => {

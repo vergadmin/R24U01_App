@@ -1,11 +1,12 @@
 const express = require('express')
+const session = require('express-session');
+
 const router = express.Router()
 var sql = require("mssql");
 var axios = require("axios")
 
 // <--- openai constants
 const { Configuration, OpenAIApi } = require("openai");
-const e = require('express');
 const configuration = new Configuration({
     // TODO: replace apiKey
     apiKey: process.env.VERG_OPENAI_KEY,
@@ -26,10 +27,27 @@ var id = ''
 var vh = ''
 var type = ''
 
-var trialsList = []
-
 var currentExpression = "";
 var lastExpression = "";
+
+const usStates = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", 
+  "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", 
+  "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", 
+  "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", 
+  "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", 
+  "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+];
+
+// Array of corresponding state abbreviations
+const stateAbbreviations = [
+  "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", 
+  "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", 
+  "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", 
+  "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", 
+  "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+];
+
 
 var sponsoredList = [
   {
@@ -59,6 +77,16 @@ const config = {
     }
 }
 
+router.use(session({
+  secret: process.env.SESSION_KEY,
+  resave: false,
+  saveUninitialized: true,
+  rolling: true,
+  cookie: {
+      maxAge: 1000 * 60 * 15
+  }
+}));
+
 // TODO: You removed "getInfo" function and all calls to it.
 // You also removed the {version and id}, type is new.
 router.get('/Background', getInfo, (req, res) => {
@@ -80,6 +108,8 @@ router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
 });
 
 router.get('/Results', (req, res) => {
+  var trialsList = req.session.trialsList;
+  // console.log(trialsList);
   res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
@@ -88,12 +118,13 @@ function CTsWithDatabase(req, res, next) {
   // summarizeGPT don't return out of order -- it's a glorified for loop.
   // processNext() checks if we've already recorded the CT, if we have, retrieves it and stores in trialsList.GPTSummary
   // if we have not recorded it, it calls summarizeGPT, stores it in trialsList.GPTSummary and then inserts it into the ClinicalTrials table
-  if (currentExpression == lastExpression) {
+  /*if (currentExpression == lastExpression) {
     next();
     return;
-  }
-  lastExpression = currentExpression;
-  if (!trialsList) 
+  }*/
+  lastExpression = currentExpression;  
+  var trialsList = req.trialsList;
+  if (!trialsList || trialsList.length == 0) 
     trialsList = []
   let iterations = trialsList.length;
   let i = 0;
@@ -101,14 +132,8 @@ function CTsWithDatabase(req, res, next) {
   let idTracker = [];
   function processNext() { 
       if (i == trialsList.length) {
-          // TODO: Replace this line of code with your code to render the trialsList
-          // trialsList should contain all the same info and a new GPTSummary item
-          // console.log("=======Simplified Versions======");
-          // console.log(trialsList);
-          // console.log("Number of Trials: " + trialsList.length);
-          // console.log("End of search.");
+          req.session.trialsList = trialsList;
           next();
-          // return;
       }
       if (i < iterations) {
           // We do a sql.connect in every iteration of the loop because the table doesn't update until you disconnect and reconnect
@@ -116,7 +141,6 @@ function CTsWithDatabase(req, res, next) {
           
           sql.connect(config, function (err) {
               var request = new sql.Request();
-              // I created a table called ClinicalTrials -- that's where we will store CT ID's and GPTSummary's
               let queryString = `SELECT * FROM CLINICALTRIALS WHERE STUDYID='` + trialsList[i].NCTId + `'`;
               request.query(queryString, function (err, recordset) {
                   if (err) 
@@ -240,7 +264,7 @@ function getInfo(req, res, next) {
 }
 
 
-async function createClinicalTrialsString(fields) {
+async function createClinicalTrialsString_deprecated(fields) {
   // return new Promise((resolve) => {
     let expression = "";
     let conditions = [false, false, false]
@@ -305,72 +329,154 @@ async function createClinicalTrialsString(fields) {
   // });
 }
 
+
+async function createClinicalTrialsString(fields) {
+  // return new Promise((resolve) => {
+    let conditionString = "&query.cond=";
+    let conditions = [false, false, false]
+    // Health Condition Builder
+    if (fields.ConditionText1 && fields.ConditionText1 != "") {
+      conditionString += fields.ConditionText1;
+      conditions[0] = true;
+    }
+    if (fields.ConditionText2 && fields.ConditionText2 != "") {
+      if (conditions[0])
+      conditionString += " OR ";
+      conditionString += fields.ConditionText2
+      conditions[1] = true;
+    }
+    if (fields.ConditionText3 && fields.ConditionText3 != "") {
+      if (conditions[0] || conditions[1]) 
+        conditionString += " OR ";
+      conditionString += fields.ConditionText3
+      conditions[2] = true;
+    }
+
+    // Gender Builder
+    let genderString = "&query.term="
+    let gender = false;
+    if (fields.Gender && (fields.Gender == "Male" || fields.Gender == "Female")) {
+      genderString += "AREA[Gender] " + fields.Gender + " OR AREA[Gender] All";
+      gender = true;
+    }
+
+    // Location Builder
+    let locationString = "&query.locn=AREA[LocationCountry] United States"
+    let locationState = false;
+    let locationCity = false;
+    if (fields.LocationState != "---") {
+      locationString += " AREA[LocationState] " + fields.LocationState;
+      locationState = true;
+    }
+    if (fields.LocationCity && fields.LocationCity != "") {
+      if (locationState)
+        locationString += " AND AREA[LocationCity] " + fields.LocationCity;
+      else
+        locationString += " AREA[LocationCity] " + fields.LocationCity;
+      locationCity = true;
+    }
+
+    // Advanced String
+    let advancedString = "&filter.advanced="
+    let age = false;
+    if (fields.Age) {
+      advancedString += "AREA[MinimumAge]RANGE[MIN, " + fields.Age + " years] AND AREA[MaximumAge]RANGE[" + fields.Age + " years, MAX]";
+      age = true;
+    }
+    let healthyString = "AREA[HealthyVolunteers] yes"
+    if (age) 
+      advancedString += " AND " + healthyString;
+    else 
+      advancedString += healthyString;
+    
+    // Constants in String
+    let recruitingString = "&filter.overallStatus=RECRUITING";
+    
+ 
+    // Build
+    let expression = "";
+    if (conditions.includes(true))
+      expression += conditionString;
+    if (gender)
+      expression += genderString;
+    // if (locationState || locationCity)
+    expression += locationString;
+    expression += advancedString;
+    expression += recruitingString
+    
+    console.log("API String: " + expression);
+    return expression;
+    // resolve(expression);
+  // });
+}
+
 async function searchForCT(req, res, next) {
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
   currentExpression = expression;
+  /*
   if (currentExpression == lastExpression) {
     next();
     return;
-  }
-  const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`;
-  // const apiUrl = `https://clinicaltrials.gov/api/query/study_fields?expr=SEARCH[Study](AREA[NCTId] NCT03839940)&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&min_rnk=1&max_rnk=&fmt=json`
-  // console.log(apiUrl);
+  }*/
+  const apiUrl = `https://clinicaltrials.gov/api/v2/studies?format=json${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&countTotal=true`;
+  console.log("API URL: " + apiUrl);
+  var trialsList;
   trialsList = await axios.get(apiUrl)
   .then(response => {
-      var studies = response.data.StudyFieldsResponse.StudyFields
-      // console.log(studies);
-      let list = []
-      // console.log(list)
-      if (studies && studies.length > 0) {
-        list = studies.filter(study => {
-          let age = parseInt(req.body.Age)
-          // console.log(age)
-          let minNum = study.MinimumAge[0] ? parseInt(study.MinimumAge[0].replace(/[^0-9]/g, '')) : 0;
-          let maxNum = study.MaximumAge[0] ? parseInt(study.MaximumAge[0].replace(/[^0-9]/g, '')) : 150;
-          // console.log(minNum)
-          return (age >= minNum && age <= maxNum)
-        })
-      } 
-      return list
+      var studies = response.data.studies;
+      return studies;
   })
   .catch(err => {
     console.error('Error in retrieving trials...: ', err.message, apiUrl);
   });
 
+  var finalTrialsList = []
   if(trialsList && trialsList.length > 0) {
+    // We're adding a random trial to make sure they get a good number of studies
     if (trialsList.length > 5) {
       // Random Trial Added to End
       let randomInt = Math.floor(Math.random() * (trialsList.length - 1 - 5 + 1) + 5);
       let randomTrial = trialsList[randomInt];
-      // console.log(randomInt);
       trialsList = trialsList.slice(0,5)
       trialsList.push(randomTrial);
     } 
-    // console.log(trialsList[5]);
+    
     // GETTING FACILITIES LIST -- loop through all trials
     for (var i = 0; i < trialsList.length; i++) {
-      // remove duplications from InterventionType while we're here
-      // console.log(trialsList[i].NCTId);
-      // console.log(trialsList[i].InterventionType);
-      trialsList[i].InterventionType = [...new Set(trialsList[i].InterventionType )];
+      finalTrialsList[i] = {};
+      const interventions = trialsList[i].protocolSection.armsInterventionsModule.interventions;
+      if (interventions)
+        trialsList[i].InterventionType = [...new Set(interventions.map(intervention => intervention.type))];
+      else 
+        trialsList[i].InterventionType = ["Not listed"];
+      finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
       locationIndeces = [];
       facilities = []
+      facilityLocations = []
       var remaining = -1;
+      var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
       // get indeces of locations from cities array
       // If no city provided, we'll go by state, and if no state provided, we'll go by country (United States only)
       if (req.body.LocationCity && req.body.LocationCity != "") {
-        // console.log(req.body.LocationCity);
-        trialsList[i].LocationCity.forEach((city, index) => city === req.body.LocationCity ? locationIndeces.push(index) : null)
+        for (var j = 0; j < locationsArray.length; j++) {
+          if (locationsArray[j].city == req.body.LocationCity) {
+            locationIndeces.push(j);
+          }
+        }
       }
       else if (req.body.LocationState && req.body.LocationState != "---") {
-        // console.log(req.body.LocationState);
-        trialsList[i].LocationState.forEach((state, index) => state === req.body.LocationState ? locationIndeces.push(index) : null)
+        for (var j = 0; j < locationsArray.length; j++) {
+          if (locationsArray[j].state == req.body.LocationState) {
+            locationIndeces.push(j);
+          }
+        }
       }
       else {
-        // console.log(req.body.LocationCountry);
-        for (var j = 0; j < trialsList[i].LocationCountry.length; j++) {
-          locationIndeces.push(j);
+        for (var j = 0; j < locationsArray.length; j++) {
+          if (locationsArray[j].country == "United States") {
+            locationIndeces.push(j);
+          }
         }
       }
       // condense down to 5 locations if more than 5
@@ -380,17 +486,32 @@ async function searchForCT(req, res, next) {
       }
       // iterate through indeces and extract those facilities from facilities array
       for (var j = 0; j < locationIndeces.length; j++) {
-        facilities.push(trialsList[i].LocationFacility[locationIndeces[j]])
+        facilities.push(locationsArray[locationIndeces[j]].facility);
+        const stateIndex = usStates.indexOf(locationsArray[locationIndeces[j]].state);
+        if (stateIndex !== -1)
+          facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + stateAbbreviations[stateIndex]);
+        else
+          facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + locationsArray[locationIndeces[j]].state);
+
       }
       // set new property on trialsList for filtered facilities
-      if (remaining != -1)
-        trialsList[i]['RemainingFacilities'] = `... and ${remaining} other locations.`
-      trialsList[i]['FilteredFacilities'] = facilities;      
+      if (remaining != -1) {
+        finalTrialsList[i]['RemainingFacilities'] = `... and ${remaining} other locations.`
+      }
+      finalTrialsList[i]['FilteredFacilities'] = facilities;
+      finalTrialsList[i]['FacilityLocations'] = facilityLocations;
+      finalTrialsList[i]['LocationContact'] = trialsList[i].protocolSection.contactsLocationsModule.centralContacts;
+      finalTrialsList[i]['Condition'] = trialsList[i].protocolSection.conditionsModule.conditions;
+      finalTrialsList[i]['StudyType'] = trialsList[i].protocolSection.designModule.studyType;
+      finalTrialsList[i]['BriefTitle'] = trialsList[i].protocolSection.identificationModule.briefTitle;
+      finalTrialsList[i]['NCTId'] = trialsList[i].protocolSection.identificationModule.nctId;
+      finalTrialsList[i]['BriefSummary'] = trialsList[i].protocolSection.descriptionModule.briefSummary;
+      finalTrialsList[i]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
     }
   }
-  
-
-  next()
+  console.log(finalTrialsList.length);
+  req.trialsList = finalTrialsList;
+  next();
 }
 
 module.exports = router
