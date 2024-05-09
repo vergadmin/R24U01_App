@@ -1,6 +1,6 @@
 const express = require('express')
 const session = require('express-session');
-
+const AWS = require('aws-sdk');
 const router = express.Router()
 var sql = require("mssql");
 var axios = require("axios")
@@ -21,6 +21,13 @@ const MAX_TOKENS = 300
 const MAX_TITLE_TOKENS = 50
 const TEMPERATURE = 0
 // open ai constants --->
+
+
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION
+});
 
 // TODO: You previously deleted these variables.
 var id = ''
@@ -112,6 +119,45 @@ router.get('/Results', (req, res) => {
   // console.log(trialsList);
   res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList, sponsoredList: sponsoredList})
 })
+
+router.get('/SendEmail', SendEmail, (req, res) => {
+  res.send('Email Sent Successfully');
+});
+
+async function SendEmail(req, res, next) {
+  const message = req.body.message;
+  const subject = req.body.subject;
+  const studyContact = req.body.studyContact;
+  const userEmail = req.body.userEmail;
+
+  const params = {
+    Source: userEmail, // Must be verified in SES
+    Destination: {
+        ToAddresses: [studyContact],
+        BccAddresses: ['mayo_email@mayo.gov'] // The recipient's email address
+    },
+    Message: {
+        Subject: {
+            Data: subject
+        },
+        Body: {
+            Text: {
+                Data: message
+            }
+        }
+    }
+  };
+
+  try {
+      const data = await ses.sendEmail(params).promise();
+      console.log('Email sent:', data);
+      next();
+  } catch (err) {
+      console.error('Failed to send email:', err);
+      next();
+  }
+}
+
 
 function CTsWithDatabase(req, res, next) {
   // The following function "processNext()" is a wrapper function so that the async calls made to
