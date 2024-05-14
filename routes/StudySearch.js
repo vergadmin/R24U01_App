@@ -378,7 +378,7 @@ async function createClinicalTrialsString_deprecated(fields) {
 
 async function createClinicalTrialsString(fields) {
   // return new Promise((resolve) => {
-    let conditionString = "&query.cond=";
+    let conditionString = "query.cond=";
     let conditions = [false, false, false]
     // Health Condition Builder
     if (fields.ConditionText1 && fields.ConditionText1 != "") {
@@ -387,15 +387,15 @@ async function createClinicalTrialsString(fields) {
     }
     if (fields.ConditionText2 && fields.ConditionText2 != "") {
       if (conditions[0])
-      conditionString += " OR ";
-      conditionString += fields.ConditionText2
-      conditions[1] = true;
+        conditionString += " OR ";
+        conditionString += fields.ConditionText2
+        conditions[1] = true;
     }
     if (fields.ConditionText3 && fields.ConditionText3 != "") {
       if (conditions[0] || conditions[1]) 
         conditionString += " OR ";
-      conditionString += fields.ConditionText3
-      conditions[2] = true;
+        conditionString += fields.ConditionText3
+        conditions[2] = true;
     }
 
     // Gender Builder
@@ -419,7 +419,7 @@ async function createClinicalTrialsString(fields) {
         locationString += " AND AREA[LocationCity] " + fields.LocationCity;
       else
         locationString += " AREA[LocationCity] " + fields.LocationCity;
-      locationCity = true;
+        locationCity = true;
     }
 
     // Advanced String
@@ -451,6 +451,7 @@ async function createClinicalTrialsString(fields) {
     expression += recruitingString
     
     console.log("API String: " + expression);
+    expression = encodeURI(expression)
     return expression;
     // resolve(expression);
   // });
@@ -465,12 +466,13 @@ async function searchForCT(req, res, next) {
     next();
     return;
   }*/
-  const apiUrl = `https://clinicaltrials.gov/api/v2/studies?format=json${expression}&fields=NCTId%2CBriefTitle%2COverallStatus%2CBriefSummary%2CDetailedDescription%2CCondition%2CStudyType%2CMaximumAge%2CMinimumAge%2CGender%2CInterventionType%2CHealthyVolunteers%2CCentralContactEMail%2CCentralContactName%2CLocationCountry%2CLocationState%2CLocationCity%2CLocationFacility&countTotal=true`;
+  const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&countTotal=true`;
   console.log("API URL: " + apiUrl);
   var trialsList;
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.studies;
+      console.log("STUDIES LIST:", studies)
       return studies;
   })
   .catch(err => {
@@ -490,16 +492,17 @@ async function searchForCT(req, res, next) {
     
     // GETTING FACILITIES LIST -- loop through all trials
     for (var i = 0; i < trialsList.length; i++) {
+      // console.log("CONTACTS LOCATIONS MODULE:", trialsList[i].protocolSection.contactsLocationsModule)
       finalTrialsList[i] = {};
       const interventions = trialsList[i].protocolSection.armsInterventionsModule.interventions;
       if (interventions)
         trialsList[i].InterventionType = [...new Set(interventions.map(intervention => intervention.type))];
       else 
         trialsList[i].InterventionType = ["Not listed"];
-      finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
-      locationIndeces = [];
-      facilities = []
-      facilityLocations = []
+        finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
+        locationIndeces = [];
+        facilities = []
+        facilityLocations = []
       var remaining = -1;
       var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
       // get indeces of locations from cities array
@@ -546,7 +549,12 @@ async function searchForCT(req, res, next) {
       }
       finalTrialsList[i]['FilteredFacilities'] = facilities;
       finalTrialsList[i]['FacilityLocations'] = facilityLocations;
-      finalTrialsList[i]['LocationContact'] = trialsList[i].protocolSection.contactsLocationsModule.centralContacts;
+      if(trialsList[i].protocolSection.contactsLocationsModule.centralContacts) {
+        finalTrialsList[i]['LocationContact'] = trialsList[i].protocolSection.contactsLocationsModule.centralContacts;
+      } else {
+        finalTrialsList[i]['LocationContact'] = [];
+      }
+      
       finalTrialsList[i]['Condition'] = trialsList[i].protocolSection.conditionsModule.conditions;
       finalTrialsList[i]['StudyType'] = trialsList[i].protocolSection.designModule.studyType;
       finalTrialsList[i]['BriefTitle'] = trialsList[i].protocolSection.identificationModule.briefTitle;
