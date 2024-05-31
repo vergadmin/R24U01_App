@@ -20,10 +20,10 @@ async function getResults() {
     if (res.ok) {
         // console.log(res);
         var button = document.getElementById("results");
-        button.className = "enabled enabled-hover";
+        button.className = "green";
         button.innerText = "See Study Results";
         button.disabled = false;
-        button.style.backgroundColor = "#029500"
+        button.style.backgroundColor = "#22884C"
         var disabledText = document.getElementById("disabled-text");
         disabledText.innerText = "Your tailored list of trials are ready. Press the button below to see your list!"
         var loadedTitle = document.getElementById("loaded-title");

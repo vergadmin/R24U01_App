@@ -6,7 +6,7 @@ body {
 
 h1 {
     font-weight: 900;
-    color: #015495;
+    color: #0021A5;
 }
 
 p {
@@ -19,18 +19,21 @@ a {
 }
 
 button {
-    background-color: #015495;
-    padding: 15px;
+    background-color: #0021A5;
+    padding: 19px;
     border: 0px;
-    border-radius: 11px;
+    border-radius: 25px;
     color: white;
     font-size: 21px;
     transition: .2s ease-in-out;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
 }
 
 button:hover {
     cursor: pointer;
     transform: scale(1.1);
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    background-image: linear-gradient(90deg, rgba(0,33,165,1) 0%, rgba(0,38,87,1) 100%);
 }
 
 /* -- Comments on August Release -- 
@@ -42,7 +45,7 @@ button:hover {
 
 text-h1 {
     font-weight: 900;
-    color: #015495;
+    color: #0021A5;
     padding: 0px;
 }
 
@@ -56,13 +59,18 @@ text-button {
     padding: 12px;
     border: solid;
     border-width: 0px 0px 1px 4px;
-    color: #015495;
+    color: #0021A5;
     border-color:white white grey white;
     font-size: 20px;
 }
 
 .green {
-    background-color: #029500;
+    background-color: #22884C !important;
+    transition: .2s ease-in-out;
+}
+
+.green:hover {
+  background-image: linear-gradient(25deg, rgba(34,136,76,1) 0%, rgba(44,167,94,1) 100%)
 }
 
 .goog-te-banner-frame.skiptranslate {
@@ -100,7 +108,7 @@ body {
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: #015495;
+    background: #0021A5;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
   }
   .lds-ellipsis div:nth-child(1) {

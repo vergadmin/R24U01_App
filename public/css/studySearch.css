@@ -2,11 +2,11 @@ fieldset {
     margin: 15px;
     padding: 15px;
     border-radius: 7px;
-    border-color: #1e4a97;
+    border-color: #0021A5;
 }
 
 legend {
-    background-color: #1e4a97;
+    background-color: #0021A5;
     color: white;
     font-weight: 900;
     border-radius: 5px;
@@ -22,7 +22,7 @@ label, input, select {
     display: flex;
     flex-direction: column;
     width: 65%;
-    border: 1px solid #1e4a97;
+    border: 1px solid #0021A5;
     border-radius: 7px;
     padding: 45px;
     text-align: left;
@@ -47,7 +47,7 @@ label, input, select {
 }
 
 h3 {
-    color:#1e4a97;
+    color:#0021A5;
     font-size: 33px;
 }
 
@@ -81,7 +81,7 @@ li {
 }
 
 .sponsored {
-    background-color: #EE7E38;
+    background-color: #FA4616;
     color: white;
     margin-left: 9px;
     padding: 5px;
@@ -100,7 +100,7 @@ li {
 }
 
 #cities-list li:hover {
-    background-color: #1e4a97;
+    background-color: #0021A5;
     color: white;
     cursor: pointer;
     font-size: 23px;
@@ -115,7 +115,7 @@ li {
 }
 
 .enabled {
-    background-color: #015495;
+    background-color: #0021A5;
     padding: 15px;
     border: 0px;
     border-radius: 11px;
@@ -138,7 +138,7 @@ li {
 
 .red-validator {
     color: red;
-    background-color: #1e4a97;
+    background-color: #0021A5;
 }
 
 #conditions-list-1 {
@@ -152,7 +152,7 @@ li {
 }
 
 #conditions-list-1 li:hover {
-    background-color: #1e4a97;
+    background-color: #0021A5;
     color: white;
     cursor: pointer;
     font-size: 23px;
@@ -169,7 +169,7 @@ li {
 }
 
 #conditions-list-2 li:hover {
-    background-color: #1e4a97;
+    background-color: #0021A5;
     color: white;
     cursor: pointer;
     font-size: 23px;
@@ -186,7 +186,7 @@ li {
 }
 
 #conditions-list-3 li:hover {
-    background-color: #1e4a97;
+    background-color: #0021A5;
     color: white;
     cursor: pointer;
     font-size: 23px;
@@ -286,7 +286,7 @@ li {
   }
 
   .add-button {
-    background-color: #015495;
+    background-color: #0021A5;
     color: white;
   }
 

@@ -452,6 +452,7 @@ async function createClinicalTrialsString(fields) {
     
     console.log("API String: " + expression);
     expression = encodeURI(expression)
+    console.log("API URI: ", expression)
     return expression;
     // resolve(expression);
   // });
@@ -466,7 +467,7 @@ async function searchForCT(req, res, next) {
     next();
     return;
   }*/
-  const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&countTotal=true`;
+  const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&sort=%40relevance&countTotal=true`;
   console.log("API URL: " + apiUrl);
   var trialsList;
   trialsList = await axios.get(apiUrl)
@@ -554,7 +555,6 @@ async function searchForCT(req, res, next) {
       } else {
         finalTrialsList[i]['LocationContact'] = [];
       }
-      
       finalTrialsList[i]['Condition'] = trialsList[i].protocolSection.conditionsModule.conditions;
       finalTrialsList[i]['StudyType'] = trialsList[i].protocolSection.designModule.studyType;
       finalTrialsList[i]['BriefTitle'] = trialsList[i].protocolSection.identificationModule.briefTitle;

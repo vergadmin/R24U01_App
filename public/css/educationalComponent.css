@@ -8,7 +8,6 @@ video {
 }
 
 .education-navigation {
-    background-color: #015495;
     color: white;
     border: 0px;
     border-radius: 15px;
@@ -21,13 +20,11 @@ video {
 }
 
 .selected {
-    background-color: #EE7E38 !important;
+    background-color: #FA4616 !important;
 }
 
 .education-navigation:hover {
-    cursor: pointer;
-    background-color: #EE7E38;
-    transform: scale(1.1);
+    background-image: linear-gradient(25deg, rgba(250,70,22,1) 0%, rgba(242,169,0,1) 100%);
 }
 
 .character-selection-area {
@@ -45,17 +42,8 @@ video {
     margin: 15px;
 }
 
-.discover-button {
-    background-color: #029500;
-    padding: 15px;
-    border: 0px;
-    border-radius: 11px;
-    color: white;
-    font-size: 21px;
-}
-
 a {
-    color: #015495;
+    color: #0021A5;
 }
 
 a:hover {

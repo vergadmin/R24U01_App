@@ -4,7 +4,7 @@
 }
 
 .area {
-    border: 3px solid #EE7E38;
+    border: 3px solid #FA4616;
     border-radius: 15px;
     margin: 15px;
     padding: 15px;
@@ -12,13 +12,13 @@
 }
 
 h2 {
-    color: #015495;
+    color: #0021A5;
     font-size: 35px;
     margin-bottom: 0px;
 }
 
 h3 {
-    color: #015495;
+    color: #0021A5;
     font-size: 29px;
 }
 

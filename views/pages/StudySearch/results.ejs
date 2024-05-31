@@ -10,6 +10,7 @@
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
+    <link href="/css/results.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
     <script src="/scripts/registerClicks.js"></script>
@@ -24,6 +25,24 @@
     <header>
         <%- include('../../partials/header'); %>
     </header>
+    <!-- The Email Modal -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form action="#">
+                <p class="email-modal-title">Reach out to Study Coordinator</p>
+                <label for="email">Please enter your email:</label>
+                <p class="label-info">We ask for your email for two reasons: (1) to send you a copy of this email, and (2) so the research coordinator knows who to contact.</p>
+                <input type="email" id="email" name="email" placeholder="youremail@email.com" required><br><br>
+        
+                <label for="message">Message To Coordinator:</label>
+                <p class="label-info"><b>Please replace [YOUR NAME] below with your email.</b>The following message will be sent to the coordinator. <b>This message will also be CC'ed to our research team.</b> You may edit any other parts of the message before submitting!</p>
+                <textarea id="message" name="message" rows="15" cols="50" required></textarea><br><br>
+
+                <div class="center"> <input type="submit" value="Submit"></div>
+            </form>
+        </div>
+    </div>
     <div class="container">
         <div class="progress-container">
             <div class="progress" id="progress"> </div>
@@ -105,12 +124,14 @@
                 </div>
                 <hr/>
                 <% if (trialsList[i].LocationContact.length === 0) { %>
-                    <p>We could not find a primary study contact for this study. Please visit <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">this link (click here)</a> and look under "Contacts and Locations" to find a contact or location closest to you.</p>
-                <% } else { %>
-                    <p>If you're interested in this study, click the "Copy Email Text" to copy text to send in an email to the central contact. Then, click the "Send Email" button to email the central contact!</p>
+                    <p>Unfortunately we could not find a study coordinator for this study. However, if you're interested in this study, click the button below to connect with our research team!</p>
                     <div class="center">
-                        <button onclick="sendToDatabase(`ResultsCopyEmailText`, `clicked`);copyEmailText(`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Copy Email Text</button>
-                        <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`);window.open(`mailto:<%= trialsList[i].LocationContact[0].email %>`);"">Send Email</button>         
+                        <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`Alex Research Team`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Connect with Our Research Team!</button>         
+                    </div>
+                <% } else { %>
+                    <p>If you're interested in this study, click the button below to get connected with the research coordinator</p>
+                    <div class="center">
+                        <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Connect with Research Coordinator!</button>         
                     </div>
                 <% } %>
                 <br/>
@@ -148,4 +169,5 @@
         <br/>
     </div>
 </body>
+<script src="/scripts/StudySearch/results.js"></script>
 </html>

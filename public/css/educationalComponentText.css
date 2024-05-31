@@ -13,7 +13,7 @@ video {
 }
 
 .education-navigation {
-    background-color: #015495;
+    background-color: #0021A5;
     color: white;
     border: 0px;
     border-radius: 15px;
@@ -32,7 +32,7 @@ video {
 
 .education-navigation:hover {
     cursor: pointer;
-    background-color: #EE7E38;
+    background-color: #FA4616;
     transform: scale(1.1);
 }
 
@@ -51,18 +51,8 @@ video {
     margin: 0px 15px 0px 0px;
 }
 
-.discover-button {
-    background-color: #029500;
-    padding: 15px;
-    border: 0px;
-    border-radius: 11px;
-    color: white;
-    font-size: 21px;
-    margin-left: 10px;
-}
-
 a {
-    color: #015495;
+    color: #0021A5;
 }
 
 a:hover {
@@ -75,7 +65,7 @@ a:hover {
 }
 
 .area {
-    border: 3px solid #EE7E38;
+    border: 3px solid #FA4616;
     border-radius: 15px;
     margin: 15px;
     padding: 15px;
@@ -83,13 +73,13 @@ a:hover {
 }
 
 h2 {
-    color: #015495;
+    color: #0021A5;
     font-size: 35px;
     margin-bottom: 0px;
 }
 
 h3 {
-    color: #015495;
+    color: #0021A5;
     font-size: 29px;
 }
 
