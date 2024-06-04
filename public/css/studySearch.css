@@ -298,3 +298,9 @@ li {
   a #link {
     color: white !important;
   }
+
+
+#role-type {
+    display: flex;
+    flex-direction: column;
+}

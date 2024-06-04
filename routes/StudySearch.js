@@ -94,6 +94,10 @@ router.use(session({
   }
 }));
 
+router.get('/Role', getInfo, (req, res) => {
+  res.render("pages/StudySearch/role", {id: id, vh: vh, type: type})
+})
+
 // TODO: You removed "getInfo" function and all calls to it.
 // You also removed the {version and id}, type is new.
 router.get('/Background', getInfo, (req, res) => {
