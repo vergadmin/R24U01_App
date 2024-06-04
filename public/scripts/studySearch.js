@@ -1,3 +1,5 @@
+const session = require("express-session");
+
 window.addEventListener("load", () => {
     console.log("SESSION STORAGE", sessionStorage)
     // const form = document.getElementById('background-info');
@@ -12,12 +14,28 @@ function validateAndSendFormData(id) {
     const form = document.getElementById(id);
     if (id === 'role-type') {
         const roleInput = form.querySelectorAll('input[type="radio"][name="Role"]');
-        const roleSelected = Array.from(roleInput).some(button => button.checked);
+        const roleSelected = Array.from(roleInput).find(button => button.checked);
         console.log("HERE")
         console.log(roleSelected)
         if (roleSelected) {
-            sendFormData(id);
+            sessionStorage.setItem('Role', roleSelected.value)
             window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vh}/StudySearch/Background`
+        }
+        else {
+            if (!roleSelected) {
+                if (!document.getElementById('role-info')) {
+                    const roleLegend = document.querySelector('.role-legend');
+                    const pElementRole = document.createElement('p');
+                    pElementRole.textContent = "This field is required."
+                    pElementRole.classList.add('small-text-red');
+                    pElementRole.id = 'genroleder-info';
+                    const roleInput = roleLegend.nextElementSibling;
+                    roleInput.insertAdjacentElement('beforebegin', pElementRole);
+                }
+            }
+            else {
+                if (document.getElementById('role-info')) document.getElementById('role-info').remove();
+            }        
         }
     } else {
         const ageInput = form.querySelector('#Age');
