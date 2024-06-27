@@ -1,0 +1,118 @@
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 85%;
+  margin: 35px 0;
+}
+
+.progress-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  width: 20%;
+}
+
+.step p {
+  margin: 10px 0 0;
+  color: #999;
+  font-size: 15px;
+}
+
+.bullet {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #dcdcdc;
+  color: #dcdcdc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  position: relative;
+  z-index: 2;
+}
+
+.bullet.active {
+  background: #fa4616;
+  border: 3px solid #fa4616;
+  color: #fff;
+}
+
+.bullet.visited {
+  background: #002657;
+  border: 3px solid #002657;
+  color: white;
+}
+
+.step::before,
+.step::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    height: 4px;
+    background: #dcdcdc;
+    z-index: 1;
+}
+
+.step::before {
+    left: -50%;
+    width: 100%;
+    z-index: 1;
+}
+
+.step::after {
+    left: 50%;
+    width: 100%;
+    z-index: 1;
+}
+
+.step:first-child::before {
+    display: none;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step.active::before,
+.step.active::after {
+  background-image: linear-gradient(
+    90deg,
+    #002657,#fa4616
+  );
+}
+
+.step.visited::before {
+    background: #002657;
+}
+
+@media only screen and (max-width: 600px) {
+  .progress-container {
+    width: 95%;
+    margin-top: 5px;
+  }
+  .step p {
+    font-size: 9px;
+  }
+  .step {
+    width: 15%;
+  }
+  .step::before {
+    left: -65%;
+  }
+
+  .step::after {
+      left: 65%;
+  }
+}

@@ -6,7 +6,7 @@ body {
 
 h1 {
     font-weight: 900;
-    color: #0021A5;
+    color: #002657;
 }
 
 p {
@@ -19,7 +19,7 @@ a {
 }
 
 button {
-    background-color: #0021A5;
+    background-color: #002657;
     padding: 19px;
     border: 0px;
     border-radius: 25px;
@@ -45,7 +45,7 @@ button:hover {
 
 text-h1 {
     font-weight: 900;
-    color: #0021A5;
+    color: #002657;
     padding: 0px;
 }
 
@@ -59,7 +59,7 @@ text-button {
     padding: 12px;
     border: solid;
     border-width: 0px 0px 1px 4px;
-    color: #0021A5;
+    color: #002657;
     border-color:white white grey white;
     font-size: 20px;
 }
@@ -108,7 +108,7 @@ body {
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: #0021A5;
+    background: #002657;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
   }
   .lds-ellipsis div:nth-child(1) {
@@ -151,4 +151,3 @@ body {
       transform: translate(24px, 0);
     }
   }
-  

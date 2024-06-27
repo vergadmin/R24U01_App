@@ -6,9 +6,8 @@ console.log(role)
 if (document.getElementById("background-info")) {
     console.log("BACKGROUND INFO EXISTS")
     if (role === 'Caregiver') {
-        document.getElementById('age-text').innerHTML = `&nbsp; How old is your loved one? <span class="red-validator">*</span> &nbsp;`
-        document.getElementById('gender-text').innerHTML = `&nbsp; What is the gender of your loved one? <span class="red-validator">*</span> &nbsp;`
-        document.getElementById('state-text').innerHTML = "&nbsp; What state is your loved one located in? &nbsp;"
-        document.getElementById('city-text').innerHTML = "&nbsp; What city is your loved one located in? &nbsp;"
+        document.getElementById('background-description').innerHTML = `Please fill out the information below so we can find research studies <b>you might qualify for</b>.`
+    } else {
+        document.getElementById('background-description').innerHTML = `Please fill out the information below so we can find research studies <b>the person you're entering information for might qualify for</b>.`
     }
 }

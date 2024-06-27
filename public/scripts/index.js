@@ -1,7 +1,9 @@
+document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+console.log(document.cookie)
+
 window.addEventListener("load", () => {
     // console.log("SAVING SESSION INFO LOCALLY")
     // console.log(document.URL)
-
     let browserInfo = ""
     let dateTime = ""
     var type = document.URL.split('/').reverse()[0]
@@ -38,6 +40,7 @@ function handleLanguageChange(mutationsList, observer) {
             }
 
             sessionStorage.setItem("language", mutation.target.lang)
+            document.getElementById("begin-intervention").style.opacity = "100"
         }
     });
 }

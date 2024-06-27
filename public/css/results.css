@@ -44,13 +44,13 @@
     text-transform: uppercase;
     font-weight: 700;
     font-size: 27px;
-    color: #0021A5
+    color: #002657
   }
 
 label {
   margin: 5px 0;
   font-weight: 700;
-  color: #0021A5;
+  color: #002657;
 }
 
 input, textarea {

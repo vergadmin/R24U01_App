@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
-    <link href="/css/progressBar.css" rel="stylesheet" type="text/css">
+    <link href="/css/progress.css" rel="stylesheet" type="text/css">
     <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
@@ -25,15 +25,41 @@
         <%- include('../../partials/header'); %>
     </header>
     <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="step">
+                    <div class="bullet active"><span>1</span></div>
+                    <p>Role</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>2</span></div>
+                    <p>Background</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>3</span></div>
+                    <p>Preferences</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>4</span></div>
+                    <p>Registries</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>5</span></div>
+                    <p>Studies</p>
+                </div>
+            </div>
+        </div>
+        <h1 class="title">Select Your Role</h1>
         <p>Before we begin, are you a patient or a caregiver?</p>
         <div class="form-area">
             <form onsubmit="return false" id="role-type">
                 <fieldset>
-                    <legend class = "role-legend">&nbsp; Please select one of the following.<span class="red-validator">*</span> &nbsp;</legend>
+                    <legend class = "role-legend">&nbsp;Please select your role.<span class="red-validator">&nbsp;(*Required)&nbsp;</span></legend>
                     <input type="radio" id="patient" name="Role" value="Patient" />
-                    <label for="patient">I am a Patient</label>
+                    <label for="patient">Patient</label>
+                    <br/>
                     <input type="radio" id="caregiver" name="Role" value="Caregiver" />
-                    <label for="caregiver">I am a Caregiver</label>
+                    <label for="caregiver">Caregiver</label>
                 </fieldset>
          
                 <br/>

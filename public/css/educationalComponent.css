@@ -11,10 +11,10 @@ video {
     color: white;
     border: 0px;
     border-radius: 15px;
-    padding: 15px;
-    margin: 7px;
-    font-size: 21px;
-    width: 205px;
+    padding: 9px 11px;
+    margin: 7px 15px;
+    font-size: 19px;
+    width: 175px;
     height: 105px;
     transition: .2s ease-in-out;
 }
@@ -23,8 +23,13 @@ video {
     background-color: #FA4616 !important;
 }
 
-.education-navigation:hover {
+.selected:hover {
     background-image: linear-gradient(25deg, rgba(250,70,22,1) 0%, rgba(242,169,0,1) 100%);
+}
+
+.education-navigation:hover {
+    transform: none;
+    animation: pulse-animation 2s infinite;
 }
 
 .character-selection-area {
@@ -42,10 +47,46 @@ video {
     margin: 15px;
 }
 
-a {
-    color: #0021A5;
+.discover {
+    font-size: 17px !important;
+    margin-top: 5px;
 }
 
-a:hover {
-    text-decoration: underline;
+.discover:hover {
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    video {
+        width: 100%;
+    }
+
+    .navigation-area {
+        flex-direction: column;
+    }
+
+    .education-navigation {
+        font-size: 15px;
+        height: 55px;
+    }
+
+    .discover-button-area {
+       position: absolute;
+       bottom: 11px;
+       justify-content: center;
+    }
+
+    .discover {
+        font-size: 13px !important;
+        margin-top: 5px;
+    }
 }

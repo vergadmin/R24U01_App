@@ -23,11 +23,12 @@
     <div class="container">
         <img class="alex-logo" src="/images/logo.png" /> 
         <h1 class="title">Welcome to Research Studies with ALEX!</h1>
-        <p>Please select your language:</p>
-        <div id="google_translate_element"></div>
-        <p>When you're ready, click the "Begin" button below!</p>
+        <div class="language-container">
+            <p style="margin-top:0px">To begin, please select your language:</p>
+            <div id="google_translate_element"></div>
+        </div>        
         <a href="/<%=id%>/<%=type%>/characters">
-            <button class="green">Begin</button>
+            <button id="begin-intervention" class="green pulse">Begin</button>
         </a>
     </div>
     </body>

@@ -1,6 +1,6 @@
 .progress-container::before {
     content: "";
-    background: #0021A5;
+    background: #002657;
     position: absolute;
     top: 50%;
     left: 0;
@@ -20,7 +20,7 @@
   }
   
   .progress {
-    background: #0021A5;
+    background: #002657;
     position: absolute;
     top: 50%;
     left: 0;
@@ -32,9 +32,9 @@
   }
   
   .circle {
-    border: 1px solid #0021A5;
+    border: 1px solid #002657;
     background: white;
-    color: #0021A5;
+    color: #002657;
     border-radius: 50%;
     height: 100px;
     width: 100px;
@@ -52,6 +52,6 @@
   }
 
   .circle.visited {
-    background: #0021A5;
+    background: #002657;
     color: white;
   }

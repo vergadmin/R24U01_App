@@ -13,7 +13,7 @@ video {
 }
 
 .education-navigation {
-    background-color: #0021A5;
+    background-color: #002657;
     color: white;
     border: 0px;
     border-radius: 15px;
@@ -52,7 +52,7 @@ video {
 }
 
 a {
-    color: #0021A5;
+    color: #002657;
 }
 
 a:hover {
@@ -73,13 +73,13 @@ a:hover {
 }
 
 h2 {
-    color: #0021A5;
+    color: #002657;
     font-size: 35px;
     margin-bottom: 0px;
 }
 
 h3 {
-    color: #0021A5;
+    color: #002657;
     font-size: 29px;
 }
 

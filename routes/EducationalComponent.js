@@ -42,7 +42,7 @@ let buttons = [
     },
     {
         url: '4',
-        text: "How to participate in research and where to start?"
+        text: "How to participate and where to start?"
     }
 ]
 

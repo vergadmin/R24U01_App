@@ -4,24 +4,57 @@
 }
 
 .area {
-    border: 3px solid #FA4616;
-    border-radius: 15px;
-    margin: 15px;
-    padding: 15px;
+    padding: 25px;
+    position: relative;
+    background-color: white;
+    background-clip: padding-box;
+    border: 5px solid transparent;
+    border-radius: 1.75rem;
+    margin: 35px;
     width: 49%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+.area::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+    z-index: -1;
+    background-image: linear-gradient(
+      45deg,
+      #fa4616,#002657
+    );
+    border-radius: 1.75rem;
+  }
+
 h2 {
-    color: #0021A5;
+    color: #002657;
     font-size: 35px;
     margin-bottom: 0px;
 }
 
 h3 {
-    color: #0021A5;
-    font-size: 29px;
+    color: #002657;
+    font-size: 25px;
 }
 
 .minor {
-    font-size: 21px !important;
+    font-size: 19px !important;
+}
+
+@media only screen and (max-width: 600px) {
+    .areas {
+        flex-direction: column;
+        align-items: center;
+    }
+    .area {
+        width: 85%;
+        margin: 25px 5px;
+    }
 }
