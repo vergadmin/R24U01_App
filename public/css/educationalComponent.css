@@ -80,7 +80,7 @@ video {
     }
 
     .discover-button-area {
-       position: absolute;
+       position: relative;
        bottom: 11px;
        justify-content: center;
     }
