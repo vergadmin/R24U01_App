@@ -19,7 +19,7 @@ legend {
     align-items: center;
 }
 
-#background-description {
+#background-description, #preferences-description {
     width: 65%;
     font-size: 21px;
 }
@@ -310,7 +310,7 @@ li {
     flex-direction: column;
 }
 @media only screen and (max-width: 600px) {
-    #background-description {
+    #background-description, #preferences-description {
         width: 91%;
     }
     legend {
