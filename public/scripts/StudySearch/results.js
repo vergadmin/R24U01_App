@@ -6,19 +6,24 @@ var emailModal = document.getElementById("emailModal");
 var emailCloseBtn = document.getElementsByClassName("close")[0];
 
 // When the user clicks the button, open the email modal 
-function openEmailModal(contactName, studyTitle, briefSummary) {
+function openEmailModal(contactName, contactEmail, studyTitle, briefSummary, nctID) {
   console.log("here!")
   emailModal.style.display = "flex";
-  let text= `Hi ${contactName},
+  let text= `Hello, 
 
-My name is [YOUR NAME]. I saw your study ${studyTitle} through the Research Studies section on the ALEX site. I’m interested in participating and would like more information. Here’s the description of your study that I read:
-  
-${briefSummary}
-  
-Thank you,
-  
-[YOUR NAME]`
+I saw the following research study on the ALEX website, and am interested in participating and would like more information.
+
+Title: ${studyTitle}
+NCT ID: ${nctID}
+
+AI-Generated Description I Read: ${briefSummary}`
     document.getElementById("message").value = text;
+
+    if (contactName && contactEmail !== null) {
+      document.getElementById("coordinator-contact").innerHTML = contactName + ": " + contactEmail + " "
+    } else {
+      document.getElementById("coordinator-contact").style.display = none;
+    }
 }
 
 // When the user clicks on <span> (x), close the email modal

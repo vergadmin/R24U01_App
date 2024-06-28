@@ -30,15 +30,38 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <form action="#">
-                <p class="email-modal-title">Reach out to Study Coordinator</p>
-                <label for="email">Please enter your email:</label>
-                <p class="label-info">We ask for your email for two reasons: (1) to send you a copy of this email, and (2) so the research coordinator knows who to contact.</p>
-                <input type="email" id="email" name="email" placeholder="youremail@email.com" required><br><br>
-        
-                <label for="message">Message To Coordinator:</label>
-                <p class="label-info"><b>Please replace [YOUR NAME] below with your email.</b>The following message will be sent to the coordinator. <b>This message will also be CC'ed to our research team.</b> You may edit any other parts of the message before submitting!</p>
-                <textarea id="message" name="message" rows="15" cols="50" required></textarea><br><br>
-
+                <p class="email-modal-title">Connect with Research Coordinator</p>
+                <div class="row">
+                    <div class="col">
+                        <label for="fname">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Name">
+                    </div>
+                    <div class="col">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="email@email.com" required>
+                    </div>
+                </div>
+                <p class="label-info" style="margin-top: 11px !important">
+                    <em><b>Why are we asking for your name and email address?</b></em>
+                </p>
+                <ol class="label-info">
+                    <li>The research coordinator will receive the email and know who to contact.</li>
+                    <li>You will receive a copy of the email for your record.</li>
+                    <li>Our Research team will receive a copy of the email.</li>
+                </ol>
+                <br>
+                <label for="message">Message</label>
+                <p style="margin:0 0 7px 0; font-size:17px">The following auto-generated message will be sent. You may edit the message before submitting.</p>
+                <textarea id="message" name="message" rows="10" cols="50" required></textarea>
+                <br>
+                <label for="message">Message Recipients</label>
+                <p style="margin:0 0 3px 0; font-size:17px">Your message will be sent to the following emails.</p>
+                <ul style="margin: 0">
+                    <li><span class="bold-blue" id="coordinator-contact"></span> <em>*Required. This is the <b>study’s email contact.</b></em></li>
+                    <li><span class="bold-blue">Alex Research Team: etch@mayo.edu</span> <em>*Required. This is our <b>research team.</b></em></li>
+                </ul>
+                <hr style="margin: 11px 0"/>
+                <p style="margin:0 0 7px 0; font-size:17px; text-align: center">By clicking “Send Message,” I acknowledge that my Name, Email, and Message will be shared with the contacts listed under Message Recipients.</p>
                 <div class="center"> <input type="submit" value="Submit"></div>
             </form>
         </div>
@@ -88,39 +111,40 @@
             <div class="study-card">
                 <h3><%= trialsList[i].GPTTitle%>*</h3>
                 <p class="info"><strong>Official Title:</strong> <%= trialsList[i].BriefTitle %></p>
+                <br/>
                 <h4>Brief Summary*:</h4>
                 <p><%= trialsList[i].GPTSummary%></p>
                 <hr/>
-                <h4>Condition(s): </h4>
-                <p>
-                    <% for (var j = 0; j < trialsList[i].Condition.length - 1; j++) { %>
-                        <%= trialsList[i].Condition[j]%>,  
-                    <% } %>
-                    <%= trialsList[i].Condition[trialsList[i].Condition.length - 1]%>
-                </p>
-                <hr/>
-                <div class="study-row">
-                   <div class="row">
-                    <h4>Intervention/Treatment:</h4>
-                    <p>
-                        <% for (var j = 0; j < trialsList[i].InterventionType.length - 1; j++) { %>
-                            <%= trialsList[i].InterventionType[j]%>, 
+                <h4>More Information:</h4>
+                <div class="mini-card">
+                    <h5>Condition(s): </h5>
+                    <div class="tag-row">
+                        <% for (var j = 0; j < trialsList[i].Condition.length - 1; j++) { %>
+                            <div class="tag-item"><%= trialsList[i].Condition[j]%></div>  
                         <% } %>
-                        <%= trialsList[i].InterventionType[trialsList[i].InterventionType.length - 1]%>
-                    </p>
+                        <div class="tag-item"><%= trialsList[i].Condition[trialsList[i].Condition.length - 1]%></div>
+                    </div>
+                </div>
+                <div class="study-row">
+                   <div class="col mini-card">
+                    <h5>Intervention/Treatment:</h5>
+                    <div class="tag-row">
+                        <% for (var j = 0; j < trialsList[i].InterventionType.length - 1; j++) { %>
+                            <div class="tag-item"><%= trialsList[i].InterventionType[j]%></div>
+                        <% } %>
+                        <div class="tag-item"><%= trialsList[i].InterventionType[trialsList[i].InterventionType.length - 1]%></div>
+                    </div>
                    </div>
-                   <div class = "gap"></div>
-                   <div class="row">
-                    <h4>Study Type:</h4>
-                    <p>
-                            <%= trialsList[i].StudyType%>  
-                    </p>
+                   <div class="col mini-card">
+                    <h5>Study Type:</h5>
+                    <div class="tag-row">
+                        <div class="tag-item"><%= trialsList[i].StudyType%></div>  
+                    </div>
                    </div>
                 </div>
-                <hr/>
                 <div class="study-row">
-                    <div class="row">
-                        <h4>Study Location(s): </h4>
+                    <div class="col mini-card">
+                        <h5 style="margin-bottom: 5px;">Study Location(s): </h5>
                         <% for (var j = 0; j < trialsList[i].FilteredFacilities.length; j++) {%>
                             <p><%= trialsList[i].FilteredFacilities[j]%><br>
                             <%= trialsList[i].FacilityLocations[j]%></p>
@@ -128,13 +152,12 @@
                         <% if (trialsList[i].RemainingFacilities) %>
                         <p><%= trialsList[i].RemainingFacilities%></p>
                     </div>
-                    <div class = "gap"></div>
-                    <div class="row">
-                        <h4>Study Contact:</h4>
+                    <div class="col mini-card">
+                        <h5 style="margin-bottom: 5px;">Study Contact:</h5>
                         <% if (trialsList[i].LocationContact.length === 0) { %>
                         <p>We could not find a primary study contact for this study. Please visit <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">this link (click here)</a> and look under "Contacts and Locations" to find a contact or location closest to you.</p>
                         <% } else { %>
-                        <p>Name: <%= trialsList[i].LocationContact[0].name%> </p>
+                        <p style="margin-bottom: 0px;">Name: <%= trialsList[i].LocationContact[0].name%> </p>
                         <p>Email: <%= trialsList[i].LocationContact[0].email%> </p>
                         <% } %>
                     </div>
@@ -142,13 +165,15 @@
                 <hr/>
                 <% if (trialsList[i].LocationContact.length === 0) { %>
                     <p>Unfortunately we could not find a study coordinator for this study. However, if you're interested in this study, click the button below to connect with our research team!</p>
+                    <br/>
                     <div class="center">
-                        <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`Alex Research Team`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Connect with Our Research Team!</button>         
+                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(null, null, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Our Research Team!</button>         
                     </div>
                 <% } else { %>
                     <p>If you're interested in this study, click the button below to get connected with the research coordinator</p>
+                    <br/>
                     <div class="center">
-                        <button onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`)">Connect with Research Coordinator!</button>         
+                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].LocationContact[0].email %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Research Coordinator!</button>         
                     </div>
                 <% } %>
                 <br/>
