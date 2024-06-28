@@ -126,6 +126,11 @@ app.post("/:id/:type/RetrieveConditions", (req, res) => {
     })
 })
 
+// Root route that redirects to valid route
+app.get('/', (req, res) => {
+    res.redirect('/test-id/vh');
+  });
+
 // ID is userID from qualtrics, type is vh or text from Qualtrics
 app.get('/:id/:type', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     id = req.params.id
