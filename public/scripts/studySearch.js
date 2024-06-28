@@ -1,5 +1,3 @@
-const session = require("express-session");
-
 window.addEventListener("load", () => {
     console.log("SESSION STORAGE", sessionStorage)
     // const form = document.getElementById('background-info');

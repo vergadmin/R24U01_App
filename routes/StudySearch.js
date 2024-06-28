@@ -433,7 +433,7 @@ async function createClinicalTrialsString(fields) {
       advancedString += "AREA[MinimumAge]RANGE[MIN, " + fields.Age + " years] AND AREA[MaximumAge]RANGE[" + fields.Age + " years, MAX]";
       age = true;
     }
-    let healthyString = "AREA[HealthyVolunteers] yes"
+    let healthyString = "AREA[HealthyVolunteers] " + fields.HealthyVolunteer
     if (age) 
       advancedString += " AND " + healthyString;
     else 
@@ -463,6 +463,7 @@ async function createClinicalTrialsString(fields) {
 }
 
 async function searchForCT(req, res, next) {
+  console.log("IN SEARCH FOR CT")
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
   currentExpression = expression;
