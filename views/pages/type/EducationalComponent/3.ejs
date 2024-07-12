@@ -22,7 +22,11 @@
     </header>
     <div class="container">
         <video autoplay controls>
-            <source src="https://research-studies-with-alex.s3.amazonaws.com/Feb16Release/<%=vh%>_3_02_16_24.mp4" type="video/mp4">
+            <% if (vh === 'swe') { %>
+                <source src="https://research-studies-with-alex.s3.amazonaws.com/CustomAvatars/<%=vh%>_3" type="video/mp4">
+            <% } else { %>
+                <source src="https://research-studies-with-alex.s3.amazonaws.com/Feb16Release/<%=vh%>_3_02_16_24.mp4" type="video/mp4">
+            <% } %>
         </video>
         <br/>
         <div class="navigation-area">
