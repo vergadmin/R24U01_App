@@ -14,6 +14,7 @@ app.use(express.json())
 var sql = require("mssql");
 
 var vh = ''
+var vhType = ''
 var type = ''
 var visitNum = -1;
 
@@ -61,12 +62,19 @@ app.post('/updateDatabase', async (req, res) => {
     console.log("IN UPDATE DATABASE")
     // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
-        if (key==="Character") {
-            console.log("GOT VH TYPE")
+        if (key==="vCHE") {
+            console.log("GOT vCHE")
             vh = value
             userInfo["vh"] = vh;
             console.log("UDPATED USER INFO", userInfo)
             console.log("VH is:", vh)
+        }
+        if (key==="VHType") {
+            console.log("GOT VH TYPE")
+            vhType = value
+            userInfo["vhType"] = vhType;
+            console.log("UDPATED USER INFO", userInfo)
+            console.log("VH TYPE is:", vhType)
         }
         setList += key + `='` + value + `', `
     }
@@ -332,8 +340,11 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
 // Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent');
 app.use('/:id/:type/:vh/EducationalComponent', function(req,res,next) {
+    console.log("IN SERVER ROUTER, vh is:", vh)
+    console.log("IN SERVER ROUTER, vhType is:", vhType)
     req.id = id;
     req.vh = vh
+    req.vhType = vhType
     req.type = type
     req.userInfo = userInfo
     next();

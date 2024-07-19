@@ -4,6 +4,7 @@ var sql = require("mssql");
 
 var id = ''
 var vh = ''
+var vhType = ''
 var type = ''
 
 const config = {
@@ -47,31 +48,33 @@ let buttons = [
 ]
 
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, type: type, buttons: buttons, url: 'Introduction'})
+    res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/1", {id: id, vh: vh, type: type, buttons: buttons, url: '1'})
+    res.render("pages/type/EducationalComponent/1", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/2", {id: id, vh: vh, type: type, buttons: buttons, url: '2'})
+    res.render("pages/type/EducationalComponent/2", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/3", { id: id, vh: vh, type: type, buttons: buttons, url: '3'})
+    res.render("pages/type/EducationalComponent/3", { id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, type: type, buttons: buttons, url: '4'})
+    res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '4'})
 })
 
 function getInfo(req, res, next) {
     id = req.id
     vh = req.vh
+    vhType = req.vhType
     type = req.type
     userInfo = req.userInfo
-    console.log("IN EDUCATIONAL ROUTER, vh is:", vh)
+    console.log("IN EDUCATIONAL ROUTER, vh is:", req.vh)
+    console.log("IN EDUCATIONAL ROUTER, vhType is:", req.vhType)
     next()
 }
 
