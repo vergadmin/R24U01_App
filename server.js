@@ -187,6 +187,7 @@ app.get('/:id/:type/:vh/Discover', (req, res) => {
 })
 
 function checkPreviousVisit(req, res, next) {
+    console.log("CHECK PREVIOUS VISIT")
     if (req.session.visitedIndex) {
         next();
         return;
@@ -204,16 +205,16 @@ function checkPreviousVisit(req, res, next) {
         console.log('Checking for ID:', req.params.id);
 
         // Query Check for Existing Entry In Table
-        const checkString = `
-        SELECT VisitNum FROM R24U01
-        WHERE ID = @ID
+        let checkString = `
+        SELECT * FROM R24U01
+        WHERE ID = '` + req.params.id + `'
         AND VisitNum = (
                 SELECT max(VisitNum)
                 FROM R24U01
-                WHERE ID = @ID 
-        )`;
+                WHERE ID = '` + req.params.id + `' 
+        )`
 
-        request.input('ID', sql.VarChar(50), req.params.id);
+        console.log(checkString)
 
         request.query(checkString, function (err, recordset) {
             if (err) {
@@ -236,6 +237,7 @@ function checkPreviousVisit(req, res, next) {
 }
 
 function addVisitToDatabase(req, res, next) {
+    console.log("ADD VISIT")
     if (!req.session.visitedIndex) {
         req.session.visitedIndex = true;
     } else {
@@ -249,11 +251,6 @@ function addVisitToDatabase(req, res, next) {
     if (!userInfo["ID"]) userInfo["ID"] = id;
     if (!userInfo["InterventionType"]) userInfo["InterventionType"] = type;
 
-    // Log the values being inserted to debug
-    console.log('ID:', userInfo.ID);
-    console.log('VisitNum:', userInfo.visitNum);
-    console.log('InterventionType:', userInfo.InterventionType);
-
     sql.connect(config, function (err) {
         if (err) {
             console.error('SQL connection error:', err);
@@ -262,11 +259,11 @@ function addVisitToDatabase(req, res, next) {
         }
 
         const request = new sql.Request();
-        const queryString = `INSERT INTO R24U01 (ID, VisitNum, InterventionType) VALUES (@ID, @VisitNum, @InterventionType)`;
-
-        request.input('ID', sql.VarChar(50), userInfo.ID);
-        request.input('VisitNum', sql.Int, userInfo.visitNum);
-        request.input('InterventionType', sql.VarChar(50), userInfo.InterventionType);
+        let queryString = `INSERT INTO R24U01 (ID, VisitNum, InterventionType) VALUES ('` + userInfo.ID  + `',` + userInfo.visitNum + `,'` + userInfo.InterventionType + `')`;
+        // request.input('ID', sql.VarChar(50), userInfo.ID);
+        // request.input('VisitNum', sql.Int, userInfo.visitNum);
+        // request.input('InterventionType', sql.VarChar(50), userInfo.InterventionType);
+        console.log(queryString)
 
         request.query(queryString, function (err, recordset) {
             if (err) {

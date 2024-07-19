@@ -267,15 +267,13 @@ function getUserRole(req, res, next) {
 
       // Query Check for Existing Entry In Table
       const checkString = `
-      SELECT * FROM R24U01
-      WHERE ID = @ID
-      AND VisitNum = (
-              SELECT max(VisitNum)
-              FROM R24U01
-              WHERE ID = @ID 
-      )`;
-
-      request.input('ID', sql.VarChar(50), id);
+        SELECT * FROM R24U01
+        WHERE ID = '` + id + `'
+        AND VisitNum = (
+                SELECT max(VisitNum)
+                FROM R24U01
+                WHERE ID = '` + id + `' 
+        )`
 
       request.query(checkString, function (err, recordset) {
           if (err) {
