@@ -16,7 +16,7 @@ function validateAndSendFormData(id) {
         console.log("HERE")
         console.log(roleSelected)
         if (roleSelected) {
-            sessionStorage.setItem('Role', roleSelected.value)
+            sendFormData(id);
             window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vh}/StudySearch/Background`
         }
         else {
@@ -93,6 +93,23 @@ async function sendFormData(id) {
     let data = Object.fromEntries(formData)
 
     sessionStorage.setItem(id, JSON.stringify(data))
+
+    let url = '/updateDatabase';
+
+    let res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    });
+    if (res.ok) {
+        let ret = await res.json();
+        return JSON.parse(ret.data);
+
+    } else {
+        return `HTTP error: ${res.status}`;
+    }
 }
 
 if(window.location.toString().indexOf("Results") != -1){
