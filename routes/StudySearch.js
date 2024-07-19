@@ -122,7 +122,6 @@ router.post('/Results', searchForCT, CTsWithDatabase, getUserRole, (req, res) =>
 
 router.get('/Results', (req, res) => {
   var trialsList = req.session.trialsList;
-  console.log(role);
   res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, role: role, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
@@ -193,7 +192,7 @@ function CTsWithDatabase(req, res, next) {
           
           sql.connect(config, function (err) {
               var request = new sql.Request();
-              let queryString = `SELECT * FROM CLINICALTRIALS WHERE STUDYID='` + trialsList[i].NCTId + `'`;
+              let queryString = `SELECT * FROM ClinicalTrials WHERE STUDYID='` + trialsList[i].NCTId + `'`;
               request.query(queryString, function (err, recordset) {
                   if (err) 
                       console.log(err);
@@ -221,7 +220,7 @@ function CTsWithDatabase(req, res, next) {
                           idTracker.push(trialsList[i].NCTId);
                           // Insert new entry into table
                           // Useful SQL Code to empty out table, greatly helped with debugging: TRUNCATE TABLE ClinicalTrials;
-                          let updateString = `INSERT INTO CLINICALTRIALS (StudyID, GPTTitle, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + title + `','` + summary + `')`;
+                          let updateString = `INSERT INTO ClinicalTrials (StudyID, GPTTitle, GPTSummary) VALUES ('` + trialsList[i].NCTId + `','` + title + `','` + summary + `')`;
                           // console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
                               if (err) 
@@ -502,16 +501,13 @@ async function createClinicalTrialsString(fields) {
     expression += advancedString;
     expression += recruitingString
     
-    console.log("API String: " + expression);
     expression = encodeURI(expression)
-    console.log("API URI: ", expression)
     return expression;
     // resolve(expression);
   // });
 }
 
 async function searchForCT(req, res, next) {
-  console.log("IN SEARCH FOR CT")
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
   currentExpression = expression;
@@ -521,12 +517,10 @@ async function searchForCT(req, res, next) {
     return;
   }*/
   const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&sort=%40relevance&countTotal=true`;
-  console.log("API URL: " + apiUrl);
   var trialsList;
   trialsList = await axios.get(apiUrl)
   .then(response => {
       var studies = response.data.studies;
-      console.log("STUDIES LIST:", studies)
       return studies;
   })
   .catch(err => {
@@ -616,7 +610,6 @@ async function searchForCT(req, res, next) {
       finalTrialsList[i]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
     }
   }
-  console.log(finalTrialsList.length);
   req.trialsList = finalTrialsList;
   next();
 }

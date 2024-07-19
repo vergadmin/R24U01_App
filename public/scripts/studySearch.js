@@ -17,7 +17,7 @@ function validateAndSendFormData(id) {
         console.log(roleSelected)
         if (roleSelected) {
             sendFormData(id);
-            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vh}/StudySearch/Background`
+            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Background`
         }
         else {
             if (!roleSelected) {
@@ -46,7 +46,7 @@ function validateAndSendFormData(id) {
         if (ageValid && genderSelected) {
             // Redirect the user if inputs are valid
             sendFormData(id);
-            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vh}/StudySearch/Preferences`
+            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Preferences`
         }
         else {
             if (!ageValid) {
