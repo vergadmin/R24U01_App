@@ -32,7 +32,9 @@ AWS.config.update({
 // TODO: You previously deleted these variables.
 var id = ''
 var vh = ''
+var vhType = ''
 var type = ''
+var role = ''
 
 var currentExpression = "";
 var lastExpression = "";
@@ -112,7 +114,7 @@ router.get('/Registries', (req, res) => {
   res.render("pages/StudySearch/registries", {id: id, vh: vh, type: type})
 })
 
-router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
+router.post('/Results', searchForCT, CTsWithDatabase, getUserRole, (req, res) => {
   // All middleware have executed in order by this point
   // You can send the response here 
   res.send('Dummy Response after both functions.');
@@ -120,8 +122,8 @@ router.post('/Results', searchForCT, CTsWithDatabase, (req, res) => {
 
 router.get('/Results', (req, res) => {
   var trialsList = req.session.trialsList;
-  // console.log(trialsList);
-  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, trialsList: trialsList, sponsoredList: sponsoredList})
+  console.log(role);
+  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, role: role, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
 router.get('/SendEmail', SendEmail, (req, res) => {
@@ -253,6 +255,51 @@ function CTsWithDatabase(req, res, next) {
   processNext();
 }
 
+function getUserRole(req, res, next) {
+  sql.connect(config, function (err) {
+      if (err) {
+          console.error('SQL connection error:', err);
+          next(err);
+          return;
+      }
+
+      const request = new sql.Request();
+      console.log('Checking for ID:', id);
+
+      // Query Check for Existing Entry In Table
+      const checkString = `
+      SELECT * FROM R24U01
+      WHERE ID = @ID
+      AND VisitNum = (
+              SELECT max(VisitNum)
+              FROM R24U01
+              WHERE ID = @ID 
+      )`;
+
+      request.input('ID', sql.VarChar(50), id);
+
+      request.query(checkString, function (err, recordset) {
+          if (err) {
+              console.error('SQL query error:', err);
+              next(err);
+              return;
+          }
+
+          if (recordset.recordset.length === 0) {
+              console.log("NO RECORD FOUND")
+              role = 'Patient';
+          } else {
+              console.log("RECORD FOUND")
+              console.log(recordset.recordset[0])
+              role = recordset.recordset[0].Role;
+          }
+
+          next();
+      });
+  });
+
+}
+
 
 // summarizeGPT is an async helper function used to call openai API and returns the result
 async function summarizeGPT(briefSummary, detailedDescription) {
@@ -308,6 +355,7 @@ function getInfo(req, res, next) {
     id = req.id
     userInfo = req.userInfo
     vh = req.vh
+    vhType = req.vhType
     type = req.type
     // console.log("type is " + type);
     next()

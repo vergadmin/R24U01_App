@@ -344,6 +344,7 @@ const { json } = require('body-parser');
 app.use('/:id/:type/:vh/StudySearch', function(req,res,next){
     req.id = id;
     req.vh = vh
+    req.vhType = vhType
     req.type = type
     req.userInfo = userInfo
     next();
