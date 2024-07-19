@@ -73,16 +73,11 @@ function getInfo(req, res, next) {
     vhType = req.vhType
     type = req.type
     userInfo = req.userInfo
-    console.log("IN EDUCATIONAL ROUTER, vh is:", req.vh)
-    console.log("IN EDUCATIONAL ROUTER, vhType is:", req.vhType)
     next()
 }
 
 function updateDatabase(req, res, next) {
-    // console.log("IN UPDATE DATABASE")
-    // console.log(req.url)
     let dbEntry = req.url.slice(1)
-    // console.log(dbEntry)
     userInfo = req.userInfo;
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -94,7 +89,7 @@ function updateDatabase(req, res, next) {
 
         // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
         let queryString = `
-        UPDATE R24
+        UPDATE R24U01
         SET Educational_` + dbEntry + `= 'clicked'
         WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;

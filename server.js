@@ -16,7 +16,7 @@ var sql = require("mssql");
 var vh = ''
 var vhType = ''
 var type = ''
-var visitNum = -1;
+var id = '';
 
 
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
@@ -58,7 +58,6 @@ app.use(session({
 
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
-    console.log(userInfo)
     console.log("IN UPDATE DATABASE")
     // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
@@ -79,7 +78,7 @@ app.post('/updateDatabase', async (req, res) => {
         setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    // console.log(setList);
+    console.log(setList);
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -90,7 +89,7 @@ app.post('/updateDatabase', async (req, res) => {
         var request = new sql.Request();
 
         let queryString = `
-        UPDATE R24
+        UPDATE R24U01
         SET ` + setList + 
         ` WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
@@ -169,7 +168,7 @@ app.get('/:id/:type/:vh/Discover', (req, res) => {
         var request = new sql.Request();
 
         let queryString = `
-        UPDATE R24
+        UPDATE R24U01
         SET Discover = 'clicked'
         WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
@@ -195,113 +194,91 @@ function checkPreviousVisit(req, res, next) {
     var visitN = -1;
     // console.log(userInfo);
     sql.connect(config, function (err) {
-        var request = new sql.Request();
-        
+        if (err) {
+            console.error('SQL connection error:', err);
+            next(err);
+            return;
+        }
+
+        const request = new sql.Request();
+        console.log('Checking for ID:', req.params.id);
+
         // Query Check for Existing Entry In Table
-        let checkString = `
-        SELECT VisitNum FROM R24
-        WHERE ID = '` + req.params.id + `'
-        AND DateTime = (
-                SELECT max(DateTime)
-                FROM R24
-                WHERE ID = '` + req.params.id + `' 
-        )`
-        request.query(checkString, function(err, recordset) {
-            if (err) console.log(err);
-            if (recordset.recordset.length === 0) {
-                visitN = 0;
+        const checkString = `
+        SELECT VisitNum FROM R24U01
+        WHERE ID = @ID
+        AND VisitNum = (
+                SELECT max(VisitNum)
+                FROM R24U01
+                WHERE ID = @ID 
+        )`;
+
+        request.input('ID', sql.VarChar(50), req.params.id);
+
+        request.query(checkString, function (err, recordset) {
+            if (err) {
+                console.error('SQL query error:', err);
+                next(err);
+                return;
             }
-            else {
+
+            if (recordset.recordset.length === 0) {
+                visitN = 1;
+            } else {
                 visitN = recordset.recordset[0].VisitNum + 1;
             }
-            visitNum = visitN;
-            userInfo['visitNum'] = visitNum;
+
+            userInfo['visitNum'] = visitN;
             next();
-        })
-    })
+        });
+    });
 
 }
 
 function addVisitToDatabase(req, res, next) {
-    // After first time, we mark visitedIndex as true, and then we don't want to do it again.
     if (!req.session.visitedIndex) {
         req.session.visitedIndex = true;
-    }
-    else {
+    } else {
         next();
         return;
     }
-    id = req.params.id
-    type = req.params.type
-    if (!userInfo["ID"])
-        userInfo["ID"] = id;
-    if (!userInfo["VHType"])
-        userInfo["VHType"] = type;
+
+    id = req.params.id;
+    type = req.params.type;
+
+    if (!userInfo["ID"]) userInfo["ID"] = id;
+    if (!userInfo["InterventionType"]) userInfo["InterventionType"] = type;
+
+    // Log the values being inserted to debug
+    console.log('ID:', userInfo.ID);
+    console.log('VisitNum:', userInfo.visitNum);
+    console.log('InterventionType:', userInfo.InterventionType);
+
     sql.connect(config, function (err) {
-        var request = new sql.Request();
-        let queryString = `INSERT INTO R24 (ID, VisitNum, VHType) VALUES ('` + userInfo.ID + `',` + userInfo.visitNum + `,'` + userInfo.VHType + `')`;
+        if (err) {
+            console.error('SQL connection error:', err);
+            next(err);
+            return;
+        }
+
+        const request = new sql.Request();
+        const queryString = `INSERT INTO R24U01 (ID, VisitNum, InterventionType) VALUES (@ID, @VisitNum, @InterventionType)`;
+
+        request.input('ID', sql.VarChar(50), userInfo.ID);
+        request.input('VisitNum', sql.Int, userInfo.visitNum);
+        request.input('InterventionType', sql.VarChar(50), userInfo.InterventionType);
+
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
-        })
-    })
-    next()
-}
-
-function updateDatabase(req, res, next) {
-    let dbEntry = req.url.slice(1)
-    // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
-    sql.connect(config, function (err) {
-
-        if (err) console.log(err);
-
-        // create Request object
-        var request = new sql.Request();
-
-        // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
-        let queryString = `
-        UPDATE R24
-        SET Educational_` + dbEntry + `= 'clicked'
-        WHERE ID = '` + userInfo.ID + `' 
-        AND VisitNum = '` + userInfo.visitNum + `'`;
-        request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
-        }); 
-        // res.send("Updated.");
-    
+            if (err) {
+                console.error('SQL query error:', err);
+                next(err);
+                return;
+            }
+            next();
+        });
     });
-    // END DATABASE STUFF
-
-    next();
 }
 
-// Potentially Deprecated
-function setVHType(req, res, next) {
-    if (req.session.visitedIndex) {
-        next();
-        return;
-    }
-    if (userInfo.P ===  'Text') {
-        userInfo['VHType'] = 'text';
-    }
-    else {
-        // Change Black/White to contains Black/White potentially (based on answers for Survey Item)
-        if (userInfo.G === 'Female' && userInfo.R ==='Black') {
-            userInfo['VHType'] = 'bfe'
-        }
-        else if (userInfo.G === 'Male' && userInfo.R ==='Black') {
-            userInfo['VHType'] = 'bme'
-        }
-        else if (userInfo.G === 'Female' && userInfo.R ==='White') {
-            userInfo['VHType'] = 'wfe'
-        }
-        else if (userInfo.G === 'Male' && userInfo.R ==='White') {
-            userInfo['VHType'] = 'wme'
-        } else {
-            userInfo['VHType'] = 'bfe'
-        }
-    }
-    next()
-}
 app.post('/:id/:type/RetrieveCities', (req, res) => {
     id = req.params.id
     type = req.params.type

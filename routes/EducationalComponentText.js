@@ -105,7 +105,7 @@ function updateDatabase(req, res, next) {
 
         // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
         let queryString = `
-        UPDATE R24
+        UPDATE R24U01
         SET Educational_` + dbEntry + `= 'clicked'
         WHERE ID = '` + userInfo.ID + `' 
         AND VisitNum = '` + userInfo.visitNum + `'`;
