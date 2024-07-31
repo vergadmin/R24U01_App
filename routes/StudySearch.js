@@ -36,9 +36,6 @@ var vhType = ''
 var type = ''
 var role = ''
 
-var currentExpression = "";
-var lastExpression = "";
-
 const usStates = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", 
   "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", 
@@ -169,11 +166,6 @@ function CTsWithDatabase(req, res, next) {
   // summarizeGPT don't return out of order -- it's a glorified for loop.
   // processNext() checks if we've already recorded the CT, if we have, retrieves it and stores in trialsList.GPTSummary
   // if we have not recorded it, it calls summarizeGPT, stores it in trialsList.GPTSummary and then inserts it into the ClinicalTrials table
-  /*if (currentExpression == lastExpression) {
-    next();
-    return;
-  }*/
-  lastExpression = currentExpression;  
   var trialsList = req.trialsList;
   if (!trialsList || trialsList.length == 0) 
     trialsList = []
@@ -348,82 +340,13 @@ async function titleizeGPT(title, briefSummary, detailedDescription) {
 }
 
 function getInfo(req, res, next) {
-    // console.log("IN MIDDLEWARE OF EDUCATIONAL COMPONENT - REQUEST PARAMS:")
     id = req.id
     userInfo = req.userInfo
     vh = req.vh
     vhType = req.vhType
     type = req.type
-    // console.log("type is " + type);
     next()
 }
-
-
-async function createClinicalTrialsString_deprecated(fields) {
-  // return new Promise((resolve) => {
-    let expression = "";
-    let conditions = [false, false, false]
-    let healthConditions = "";
-
-    // Health Condition Builder
-    if (fields.ConditionText1 && fields.ConditionText1 != "") {
-      healthConditions += "(" + fields.ConditionText1
-      conditions[0] = true;
-    }
-    if (fields.ConditionText2 && fields.ConditionText2 != "") {
-      if (!conditions[0])
-        healthConditions += "("
-      else 
-        healthConditions += " OR "
-      healthConditions += fields.ConditionText2
-      conditions[1] = true
-    }
-    if (fields.ConditionText3 && fields.ConditionText3 != "") {
-      if (!conditions[0] && !conditions[1]) 
-        healthConditions += "("
-      else 
-        healthConditions += " OR "
-        healthConditions += fields.ConditionText3
-      conditions[2] = true
-    }
-    healthConditions
-    if (!conditions[2] && (conditions[0] || conditions[1])) {
-      expression += ") AND ";
-    }
-    if (conditions[0] || conditions[1] || conditions[2])
-      healthConditions += ")";
-
-    expression = "SEARCH[Location](AREA[LocationCountry] United States "; 
-    if (fields.LocationState != "---") {
-      expression += "AREA[LocationState] " + fields.LocationState + " AND ";
-    }
-    if (fields.LocationCity && fields.LocationCity != "") {
-      expression += "AREA[LocationCity] " + fields.LocationCity + " AND ";
-    }
-    expression += "AREA[LocationStatus] Recruiting)";
-    // Comment that Rashi said to include:
-    // If a user put in Male or Female, we'll give them studies for Male or Female (and also studies that include all genders)
-    // If a user put in Not listed or Prefer not to say, we'll just return all studies regardless of gender
-    if (fields.Gender && (fields.Gender == "Male" || fields.Gender == "Female")) {
-      expression += " AND SEARCH[Study](AREA[Gender] " + fields.Gender + " OR AREA[Gender] All)";
-    }
-    
-    // Append the Health Conditinos to end depending on option.
-    if (fields.HealthyVolunteer == "Accepts Healthy Volunteers") {
-      expression += " AND SEARCH[Study](AREA[HealthyVolunteers] " + fields.HealthyVolunteer + ")";
-    }
-    else if (fields.HealthyVolunteer == "Both") {
-      expression += " AND (SEARCH[Study](AREA[HealthyVolunteers] Accepts Healthy Volunteers) OR " + healthConditions + ")";
-    }
-    else if (fields.HealthyVolunteer == "No") {
-      expression += " AND SEARCH[Study](AREA[HealthyVolunteers] " + fields.HealthyVolunteer + ") AND " + healthConditions;
-    }
-
-    return expression;
-    // resolve(expression);
-  // });
-}
-
 
 async function createClinicalTrialsString(fields) {
   // return new Promise((resolve) => {
@@ -498,8 +421,12 @@ async function createClinicalTrialsString(fields) {
     expression += locationString;
     expression += advancedString;
     expression += recruitingString
+
+    // Max results set to 50
+    let maxResults = "&pageSize=50";
+    expression += maxResults;
     
-    expression = encodeURI(expression)
+    expression = encodeURI(expression);
     return expression;
     // resolve(expression);
   // });
@@ -508,12 +435,6 @@ async function createClinicalTrialsString(fields) {
 async function searchForCT(req, res, next) {
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
-  currentExpression = expression;
-  /*
-  if (currentExpression == lastExpression) {
-    next();
-    return;
-  }*/
   const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&sort=%40relevance&countTotal=true`;
   var trialsList;
   trialsList = await axios.get(apiUrl)
@@ -527,15 +448,6 @@ async function searchForCT(req, res, next) {
 
   var finalTrialsList = []
   if(trialsList && trialsList.length > 0) {
-    // We're adding a random trial to make sure they get a good number of studies
-    if (trialsList.length > 5) {
-      // Random Trial Added to End
-      let randomInt = Math.floor(Math.random() * (trialsList.length - 1 - 5 + 1) + 5);
-      let randomTrial = trialsList[randomInt];
-      trialsList = trialsList.slice(0,5)
-      trialsList.push(randomTrial);
-    } 
-    
     // GETTING FACILITIES LIST -- loop through all trials
     for (var i = 0; i < trialsList.length; i++) {
       // console.log("CONTACTS LOCATIONS MODULE:", trialsList[i].protocolSection.contactsLocationsModule)
@@ -545,10 +457,10 @@ async function searchForCT(req, res, next) {
         trialsList[i].InterventionType = [...new Set(interventions.map(intervention => intervention.type))];
       else 
         trialsList[i].InterventionType = ["Not listed"];
-        finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
-        locationIndeces = [];
-        facilities = []
-        facilityLocations = []
+      finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
+      locationIndeces = [];
+      facilities = []
+      facilityLocations = []
       var remaining = -1;
       var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
       // get indeces of locations from cities array
@@ -606,10 +518,40 @@ async function searchForCT(req, res, next) {
       finalTrialsList[i]['NCTId'] = trialsList[i].protocolSection.identificationModule.nctId;
       finalTrialsList[i]['BriefSummary'] = trialsList[i].protocolSection.descriptionModule.briefSummary;
       finalTrialsList[i]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
+
+      if (finalTrialsList.length >= 30) 
+        break
     }
   }
   req.trialsList = finalTrialsList;
   next();
 }
 
+async function categorizeClinicalTrials(trialsList) {
+
+}
+
+async function categorizeGPT(title, briefSummary, detailedDescription) {
+  // console.log("IN TITLEIZE GPT")
+  // console.log(title, briefSummary, detailedDescription);
+  const headers = {
+      'Authorization': `Bearer ${process.env.VERG_OPENAI_KEY}`
+    };
+  const prompt = TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
+  try {
+      const result = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+          model: 'gpt-4o-mini',
+          messages: [{role: 'user', content: `${prompt}`}],
+          },
+          { headers }
+      );
+      const botResponse = result.data.choices[0].message.content;
+      // console.log(botResponse);
+      return botResponse;
+  } catch (err) {
+      console.log(err);
+  }
+}
 module.exports = router
