@@ -17,6 +17,12 @@ async function sendToDatabase(column, value) {
         if (value === 'bfe') {
             logCharacterToDB("VHType", "bf")
         }
+        if (value === 'bme') {
+            logCharacterToDB("VHType", "bm")
+        }
+        if (value === 'wme') {
+            logCharacterToDB("VHType", "wm")
+        }
         console.log(sessionStorage)
     }
 

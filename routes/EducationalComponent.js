@@ -48,6 +48,7 @@ let buttons = [
 ]
 
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
+    console.log(vh, vhType)
     res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: 'Introduction'})
 })
 
