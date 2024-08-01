@@ -36,20 +36,20 @@
             <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area selected">
                         <%= buttons[i].text %>
                         </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area">
                         <%= buttons[i].text %>
                         </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-            <a href="/<%=id%>/<%=type%>/t/Discover">
+            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
                 <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
@@ -59,7 +59,7 @@
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
                 <div class ="discover-container discover-button-area">
-                    <a href="/<%=id%>/<%=type%>/t/Discover">
+                    <a href="/<%=id%>/<%=interventionType%>/t/Discover">
                         <button class="green">Discover Research Opportunities</button>
                     </a>
                 </div>
@@ -67,12 +67,12 @@
             <text-p><%-text1%></text-p>
             <% for (var i = 1; i < buttons.length; i++) { %>
                 <br>
-                <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
                     <text-p>&emsp;&#x2022; <%= buttons[i].text %></text-p>
                 </a>
             <% } %>
             <br>
-            <a href="/<%=id%>/<%=type%>/t/Discover">
+            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
                 <text-p class="text-p-discover">&emsp;&#x2022; Discover Research Opportunities</text-p>
             </a>
         </div>

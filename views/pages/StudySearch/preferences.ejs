@@ -52,15 +52,14 @@
         <p id="preferences-description"></p>
         <div class="form-area">
             <form onsubmit="return false" id="preferences">
-                <fieldset>
-                    <legend class = "preferences-legend">&nbsp;Please select one.<span class="red-validator">&nbsp;(*Required)&nbsp;</span></legend>
+                <div class="single-select-button">
                     <input type="radio" id="search" name="Preferences" value="Search" />
                     <label for="search">Yes, I'd like to search for a specific diagnosis.</label>
-                    <br/>
+                </div>
+                <div class="single-select-button">
                     <input type="radio" id="browse" name="Preferences" value="Browse" />
-                    <label for="browse">No, I'm just browsing.</label>
-                </fieldset>
-         
+                    <label for="browse">No, I'm just browsing.</label>    
+                </div>     
                 <br/>
             </form>
             <button class="green" onclick="validateAndSendFormData(`preferences`)">Next</button>

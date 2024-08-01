@@ -153,8 +153,8 @@ async function sendGeneralData(browserInfo, deviceType, os, dateTime) {
     });
     if (res.ok) {
         let ret = await res.json();
-        return JSON.parse(ret.data);
-
+        console.log(ret)
+        return ret.message
     } else {
         return `HTTP error: ${res.status}`;
     }

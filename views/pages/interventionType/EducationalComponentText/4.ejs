@@ -14,9 +14,11 @@
     <title>ALEX</title>
 </head>
 <!-- Text Variables for Clarity :) -->
-<% var mainTitle = `Why Consider Participating?` %>
+<% var mainTitle = `How To Participate In Research And Where To Start?` %>
 
-<% var text1 = `We have learned a lot about improving people’s health and wellbeing with the help of research studies. But, there is still more work to be done. Doctors, scientists, and people like you are working together right now on research studies that will help you, your family, and future generations. There is still much to learn and you can help. People often have different or multiple reasons to consider participating in a research study. Some participate to receive a potentially helpful treatment that may benefit their health. Others participate so that study results found today may help people in the future. Sometimes people may even participate because they are interested in the study topic itself.  Whatever reasons you have to consider participating, it is important to know that it is always your choice to participate in a research study. It’s ok to ask questions and meet the research team as you make your decision to start participating. And even if you agree to participate, you can change your mind at any time and stop your participation, no matter what your reason is.` %>
+<% var text1 = `Our goal is to give all people the option to be in research studies because when people with different backgrounds and experiences participate in studies, the information we learn from study results is relevant to as many people as possible. But, not all people can be offered the same research studies. Every study has specific requirements in order to enroll, such as age, sex, or type of disease. Some may even ask for only healthy participants, with no major health concerns. Sometimes, these eligibility requirements can make looking for and enrolling in research studies pretty overwhelming! That’s where my team and I come in. We’re working with health researchers at the University of Florida to identify a few current research studies that you may be eligible for. So when we’re done, you’ll have the option to answer a few questions about yourself, so that we can find some studies that might be a good fit for you. All of your responses will be strictly confidential and will not be shared.` %>
+
+<% var text2 = `You can discuss these studies with your doctor or directly contact the study team for more information. And remember: even if you reach out to a study team, your participation is always voluntary. You can choose not to participate or drop out of a study at any time. You can also ask your doctor if there are any research studies happening right now that you should consider. If there are, you can ask more specific questions based on what I shared with you today. When we’re done, you’ll have another option to download our guide, which includes a list of questions you may want to ask.`%>
 <body>
     <div id="load">
         <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
@@ -37,20 +39,20 @@
             <br>
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area selected">
                         <%= buttons[i].text %>
                         </text-button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=id%>/<%=type%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
                         <text-button class = "navigation-area">
                         <%= buttons[i].text %>
                         </text-button>                       
                     </a>
                 <% } %>
             <% } %>
-            <a href="/<%=id%>/<%=type%>/t/Discover">
+            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
                 <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
             </a>
         </div>
@@ -60,12 +62,14 @@
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
                 <div class ="discover-container discover-button-area">
-                    <a href="/<%=id%>/<%=type%>/t/Discover">
+                    <a href="/<%=id%>/<%=interventionType%>/Discover">
                         <button class="green">Discover Research Opportunities</button>
                     </a>
                 </div>
             </div>
             <text-p><%-text1%></text-p>
+            <br><br>
+            <text-p><%-text2%></text-p>
             <br><br>
         </div>
         

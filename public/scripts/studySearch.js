@@ -112,7 +112,6 @@ function validateAndSendFormData(id) {
 
 async function sendFormData(id) {
     // console.log("IN SEND TO SERVER SEND FORM DATA")
-
     var htmlForm = document.getElementById(id)
     var formData = new FormData(htmlForm)
     let data
@@ -123,6 +122,14 @@ async function sendFormData(id) {
             selectedCards.push(value);
         });
         data = selectedCards.reduce((acc, cur) => ({ ...acc, [cur]: 'yes' }), {});
+        const jsonObject = JSON.parse(sessionStorage.getItem('preferences'));
+        if (jsonObject['Preferences'] === 'Search') {
+            console.log("User is searching")
+        }
+        if (jsonObject['Preferences'] === 'Browse') {
+            console.log("User is browsing")
+            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Browse`
+        }
     } else {
         console.log(Object.fromEntries(formData))
         data = Object.fromEntries(formData)
@@ -144,8 +151,7 @@ async function sendFormData(id) {
     });
     if (res.ok) {
         let ret = await res.json();
-        return JSON.parse(ret.data);
-
+        return ret.message
     } else {
         return `HTTP error: ${res.status}`;
     }

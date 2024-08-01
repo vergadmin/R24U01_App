@@ -14,12 +14,6 @@ app.use(express.json())
 var sql = require("mssql");
 
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
-const vhTypes = ["bfe", "bme", "wfe", "wme", "hfe", "hme", "hfs", "hms"];
-// Modify based on Miriam/Emma's Qualtrics:
-const orderOfInfo =  ["I", "G", "E", "R"];
-const columnsInAG = 369
-const columnsInHO = 305
-const columnsInPZ = 355
 
 
 const config = {
@@ -51,19 +45,12 @@ app.use(session({
 
 app.post('/updateDatabase', async (req, res) => {
     let setList = ''
-    console.log("IN UPDATE DATABASE")
     // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
-        if (key==="vCHE") {
-            req.session.params.vCHE = value
-        }
-        if (key==="VHType") {
-            req.session.params.vhType = value
-        }
         setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    console.log(setList);
+    // console.log(setList);
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
@@ -78,28 +65,29 @@ app.post('/updateDatabase', async (req, res) => {
         SET ` + setList + 
         ` WHERE ID = '` + req.session.params.id + `' 
         AND VisitNum = ` + req.session.params.visitNum;
-        console.log(queryString);
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err) 
-
-            res.send("Updated.");
+            res.status(200).json({ message: 'Updated.' });
         }); 
     
     });
     // END DATABASE STUFF
 })
 
-app.post("/:id/:type/RetrieveConditions", (req, res) => {
+app.post('/storeCharacterInfoInServer', async (req, res) => {
+    req.session.params.vCHE = req.body.vCHE
+    req.session.params.vhType = req.body.VHType
+    res.status(200).json({ message: 'OK' });
+})
+
+app.post("/:id/:interventionType/RetrieveConditions", (req, res) => {
     let searchValue = (Object.entries(req.body)[0][1])
-    // console.log(searchValue);
     const columnConditions = columnNames.map(column => `${column} LIKE '%${searchValue}%'`).join(' OR ')
     // const finalConditions = columnConditions.slice(0, -3);
     let queryString = `
     SELECT TOP 10 diseases FROM Diseases
     WHERE ${columnConditions}
     `;
-
-    // console.log(queryString)
 
     sql.connect(config, function (err) {
         if (err) console.log(err)
@@ -124,36 +112,36 @@ app.get('/', (req, res) => {
     res.redirect('/test-id/vh');
   });
 
-// ID is userID from qualtrics, type is vh or text from Qualtrics
-app.get('/:id/:type', checkPreviousVisit, addVisitToDatabase, (req, res) => {
+// ID is userID from qualtrics, interventionType is vh or text from Qualtrics
+app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     if (!req.session.params) {
         req.session.params = {};
         var id = req.params.id
-        var interventionType = req.params.type
+        var interventionType = req.params.interventionType
         req.session.params.id = id;
         req.session.params.interventionType = interventionType;
     }
 
     var id = req.session.params.id;
-    var type = req.session.params.interventionType;
+    var interventionType = req.session.params.interventionType;
 
-    if (type == "text") 
-        res.render('pages/indexText', {id: id, type: type})
+    if (interventionType == "text") 
+        res.render('pages/indexText', {id: id, interventionType: interventionType})
     else 
-        res.render('pages/index', {id: id, type: type})
+        res.render('pages/index', {id: id, interventionType: interventionType})
 })
 
 // TO DO: ADD DATABASE CONNECTION
-app.get('/:id/:type/characters', (req, res) => {
+app.get('/:id/:interventionType/characters', (req, res) => {
     var id = req.session.params.id;
-    var type = req.session.params.type;
-    res.render("pages/selectCharacter", {id: id, type: type})
+    var interventionType = req.session.params.interventionType;
+    res.render("pages/selectCharacter", {id: id, interventionType: interventionType})
 })
 
 
-app.get('/:id/:type/:vh/Discover', (req, res) => {
+app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
     var id = req.session.params.id;
-    var type = req.session.params.type;
+    var interventionType = req.session.params.interventionType;
     var visitNum = req.session.params.visitNum;
     var vh = req.session.params.vCHE;
     sql.connect(config, function (err) {
@@ -172,20 +160,15 @@ app.get('/:id/:type/:vh/Discover', (req, res) => {
         // console.log(queryString)
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
-            // send records as a response
-            // console.log("UPDATED! IN R24 TABLE:")
-            // console.log(recordset);
         }); 
     
     });
 
-    res.render('pages/discover', {id: id, vh: vh, type: type})
+    res.render('pages/discover', {id: id, vh: vh, interventionType: interventionType})
 })
 
 function checkPreviousVisit(req, res, next) {
     if (req.session.visitedIndex) {
-        console.log("=====================")
-        console.log("WAS HERE");
         next();
         return;
     }
@@ -214,26 +197,20 @@ function checkPreviousVisit(req, res, next) {
                 FROM R24U01
                 WHERE ID = '` + id + `' 
         )`
-        console.log(checkString);
         request.query(checkString, function (err, recordset) {
             if (err) {
                 console.error('SQL query error:', err);
                 next(err);
                 return;
             }
-            console.log(recordset);
             if (recordset.recordset.length === 0) {
-                console.log("TRUEEE");
                 visitN = 1;
-                console.log(visitN);
                 req.session.params.visitNum = visitN;
 
             } else {
                 visitN = recordset.recordset[0].VisitNum + 1;
             }
             req.session.params.visitNum = visitN;
-            console.log("Leaving");
-            console.log(req.session.params.visitNum);
             next();
         });
     });
@@ -250,16 +227,14 @@ function addVisitToDatabase(req, res, next) {
     if (!req.session.params) {
         req.session.params = {};
     }
-    console.log("HELLO WORLD!");
     var id = req.params.id;
-    var interventionType = req.params.type;
+    var interventionType = req.params.interventionType;
 
     req.session.params.id = id;
     req.session.params.interventionType = interventionType;
 
     var visitNum = req.session.params.visitNum;
     req.session.params.visitNum = visitNum;
-    console.log(visitNum);
     sql.connect(config, function (err) {
         if (err) {
             console.error('SQL connection error:', err);
@@ -289,9 +264,9 @@ function addVisitToDatabase(req, res, next) {
     });
 }
 
-app.post('/:id/:type/RetrieveCities', (req, res) => {
+app.post('/:id/:interventionType/RetrieveCities', (req, res) => {
     var id = req.params.id
-    var type = req.params.type
+    var interventionType = req.params.interventionType
     let stateVal = (Object.entries(req.body)[0][1])
     let cityVal =(Object.entries(req.body)[1][1])
     const code = cityVal.charCodeAt(0)
@@ -317,8 +292,6 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
         var request = new sql.Request();
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
-            // send records as a response
-            // console.log(recordset.recordset[0]);
             res.json(recordset.recordset);    
         }); 
     })
@@ -326,42 +299,39 @@ app.post('/:id/:type/RetrieveCities', (req, res) => {
 
 // Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent');
-app.use('/:id/:type/:vh/EducationalComponent', function(req,res,next) {
+app.use('/:id/:interventionType/:vh/EducationalComponent', function(req,res,next) {
+    console.log("LET US SEE WOT IS IN REQ SESS PARAMS", req.session.params)
     req.id = req.session.params.id;
     req.vh = req.session.params.vCHE;
     req.vhType = req.session.params.vhType;
-    req.type = req.session.params.type;
-    req.userInfo = req.session.params.userInfo;
+    req.interventionType = req.session.params.interventionType;
+    req.visitNum = req.session.params.visitNum;
     next();
 }, EducationalComponentRouter)
 
 
 // Text Types
 const EducationalComponentTextRouter = require('./routes/EducationalComponentText')
-app.use('/:id/:type/:vh/EducationalComponentText', function(req,res,next){
+app.use('/:id/:interventionType/:vh/EducationalComponentText', function(req,res,next){
     req.id = req.session.params.id;
     req.vh = req.session.params.vCHE;
     req.vhType = req.session.params.vhType;
-    req.type = req.session.params.type;
-    req.userInfo = req.session.params.userInfo;
+    req.interventionType = req.session.params.interventionType;
+    req.visitNum = req.session.params.visitNum;
     next();
 }, EducationalComponentTextRouter)
 
 // Clinical Trials/study search router
 const StudySearchRouter = require('./routes/StudySearch');
 const { json } = require('body-parser');
-app.use('/:id/:type/:vh/StudySearch', function(req,res,next){
+app.use('/:id/:interventionType/:vh/StudySearch', function(req,res,next){
     req.id = req.session.params.id;
     req.vh = req.session.params.vCHE;
     req.vhType = req.session.params.vhType;
-    req.type = req.session.params.type;
-    req.userInfo = req.session.params.userInfo;
+    req.interventionType = req.session.params.interventionType;
+    req.visitNum = req.session.params.visitNum;
     next();
 }, StudySearchRouter)
-
-// TODO: For Chris
-// 1. Add "type" (text or virtual human) to the SQL Table
-// 2. Add "type" to all the SQL insertions necessary inside the accesses to R24 Database
 
 
 app.listen(process.env.PORT || 3000);

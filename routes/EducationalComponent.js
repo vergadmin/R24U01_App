@@ -5,7 +5,8 @@ var sql = require("mssql");
 var id = ''
 var vh = ''
 var vhType = ''
-var type = ''
+var interventionType = ''
+var visitNum = ''
 
 const config = {
     user: 'VergAdmin',
@@ -48,38 +49,38 @@ let buttons = [
 ]
 
 router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
-    console.log(vh, vhType)
-    res.render("pages/type/EducationalComponent/introduction", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: 'Introduction'})
+    console.log(vh, vhType, interventionType)
+    res.render("pages/interventionType/EducationalComponent/introduction", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/1", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '1'})
+    res.render("pages/interventionType/EducationalComponent/1", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/2", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '2'})
+    res.render("pages/interventionType/EducationalComponent/2", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/3", { id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '3'})
+    res.render("pages/interventionType/EducationalComponent/3", { id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
-    res.render("pages/type/EducationalComponent/4", {id: id, vh: vh, vhType: vhType, type: type, buttons: buttons, url: '4'})
+    res.render("pages/interventionType/EducationalComponent/4", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '4'})
 })
 
 function getInfo(req, res, next) {
+    console.log("WOT IS IN HERE NOW HMMMMM", req.id, req.vh, req.vhType)
     id = req.id
     vh = req.vh
     vhType = req.vhType
-    type = req.type
-    userInfo = req.userInfo
+    interventionType = req.interventionType
+    visitNum = req.visitNum
     next()
 }
 
 function updateDatabase(req, res, next) {
     let dbEntry = req.url.slice(1)
-    userInfo = req.userInfo;
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     sql.connect(config, function (err) {
 
@@ -88,22 +89,17 @@ function updateDatabase(req, res, next) {
         // create Request object
         var request = new sql.Request();
 
-        // let queryString = 'UPDATE R24 SET Educational_' + dbEntry + `='clicked' WHERE ID=` + `'` + userInfo.ID + `'`; // UNCOMMENT:`'AND TYPE ='` + type + `'`;
         let queryString = `
         UPDATE R24U01
         SET Educational_` + dbEntry + `= 'clicked'
-        WHERE ID = '` + userInfo.ID + `' 
-        AND VisitNum = '` + userInfo.visitNum + `'`;
+        WHERE ID = '` + req.id + `' 
+        AND VisitNum = '` + req.visitNum + `'`;
 
-        // console.log(queryString)
+        console.log("AB TO DO DATABASE THING")
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
-            // send records as a response
-            /// console.log("UPDATED! IN R24U01 TABLE:")
-            // console.log(recordset);
         }); 
-        // res.send("Updated.");
-    
+        console.log("DID THE DB THING")
     });
     // END DATABASE STUFF
 

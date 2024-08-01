@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+    <script>
+        (function() {
+ const interventionType = '<%= interventionType %>';
+ console.log("CHECKING LE interventionType", interventionType)
+})();
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,34 +32,34 @@
         <p>Please select which version of Alex you'd like to speak to below.</p>
         <p style="margin-top:0px; font-size: 19px; font-style: italic;">Regardless of who you choose, you will receive the same information.</p>
         <div class="selection-area" id="english">
-                <a onclick="sendToDatabase(`vCHE`, `swe`)" href="/<%=id%>/<%=type%>/swe/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `swe`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/swe.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `mbe`)" href="/<%=id%>/<%=type%>/mbe/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `mbe`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/mbe.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `bfe`)" href="/<%=id%>/<%=type%>/bfe/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `bfe`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/bfe.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `cre`)" href="/<%=id%>/<%=type%>/cre/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `cre`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/cre.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `jke`)" href="/<%=id%>/<%=type%>/jke/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `jke`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/jke.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `bme`)" href="/<%=id%>/<%=type%>/bme/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `bme`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/bme.png"/>
                 </a>
-                <a onclick="sendToDatabase(`vCHE`, `wme`)" href="/<%=id%>/<%=type%>/wme/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`vCHE`, `wme`)">
                     <img class="character-select" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/wme.png"/>
                 </a>  
         </div>
 
         <div class="selection-area" id="spanish">
-                <a onclick="sendToDatabase(`Character`, `hfs`)" href="/<%=id%>/<%=type%>/hfs/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`Character`, `hfs`)">
                     <img class="character-select" src="/images/characters/hf.png"/>
                 </a>
-                <a onclick="sendToDatabase(`Character`, `hms`)" href="/<%=id%>/<%=type%>/hms/EducationalComponent/Introduction">
+                <a onclick="sendToDatabase(`Character`, `hms`)">
                     <img class="character-select" src="/images/characters/hm.png"/>
                 </a>
         </div>

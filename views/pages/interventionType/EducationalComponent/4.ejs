@@ -22,19 +22,19 @@
     </header>
     <div class="container">
         <video autoplay controls>
-            <source src="https://research-studies-with-alex.s3.amazonaws.com/vCHE/<%=vhType%>/<%=vh%>_2.mp4" type="video/mp4">
+            <source src="https://research-studies-with-alex.s3.amazonaws.com/vCHE/<%=vhType%>/<%=vh%>_4.mp4" type="video/mp4">
         </video>
         <br/>
         <div class="navigation-area">
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=type%>/<%=vh%>/EducationalComponent/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/EducationalComponent/<%=buttons[i].url%>">
                         <button class="education-navigation selected" >
                             <%= buttons[i].text %>
                         </button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=id%>/<%=type%>/<%=vh%>/EducationalComponent/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/EducationalComponent/<%=buttons[i].url%>">
                         <button class="education-navigation" >
                             <%= buttons[i].text %>
                         </button>
@@ -43,7 +43,7 @@
             <% } %>
         </div>
         <div class="discover-button-area">
-            <a href="/<%=id%>/<%=type%>/<%=vh%>/Discover">
+            <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/Discover">
                 <button class="green discover">Discover Research Opportunities</button>
             </a>
         </div>

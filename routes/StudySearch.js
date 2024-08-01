@@ -33,7 +33,7 @@ AWS.config.update({
 var id = ''
 var vh = ''
 var vhType = ''
-var type = ''
+var interventionType = ''
 var role = ''
 
 const usStates = [
@@ -94,29 +94,31 @@ router.use(session({
 }));
 
 router.get('/Role', getInfo, (req, res) => {
-  res.render("pages/StudySearch/role", {id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/role", {id: id, vh: vh, interventionType: interventionType})
 })
 
-// TODO: You removed "getInfo" function and all calls to it.
-// You also removed the {version and id}, type is new.
 router.get('/Background', getInfo, (req, res) => {
-    res.render("pages/StudySearch/background", {id: id, vh: vh, type: type})
+    res.render("pages/StudySearch/background", {id: id, vh: vh, interventionType: interventionType})
 })
 
 router.get('/Preferences', (req, res) => {
-  res.render("pages/StudySearch/preferences", {id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/preferences", {id: id, vh: vh, interventionType: interventionType})
 })
 
 router.get('/Diagnosis', (req, res) => {
-  res.render("pages/StudySearch/diagnosis", {id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/diagnosis", {id: id, vh: vh, interventionType: interventionType})
 })
 
 router.get('/Groupings', (req, res) => {
-  res.render("pages/StudySearch/groupings", {id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/groupings", {id: id, vh: vh, interventionType: interventionType})
+})
+
+router.get('/Browse', (req, res) => {
+  res.render("pages/StudySearch/browse", {id: id, vh: vh, interventionType: interventionType})
 })
 
 router.get('/Registries', (req, res) => {
-  res.render("pages/StudySearch/registries", {id: id, vh: vh, type: type})
+  res.render("pages/StudySearch/registries", {id: id, vh: vh, interventionType: interventionType})
 })
 
 router.post('/Results', searchForCT, CTsWithDatabase, getUserRole, (req, res) => {
@@ -127,7 +129,7 @@ router.post('/Results', searchForCT, CTsWithDatabase, getUserRole, (req, res) =>
 
 router.get('/Results', (req, res) => {
   var trialsList = req.session.trialsList;
-  res.render("pages/StudySearch/results", {id: id, vh: vh, type: type, role: role, trialsList: trialsList, sponsoredList: sponsoredList})
+  res.render("pages/StudySearch/results", {id: id, vh: vh, interventionType: interventionType, role: role, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
 router.get('/SendEmail', SendEmail, (req, res) => {
@@ -352,7 +354,7 @@ function getInfo(req, res, next) {
     userInfo = req.userInfo
     vh = req.vh
     vhType = req.vhType
-    type = req.type
+    interventionType = req.interventionType
     next()
 }
 
