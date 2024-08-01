@@ -4,14 +4,14 @@ const AWS = require('aws-sdk');
 const router = express.Router()
 var sql = require("mssql");
 var axios = require("axios")
+const OpenAI = require('openai')
 
 // <--- openai constants
-const { Configuration, OpenAIApi } = require("openai");
-const configuration = new Configuration({
-    // TODO: replace apiKey
-    apiKey: process.env.VERG_OPENAI_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY // This is the default and can be omitted
 });
-const openai = new OpenAIApi(configuration);
+
+
 // SUMMARY_PROMPT, MAX_TOKENS, & TEMPERATURE can be modified as needed.
 // TODO: Move Summary Prompts into .env -- don't want any chance for user's to see prompt.
 const COMPLETIONS_MODEL = process.env.COMPLETIONS_MODEL;
