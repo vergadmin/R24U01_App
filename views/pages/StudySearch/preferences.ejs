@@ -12,7 +12,6 @@
     <link href="/css/progress.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
-    <script src="/scripts/StudySearch/preferences.js"></script>
     <script src="/scripts/checkLanguage.js"></script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
@@ -49,74 +48,22 @@
                 </div>
             </div>
         </div>
-        <h1 class="title">Preferences</h1>
+        <h1 class="title">Let's find some research studies!</h1>
         <p id="preferences-description"></p>
         <div class="form-area">
-            <form id="preferences-info">
+            <form onsubmit="return false" id="preferences">
                 <fieldset>
-                    <legend>&nbsp; Would you like to see studies that are pertinent to a specific health condition? &nbsp;</legend>
-                    <input type="radio" id="yes-hv" name="HealthyVolunteer" value="No" />
-                    <label for="yes">Yes, I would like to enter a health condition(s).</label>
+                    <legend class = "preferences-legend">&nbsp;Please select one.<span class="red-validator">&nbsp;(*Required)&nbsp;</span></legend>
+                    <input type="radio" id="search" name="Preferences" value="Search" />
+                    <label for="search">Yes, I'd like to search for a specific diagnosis.</label>
                     <br/>
-                    <br/>
-
-                    <input type="radio" id="both-hv" name="HealthyVolunteer" value="Both" />
-                    <label for="both">Yes, I would like to enter a health condition(s), but I am okay with seeing studies that are not specific to my entered health condition that I am still eligible for.</label>
-                    <br/>
-                    <br/>
-
-                    <input type="radio" id="no-hv" name="HealthyVolunteer" value="Accepts Healthy Volunteers" />
-                    <label for="no">No</label>
+                    <input type="radio" id="browse" name="Preferences" value="Browse" />
+                    <label for="browse">No, I'm just browsing.</label>
                 </fieldset>
-                <fieldset id="conditions-box">
-                    <legend>&nbsp; Conditions &nbsp;</legend>
-                    <p class = "info">You may enter up to three conditions to search for.</p>
-                    <div class="fieldset-container">
-                        <div class="g1"></div>
-                        <div class="g2"></div>
-                        <div class="g3"></div>
-                        <div class="i1">
-                            <input type="text" id="ConditionText-1" name="ConditionText1">
-                            <ul class="cities-list" id="conditions-list-1" name="cities-list"></ul>
-                        </div>
-                        <div class="i2">
-                            <input style="display: none;" type="text" id="ConditionText-2" name="ConditionText2">
-                            <ul class="cities-list" id="conditions-list-2" name="cities-list"></ul>
-                        </div>
-                        <div class="i3">
-                            <input style="display: none;" type="text" id="ConditionText-3" name="ConditionText3">
-                            <ul class="cities-list" id="conditions-list-3" name="cities-list"></ul>
-                        </div>
-                       <div class="bg1"></div>
-                        <div class="bg2"></div>
-                        <div class="bg3"></div> 
-                        <div class="r1">
-                            <button type="button" id="add-1"  class = "add-button"  style="display: none;"data-text="+">+</button>
-                        </div>
-                        <div class="r2">
-                            <button type="button" id="remove-2"  class = "remove-button" style="display: none;" data-text="-">-</button>
-                        </div>
-                        <div class="r3">                      
-                            <button type="button" id="remove-3" class = "remove-button" style="display: none;" data-text="-`">-</button>
-                        </div>
-                        <div class="bg11"></div>
-                        <div class="bg21"></div>
-                        <div class="bg31"></div>
-                        <div class="a1"></div>
-                        <div class="a2">
-                            <button type="button" id="add-2"  class = "add-button"  style="display: none;"data-text="+">+</button>
-                        </div>
-                        <div class="a3"></div>
-                        <div class="x1"></div>
-                        <div class="x2"></div>
-                        <div class="x3"></div>
-                    </div>
-                    <p class = "info">You can add another condition by pressing the + after typing in your first condition.<br>You can remove a condition by pressing the -</p>
-                </fieldset>
+         
+                <br/>
             </form>
-            <a href="/<%=id%>/<%=type%>/<%=vh%>/StudySearch/Registries" onclick="sendFormData(`preferences-info`)">
-                <button class="green">Next</button>
-            </a>
+            <button class="green" onclick="validateAndSendFormData(`preferences`)">Next</button>
         </div>
     </div>
 </body>

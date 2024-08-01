@@ -1,11 +1,5 @@
 window.addEventListener("load", () => {
     console.log("SESSION STORAGE", sessionStorage)
-    // const form = document.getElementById('background-info');
-    // console.log(form)
-    // const ageInput = form.querySelector('#Age');
-    // // console.log(ageInput);
-    // const ageValue = parseInt(ageInput.value); // Convert input value to integer
-    // // console.log(ageValue);
 });
 
 function validateAndSendFormData(id) {
@@ -35,7 +29,39 @@ function validateAndSendFormData(id) {
                 if (document.getElementById('role-info')) document.getElementById('role-info').remove();
             }        
         }
-    } else {
+    } else if (id==='preferences') {
+        const preferencesInput = form.querySelectorAll('input[type="radio"][name="Preferences"]');
+        const preferencesSelected = Array.from(preferencesInput).find(button => button.checked);
+        if (preferencesSelected) {
+            sendFormData(id);
+            var htmlForm = document.getElementById(id)
+            var formData = new FormData(htmlForm)
+            console.log(Object.fromEntries(formData))
+            let data = Object.fromEntries(formData)
+            if (data['Preferences'] === 'Search') {
+                window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Diagnosis`
+            } else {
+                window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Groupings`
+            }
+        }
+        else {
+            if (!preferencesSelected) {
+                if (!document.getElementById('preferences')) {
+                    const roleLegend = document.querySelector('.preferences-legend');
+                    const pElementRole = document.createElement('p');
+                    pElementRole.textContent = "This field is required."
+                    pElementRole.classList.add('small-text-red');
+                    pElementRole.id = 'genroleder-info';
+                    const roleInput = roleLegend.nextElementSibling;
+                    roleInput.insertAdjacentElement('beforebegin', pElementRole);
+                }
+            }
+            else {
+                if (document.getElementById('preferences')) document.getElementById('preferences').remove();
+            }        
+        }
+    }
+    else {
         const ageInput = form.querySelector('#Age');
         const genderInputs = form.querySelectorAll('input[type="radio"][name="Gender"]');
         const ageValue = parseInt(ageInput.value); // Convert input value to integer
@@ -89,8 +115,21 @@ async function sendFormData(id) {
 
     var htmlForm = document.getElementById(id)
     var formData = new FormData(htmlForm)
-    console.log(Object.fromEntries(formData))
-    let data = Object.fromEntries(formData)
+    let data
+
+    if(id==='groupings-info') {
+        const selectedCards = [];
+        formData.forEach((value, key) => {
+            selectedCards.push(value);
+        });
+        data = selectedCards.reduce((acc, cur) => ({ ...acc, [cur]: 'yes' }), {});
+    } else {
+        console.log(Object.fromEntries(formData))
+        data = Object.fromEntries(formData)
+    }
+
+    console.log(data)
+    
 
     sessionStorage.setItem(id, JSON.stringify(data))
 

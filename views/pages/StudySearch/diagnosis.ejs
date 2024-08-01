@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;900&display=swap" rel="stylesheet">
+    <link href="/css/master.css" rel="stylesheet" type="text/css">
+    <link href="/css/index.css" rel="stylesheet" type="text/css">
+    <link href="/css/studySearch.css" rel="stylesheet" type="text/css">
+    <link href="/css/progress.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
+    <script src="/scripts/studySearch.js"></script>
+    <script src="/scripts/StudySearch/diagnosis.js"></script>
+    <script src="/scripts/checkLanguage.js"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <title>ALEX</title>
+</head>
+<body>
+    <div id="load">
+        <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+    </div>
+    <header>
+        <%- include('../../partials/header'); %>
+    </header>
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="step visted">
+                    <div class="bullet visited"><span>✓</span></div>
+                    <p>Role</p>
+                </div>
+                <div class="step visited">
+                    <div class="bullet visited"><span>✓</span></div>
+                    <p>Background</p>
+                </div>
+                <div class="step active">
+                    <div class="bullet active"><span>3</span></div>
+                    <p>Preferences</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>4</span></div>
+                    <p>Registries</p>
+                </div>
+                <div class="step">
+                    <div class="bullet"><span>5</span></div>
+                    <p>Studies</p>
+                </div>
+            </div>
+        </div>
+        <h1 class="title">Let's find some research studies!</h1>
+        <p id="diagnosis-description"></p>
+        <div class="form-area">
+            <form onsubmit="return false" id="diagnosis-info">
+                <fieldset>
+                    <legend id="diagnosis-text">&nbsp; Conditions &nbsp;</legend>
+                    <div id="diagnosis1">
+                        <div class="condition-row">
+                            <input type="text" class="condition-input" id="Diagnosis1" name="ConditionText1">
+                            <button type="button" id="add1" onclick="addConditionRow(`diagnosis2`)" style="display:none" class="add-button" data-text="+">+</button>
+                        </div>
+                        <ul class="conditions-list" id="conditions-list1" name="conditions-list"></ul>
+                    </div>
+                    <div id="diagnosis2">
+                        <div class="condition-row">
+                            <input type="text" class="condition-input" id="Diagnosis2" name="ConditionText2">
+                            <button type="button" id="add2" onclick="addConditionRow(`diagnosis3`)" class ="add-button" data-text="+">+</button>
+                            <button type="button" id="remove2" onclick="removeConditionRow(`diagnosis2`)" class ="remove-button" data-text="-">-</button>
+                        </div>
+                        <ul class="conditions-list" id="conditions-list2" name="conditions-list"></ul>
+                    </div>
+                    <div id="diagnosis3">
+                        <div class="condition-row">
+                            <input type="text" class="condition-input" id="Diagnosis3" name="ConditionText3">
+                            <button type="button" id="add3" onclick="addConditionRow(`diagnosis2`)" class ="add-button" data-text="+">+</button>
+                            <button type="button" id="remove3" onclick="removeConditionRow(`diagnosis3`)" class ="remove-button" data-text="-">-</button>
+                        </div>
+                        <ul class="conditions-list" id="conditions-list3" name="conditions-list"></ul>
+                    </div>
+                    <p class = "info">You can add another condition by pressing the + after typing in your first condition.<br>You can remove a condition by pressing the -</p>
+
+                </fieldset>
+            </form>
+            <a href="/<%=id%>/<%=type%>/<%=vh%>/StudySearch/Groupings" onclick="sendFormData(`diagnosis-info`)">
+                <button class="green">Next</button>
+            </a>
+        </div>
+    </div>
+</body>
+<script src="/scripts/StudySearch/checkRole.js"></script>
+</html>

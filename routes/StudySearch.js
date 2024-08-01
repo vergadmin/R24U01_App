@@ -110,6 +110,14 @@ router.get('/Preferences', (req, res) => {
   res.render("pages/StudySearch/preferences", {id: id, vh: vh, type: type})
 })
 
+router.get('/Diagnosis', (req, res) => {
+  res.render("pages/StudySearch/diagnosis", {id: id, vh: vh, type: type})
+})
+
+router.get('/Groupings', (req, res) => {
+  res.render("pages/StudySearch/groupings", {id: id, vh: vh, type: type})
+})
+
 router.get('/Registries', (req, res) => {
   res.render("pages/StudySearch/registries", {id: id, vh: vh, type: type})
 })
