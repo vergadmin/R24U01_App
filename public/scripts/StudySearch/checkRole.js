@@ -1,7 +1,7 @@
 console.log("IN CHECK ROLE")
 
 console.log(sessionStorage)
-var role = sessionStorage.getItem('Role')
+var role = JSON.parse(sessionStorage.getItem('role-type')).Role
 console.log(role)
 if (document.getElementById("background-info")) {
     console.log("BACKGROUND INFO EXISTS")

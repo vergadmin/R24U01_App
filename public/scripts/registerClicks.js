@@ -31,6 +31,14 @@ async function sendToDatabase(column, value) {
             logCharacterToDB("VHType", "wm")
             storeCharacterInfoInServer("wm", "wme")
         }
+        if (value === 'mbs') {
+            logCharacterToDB("VHType", "hf")
+            storeCharacterInfoInServer("hf", "mbs")
+        }
+        if (value === 'crs') {
+            logCharacterToDB("VHType", "hm")
+            storeCharacterInfoInServer("hm", "crs")
+        }
         console.log(sessionStorage)
     }
 

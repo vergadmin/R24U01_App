@@ -9,6 +9,7 @@
     <link href="/css/master.css" rel="stylesheet" type="text/css">
     <link href="/css/index.css" rel="stylesheet" type="text/css">
     <link href="/css/educationalComponentText.css" rel="stylesheet" type="text/css">
+    <link href="/css/educationalComponent.css" rel="stylesheet" type="text/css">
     <script src="/scripts/checkLanguage.js"></script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
@@ -28,47 +29,37 @@
     <!-- Main Content -->
     <div class="text-container">
         
-        <!-- Left-side Navigation Pane -->
-        <div class = "gap-container"></div>
-
-        <!-- Main Buttons -->
-        <div class="navigation-container">
-            <text-p class = "navigation-header">On this site</text-p>
-            <br>
-            <% for (var i = 0; i < buttons.length; i++) { %>
-                <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
-                        <text-button class = "navigation-area selected">
-                        <%= buttons[i].text %>
-                        </text-button>
-                    </a>
-                <% } else { %>
-                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
-                        <text-button class = "navigation-area">
-                        <%= buttons[i].text %>
-                        </text-button>                       
-                    </a>
-                <% } %>
-            <% } %>
-            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
-                <text-button class="navigation-area text-discover-button">Discover Research Opportunities</text-button>
-            </a>
-        </div>
-
         <!-- Main Text Content -->
         <div class ="content-container">
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
-                <div class ="discover-container discover-button-area">
-                    <a href="/<%=id%>/<%=interventionType%>/t/Discover">
-                        <button class="green">Discover Research Opportunities</button>
-                    </a>
-                </div>
             </div>
             <text-p><%-text1%></text-p>
             <br><br>
         </div>
         
+        <div class="navigation-area">
+            <% for (var i = 0; i < buttons.length; i++) { %>
+                <% if (buttons[i].url === url) { %>
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                        <button class="education-navigation selected" >
+                            <%= buttons[i].text %>
+                        </button>
+                    </a>
+                <% } else { %>
+                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                        <button class="education-navigation" >
+                            <%= buttons[i].text %>
+                        </button>
+                    </a>
+                <% } %>
+            <% } %>
+        </div>
+        <div class="discover-button-area">
+            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
+                <button class="green discover">Discover Research Opportunities</button>
+            </a>
+        </div>
     </div>
 </body>
 </html>

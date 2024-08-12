@@ -79,6 +79,10 @@ video {
         height: 55px;
     }
 
+    .text-container .education-navigation {
+        height: 105px;
+    }
+
     .discover-button-area {
        position: relative;
        bottom: 11px;

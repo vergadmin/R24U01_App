@@ -70,7 +70,6 @@ router.get('/4', updateDatabase, (req, res) => {
 })
 
 function getInfo(req, res, next) {
-    console.log("WOT IS IN HERE NOW HMMMMM", req.id, req.vh, req.vhType)
     id = req.id
     vh = req.vh
     vhType = req.vhType

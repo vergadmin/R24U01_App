@@ -2,6 +2,38 @@ video {
     width: 75%;
 }
 
+text-h1 {
+    font-weight: 900;
+    color: #002657;
+    padding: 0px;
+    text-align: center;
+}
+
+text-p {
+    font-weight: 400;
+    font-size: 25px;
+    margin: 15px;
+}
+
+text-button {
+    padding: 15px;
+    font-size: 21px;
+    border-top: 1px solid #002657;
+}
+
+.discover-area-text-nav {
+    border-top: 1px solid #002657;
+    padding: 25px;
+}
+
+.navigation-container {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #002657;
+    border-radius: 35px;
+    margin: 0px 15px;
+}
+
 .navigation-area {
     display: flex;
     flex-direction: column;
@@ -10,6 +42,18 @@ video {
 .navigation-header {
     display: block;
     font-weight: bold;
+}
+
+.text-container {
+    display: flex;
+    flex-direction: column;
+    margin: 35px;
+    align-items: center;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .education-navigation {
@@ -26,8 +70,8 @@ video {
 }
 
 .selected {
-    color: black !important;
-    border-left-color: black;
+    background-color: #002657;
+    color: white;
 }
 
 .education-navigation:hover {
@@ -115,4 +159,8 @@ h3 {
 .text-p-discover:hover {
     text-decoration: underline;
     text-decoration-color: #B50000;
+}
+
+.text-container .education-navigation, .text-container .discover {
+    font-size: 21px !important;
 }

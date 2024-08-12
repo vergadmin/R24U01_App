@@ -98,21 +98,6 @@
   
   .discover-container { grid-area: discover-container; }
   
-
-.text-container {  
-    display: grid;
-    grid-template-columns: 2% 20% 1fr;
-    grid-template-rows: 1fr;
-    gap: 0px 15px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "gap-grid navigation-grid text-grid";
-  }
-  
-.gap-container { grid-area: gap-grid; }
-.navigation-container { grid-area: navigation-grid; }
-.content-container { grid-area: text-grid; }
-
   .goog-te-combo   {
     font-size: 25px !important;
     padding: 10px;
