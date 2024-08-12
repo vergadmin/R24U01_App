@@ -116,11 +116,10 @@ app.get('/', (req, res) => {
 app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     if (!req.session.params) {
         req.session.params = {};
-        var id = req.params.id
-        var interventionType = req.params.interventionType
-        req.session.params.id = id;
-        req.session.params.interventionType = interventionType;
     }
+
+    req.session.params.id = req.params.id
+    req.session.params.interventionType = req.params.interventionType
 
     var id = req.session.params.id;
     var interventionType = req.session.params.interventionType;
