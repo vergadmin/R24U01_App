@@ -68,8 +68,15 @@ function validateAndSendFormData(id) {
 
         const ageValid = !isNaN(ageValue) && ageValue >= 18 && ageValue <= 150;
         const genderSelected = Array.from(genderInputs).some(button => button.checked);
+        const stateSelected = document.getElementById("LocationState").value === '---' ? false : true
+        const citySelected = document.getElementById("LocationCity").value.trim.length === 0 ? false : true
+        console.log(document.getElementById("LocationCity").value.trim.length)
 
-        if (ageValid && genderSelected) {
+        console.log(stateSelected)
+        console.log(citySelected)
+
+
+        if (ageValid && genderSelected && stateSelected && citySelected) {
             // Redirect the user if inputs are valid
             sendFormData(id);
             window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Preferences`
@@ -80,7 +87,7 @@ function validateAndSendFormData(id) {
                     const ageLegend = document.querySelector('.age-legend');
                     // console.log(ageLegend);
                     const pElementAge = document.createElement('p');
-                    pElementAge.textContent = "This field is required."
+                    pElementAge.textContent = "*This field is required."
                     pElementAge.classList.add('small-text-red');
                     pElementAge.id = 'age-info';
                     // console.log(ageLegend.nextElementSibling);
@@ -96,7 +103,7 @@ function validateAndSendFormData(id) {
                 if (!document.getElementById('gender-info')) {
                     const genderLegend = document.querySelector('.gender-legend');
                     const pElementGender = document.createElement('p');
-                    pElementGender.textContent = "This field is required."
+                    pElementGender.textContent = "*This field is required."
                     pElementGender.classList.add('small-text-red');
                     pElementGender.id = 'gender-info';
                     const genderInput = genderLegend.nextElementSibling;
@@ -105,6 +112,34 @@ function validateAndSendFormData(id) {
             }
             else {
                 if (document.getElementById('gender-info')) document.getElementById('gender-info').remove();
+            }        
+            if (!stateSelected) {
+                if (!document.getElementById('state-info')) {
+                    const stateLegend = document.querySelector('.state-legend');
+                    const pElementState = document.createElement('p');
+                    pElementState.textContent = "*This field is required."
+                    pElementState.classList.add('small-text-red');
+                    pElementState.id = 'state-text';
+                    const stateInput = stateLegend.nextElementSibling;
+                    stateInput.insertAdjacentElement('beforebegin', pElementState);
+                }
+            }
+            else {
+                if (document.getElementById('state-info')) document.getElementById('state-info').remove();
+            }        
+            if (!citySelected) {
+                if (!document.getElementById('city-info')) {
+                    const cityLegend = document.querySelector('.city-legend');
+                    const pElementCity = document.createElement('p');
+                    pElementCity.textContent = "*This field is required."
+                    pElementCity.classList.add('small-text-red');
+                    pElementCity.id = 'city-text';
+                    const cityInput = cityLegend.nextElementSibling;
+                    cityInput.insertAdjacentElement('beforebegin', pElementCity);
+                }
+            }
+            else {
+                if (document.getElementById('city-info')) document.getElementById('city-info').remove();
             }        
         }
     }
