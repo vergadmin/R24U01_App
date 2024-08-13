@@ -2,20 +2,21 @@ window.addEventListener("load", () => {
     getResults();
 });
 
-async function getResults() {
-    console.log("GOING TO SEARCH FOR CT")
 
-    var userInfo = {...JSON.parse(sessionStorage.getItem('background-info')), ...JSON.parse(sessionStorage.getItem('preferences-info'))}
-    console.log(userInfo)
-    let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/${sessionStorage.getItem("vh")}/StudySearch/Results`;
-    console.log(url)
+async function getResults() {
+
+    let id = sessionStorage.getItem("id") || "dummyId";
+    let type = sessionStorage.getItem("type") || "dummyType";
+    let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+    var url = `/${id}/${type}/${vCHE}/StudySearch/Results`
+
     
     let res = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userInfo),
+        body: JSON.stringify({}),
     });
     if (res.ok) {
         // console.log(res);

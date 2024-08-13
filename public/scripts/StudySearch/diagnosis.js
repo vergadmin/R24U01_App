@@ -265,7 +265,10 @@ async function retrieveConditions(input, list) {
 }
 
 async function getResults(conditionText) {
-    let url = `/${sessionStorage.getItem("id")}/${sessionStorage.getItem("type")}/RetrieveConditions`;
+    let id = sessionStorage.getItem("id") || "dummyId";
+    let type = sessionStorage.getItem("type") || "dummyType";
+    let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+    let url = `/${id}/${type}/RetrieveConditions`;
     // console.log(url)
 
     let data = {};

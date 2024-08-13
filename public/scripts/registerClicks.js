@@ -7,37 +7,37 @@ async function sendToDatabase(column, value) {
     if (column === "vCHE") {
         sessionStorage.setItem("vCHE", value)
         if (value === 'swe' || value === 'mbe') {
-            logCharacterToDB("VHType", "hf")
-            if (value==='mbe') { storeCharacterInfoInServer("hf", "mbe") }
-            if (value==='swe') { storeCharacterInfoInServer("hf", "swe") }
+            await logCharacterToDB("VHType", "hf")
+            if (value==='mbe') { await storeCharacterInfoInServer("hf", "mbe") }
+            if (value==='swe') { await storeCharacterInfoInServer("hf", "swe") }
         }
         if (value === 'jke') {
-            logCharacterToDB("VHType", "wf")
-            storeCharacterInfoInServer("wf", "jke")
+            await logCharacterToDB("VHType", "wf")
+            await storeCharacterInfoInServer("wf", "jke")
         }
         if (value === 'cre') {
-            logCharacterToDB("VHType", "hm")
-            storeCharacterInfoInServer("hm", "cre")
+            await logCharacterToDB("VHType", "hm");
+            await storeCharacterInfoInServer("hm", "cre");
         }
         if (value === 'bfe') {
-            logCharacterToDB("VHType", "bf")
-            storeCharacterInfoInServer("bf", "bfe")
+            await logCharacterToDB("VHType", "bf")
+            await storeCharacterInfoInServer("bf", "bfe")
         }
         if (value === 'bme') {
-            logCharacterToDB("VHType", "bm")
-            storeCharacterInfoInServer("bm", "bme")
+            await logCharacterToDB("VHType", "bm")
+            await storeCharacterInfoInServer("bm", "bme")
         }
         if (value === 'wme') {
-            logCharacterToDB("VHType", "wm")
-            storeCharacterInfoInServer("wm", "wme")
+            await logCharacterToDB("VHType", "wm")
+            await storeCharacterInfoInServer("wm", "wme")
         }
         if (value === 'mbs') {
-            logCharacterToDB("VHType", "hf")
-            storeCharacterInfoInServer("hf", "mbs")
+            await logCharacterToDB("VHType", "hf")
+            await storeCharacterInfoInServer("hf", "mbs")
         }
         if (value === 'crs') {
-            logCharacterToDB("VHType", "hm")
-            storeCharacterInfoInServer("hm", "crs")
+            await logCharacterToDB("VHType", "hm")
+            await storeCharacterInfoInServer("hm", "crs")
         }
         console.log(sessionStorage)
     }
@@ -105,7 +105,9 @@ async function storeCharacterInfoInServer(VHType, vCHE) {
     if (res.ok) {
         console.log("WE R GOOD YAY!")
         let ret = await res.json();
-        window.location.href=`/${sessionStorage.id}/${sessionStorage.type}/${vCHE}/EducationalComponent/Introduction`
+        var id = ret.id;
+        var type = ret.vhType;
+        window.location.href=`/${id}/${type}/${vCHE}/EducationalComponent/Introduction`
     } else {
         return `HTTP error: ${res.status}`;
     }

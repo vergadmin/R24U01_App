@@ -2,16 +2,15 @@ window.addEventListener("load", () => {
     console.log("SESSION STORAGE", sessionStorage)
 });
 
-function validateAndSendFormData(id) {
+async function validateAndSendFormData(id) {
     const form = document.getElementById(id);
     if (id === 'role-type') {
         const roleInput = form.querySelectorAll('input[type="radio"][name="Role"]');
         const roleSelected = Array.from(roleInput).find(button => button.checked);
-        console.log("HERE")
-        console.log(roleSelected)
         if (roleSelected) {
-            sendFormData(id);
-            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Background`
+            sessionStorage.setItem("role-type", roleSelected.value);
+            var ret = await sendFormData(id);
+            window.location.href = `/${ret.id}/${ret.type}/${ret.vCHE}/StudySearch/Background`
         }
         else {
             if (!roleSelected) {
@@ -33,15 +32,15 @@ function validateAndSendFormData(id) {
         const preferencesInput = form.querySelectorAll('input[type="radio"][name="Preferences"]');
         const preferencesSelected = Array.from(preferencesInput).find(button => button.checked);
         if (preferencesSelected) {
-            sendFormData(id);
+            var ret = await sendFormData(id);
             var htmlForm = document.getElementById(id)
             var formData = new FormData(htmlForm)
-            console.log(Object.fromEntries(formData))
+            sessionStorage.setItem("preferences", preferencesSelected.value);
             let data = Object.fromEntries(formData)
             if (data['Preferences'] === 'Search') {
-                window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Diagnosis`
+                window.location.href = `/${ret.id}/${ret.type}/${ret.vCHE}/StudySearch/Diagnosis`
             } else {
-                window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Groupings`
+                window.location.href = `/${ret.id}/${ret.type}/${ret.vCHE}/StudySearch/Groupings`
             }
         }
         else {
@@ -78,8 +77,9 @@ function validateAndSendFormData(id) {
 
         if (ageValid && genderSelected && stateSelected && citySelected) {
             // Redirect the user if inputs are valid
-            sendFormData(id);
-            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Preferences`
+            var ret = await sendFormData(id);
+            console.log("The ID IS : ", id);
+            window.location.href = `/${ret.id}/${ret.type}/${ret.vCHE}/StudySearch/Preferences`
         }
         else {
             if (!ageValid) {
@@ -148,8 +148,13 @@ function validateAndSendFormData(id) {
 async function sendFormData(id) {
     // console.log("IN SEND TO SERVER SEND FORM DATA")
     var htmlForm = document.getElementById(id)
-    var formData = new FormData(htmlForm)
-    let data
+    var formData;
+    if (id !== "no-info") {
+        formData = new FormData(htmlForm);
+    } 
+    let data;
+
+    console.log(formData);
 
     if(id==='groupings-info') {
         const selectedCards = [];
@@ -157,24 +162,66 @@ async function sendFormData(id) {
             selectedCards.push(value);
         });
         data = selectedCards.reduce((acc, cur) => ({ ...acc, [cur]: 'yes' }), {});
-        const jsonObject = JSON.parse(sessionStorage.getItem('preferences'));
-        if (jsonObject['Preferences'] === 'Search') {
-            console.log("User is searching")
+        const pref = sessionStorage.getItem('preferences');
+        if (pref === 'Search') {
+            console.log("User is Searching");
         }
-        if (jsonObject['Preferences'] === 'Browse') {
-            console.log("User is browsing")
-            window.location.href = `/${sessionStorage.id}/${sessionStorage.type}/${sessionStorage.vCHE}/StudySearch/Browse`
+        if (pref === 'Browse') {
+            console.log("User is browsing");
+            let id = sessionStorage.getItem("id") || "dummyId";
+            let type = sessionStorage.getItem("type") || "dummyType";
+            let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+            window.location.href = `/${id}/${type}/${vCHE}/StudySearch/Browse`
         }
-    } else {
+    } 
+    else if (id === 'browse-info') {
+        const selectedConditions = [];
+        const conditionText = ['ConditionText1', 'ConditionText2', 'ConditionText3'];
+        const conditions = {};
+
+        formData.forEach((value, key) => {
+            const index = selectedConditions.length;
+            if (index < conditionText.length) {
+                conditions[conditionText[index]] = value;
+            }
+            selectedConditions.push(value);
+        })
+        data = conditions;
+    }
+
+    else if (id === 'background-info') {
+        data = Object.fromEntries(formData)
+        data['FLAG'] = true;
+
+    }
+    else if (id === "no-info") {
+        data = {};
+    }
+    else if (id === 'diagnosis-info') {
+        const selectedConditions = [];
+        const conditionText = ['ConditionText1', 'ConditionText2', 'ConditionText3'];
+        const conditions = {};
+
+        formData.forEach((key, value) => {
+            if (key != "") {
+                const index = selectedConditions.length;
+                console.log(key);
+                console.log(value);
+                if (index < conditionText.length) {
+                    conditions[conditionText[index]] = key;
+                }
+                selectedConditions.push(key);
+            }
+        })
+        data = conditions;
+    }
+    else {
         console.log(Object.fromEntries(formData))
         data = Object.fromEntries(formData)
     }
 
-    console.log(data)
+
     
-
-    sessionStorage.setItem(id, JSON.stringify(data))
-
     let url = '/updateDatabase';
 
     let res = await fetch(url, {
@@ -186,10 +233,41 @@ async function sendFormData(id) {
     });
     if (res.ok) {
         let ret = await res.json();
-        return ret.message
+        console.log("Testing", ret);
+        console.log(id);
+        var userId = ret.id;
+        var type = ret.type;
+        var vCHE = ret.vCHE;
+        if (id === "browse-info" || id == "no-info") {
+            window.location.href = `/${userId}/${type}/${vCHE}/StudySearch/Registries`
+        }
+        else if (id === "diagnosis-info") {
+            window.location.href = `/${userId}/${type}/${vCHE}/StudySearch/Groupings`
+        }
+        else if (id === "groupings-info") {
+            if (sessionStorage.getItem("preferences")) {
+                const pref = sessionStorage.getItem('preferences');
+                if (pref === 'Search') {
+                    console.log("User is Searching");
+                    let id = sessionStorage.getItem("id") || "dummyId";
+                    let type = sessionStorage.getItem("type") || "dummyType";
+                    let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+                    window.location.href = `/${id}/${type}/${vCHE}/StudySearch/Registries`
+                }
+            }
+        }
+        else {
+
+        }
+        return ret;
     } else {
         return `HTTP error: ${res.status}`;
     }
+}
+
+async function search() {
+    // Because we've stored all of the variables in session we can send a flag here.
+    
 }
 
 if(window.location.toString().indexOf("Results") != -1){

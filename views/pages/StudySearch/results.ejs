@@ -36,32 +36,32 @@
                     <div class="row">
                         <div class="col">
                             <label for="fname">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name">
+                            <input type="text" id="patientName" name="name" placeholder="Name">
                         </div>
                         <div class="col">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="email@email.com" required>
+                            <input type="email" id="patientEmail" name="email" placeholder="email@email.com" required>
                         </div>
                     </div>
                 <% } else { %>
                     <div class="row">
                         <div class="col">
                             <label for="fname">Caregiver Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name">
+                            <input type="text" id="caregiverName" name="name" placeholder="Name">
                         </div>
                         <div class="col">
                             <label for="email">Caregiver Email</label>
-                            <input type="email" id="email" name="email" placeholder="email@email.com" required>
+                            <input type="email" id="caregiverEmail" name="email" placeholder="email@email.com" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
                             <label for="fname">Patient Name</label>
-                            <input type="text" id="name" name="name" placeholder="Name">
+                            <input type="text" id="patientName" name="name" placeholder="Name">
                         </div>
                         <div class="col">
                             <label for="email">Patient Email</label>
-                            <input type="email" id="email" name="email" placeholder="email@email.com" required>
+                            <input type="email" id="patientEmail" name="email" placeholder="email@email.com" required>
                         </div>
                     </div>
                 <% } %>
@@ -98,7 +98,12 @@
                 <% } else { %>
                     <p style="margin:0 0 7px 0; font-size:17px; text-align: center">By clicking “Send Message,” I acknowledge that my Name, the patient's Name, my Email, the patient's Email, and Message will be shared with the contacts listed under Message Recipients.</p>
                 <% } %>
-                <div class="center"> <input type="submit" value="Submit"></div>
+
+                <% if (role === 'Patient') { %>
+                    <button class="green" id = "submitEmailButton" onclick = "emailPatient()" type = "button">Send Message</button>  
+                <% } else { %>
+                    <button class="green" id = "submitEmailButton" onclick = "emailCaregiver()" type = "button">Send Message</button>
+                <% } %>
             </form>
         </div>
     </div>
@@ -137,7 +142,7 @@
             </ul>
         </div>
         
-        <hr/>
+        <`/>
         <br/>
         <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
         <br/>
@@ -147,6 +152,15 @@
             <div class="study-card">
                 <h3><%= trialsList[i].GPTTitle%>*</h3>
                 <p class="info"><strong>Official Title:</strong> <%= trialsList[i].BriefTitle %></p>
+                <div class="mini-card">
+                    <p><strong>Study Categories: </strong></p>
+                    <div class="tag-row">
+                        <% for (var j = 0; j < trialsList[i].Categories.length - 1; j++) { %>
+                            <div class="tag-item"><%= trialsList[i].Categories[j]%></div>  
+                        <% } %>
+                        <div class="tag-item"><%= trialsList[i].Categories[trialsList[i].Categories.length - 1]%></div>
+                    </div>
+                </div>
                 <br/>
                 <h4>Brief Summary*:</h4>
                 <p><%= trialsList[i].GPTSummary%></p>

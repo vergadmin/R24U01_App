@@ -2,12 +2,6 @@ const express = require('express')
 const router = express.Router()
 var sql = require("mssql");
 
-var id = ''
-var vh = ''
-var vhType = ''
-var interventionType = ''
-var visitNum = ''
-
 const config = {
     user: 'VergAdmin',
     password: process.env.PASSWORD,
@@ -25,7 +19,7 @@ const config = {
     }
 }
 
-let buttons = [
+const buttons = [
     {
         url: 'Introduction',
         text: "Introduction"
@@ -48,35 +42,45 @@ let buttons = [
     }
 ]
 
-router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
-    console.log(vh, vhType, interventionType)
+router.get('/Introduction', updateDatabase, (req, res) => {
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponent/introduction", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: 'Introduction'})
 })
 
 router.get('/1', updateDatabase, (req, res) => {
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponent/1", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponent/2", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponent/3", { id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponent/4", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '4'})
 })
-
-function getInfo(req, res, next) {
-    id = req.id
-    vh = req.vh
-    vhType = req.vhType
-    interventionType = req.interventionType
-    visitNum = req.visitNum
-    next()
-}
 
 function updateDatabase(req, res, next) {
     let dbEntry = req.url.slice(1)

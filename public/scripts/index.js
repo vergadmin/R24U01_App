@@ -82,9 +82,10 @@ function detectOS() {
 
 
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
     // console.log("SAVING SESSION INFO LOCALLY")
     // console.log(document.URL)
+    sessionStorage.clear();
     let browserInfo = detectBrowser()
     let dateTime = new Date().toLocaleString() + " " + Intl.DateTimeFormat().resolvedOptions().timeZone;
     let deviceType = detectDeviceType()
@@ -97,7 +98,7 @@ window.addEventListener("load", () => {
     // console.log("TIME")
     dateTime = new Date().toLocaleString() + " " + Intl.DateTimeFormat().resolvedOptions().timeZone;
     // console.log(dateTime)
-    sendGeneralData(browserInfo, deviceType, os, dateTime)
+    await sendGeneralData(browserInfo, deviceType, os, dateTime);
 
     
 });

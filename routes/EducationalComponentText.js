@@ -2,12 +2,6 @@ const express = require('express')
 const router = express.Router()
 var sql = require("mssql");
 
-var id = ''
-var vh = ''
-var vhType = ''
-var interventionType = ''
-var visitNum = ''
-
 const config = {
     user: 'VergAdmin',
     password: process.env.PASSWORD,
@@ -48,9 +42,13 @@ let buttons = [
     }
 ]
 
-router.get('/Introduction', getInfo, updateDatabase, (req, res) => {
+router.get('/Introduction', updateDatabase, (req, res) => {
     // console.log("IN EDUCATIONAL COMPONENT ROUTER")
     // console.log("VHType is: " + vh)
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponentText/introduction", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: 'Introduction'})
 })
 
@@ -58,36 +56,42 @@ router.get('/1', updateDatabase, (req, res) => {
     // console.log("IN EDUCATIONAL COMPONENT ROUTER")
     // console.log("VHType is: " + vh)
     // console.log("TYPE IS : " + type);
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponentText/1", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '1'})
 })
 
 router.get('/2', updateDatabase, (req, res) => {
     // console.log("IN EDUCATIONAL COMPONENT ROUTER")
     // console.log("VHType is: " + vh)
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponentText/2", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '2'})
 })
 
 router.get('/3', updateDatabase, (req, res) => {
     // console.log("IN EDUCATIONAL COMPONENT ROUTER")
     // console.log("VHType is: " + vh)
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponentText/3", { id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '3'})
 })
 
 router.get('/4', updateDatabase, (req, res) => {
     // console.log("IN EDUCATIONAL COMPONENT ROUTER")
     // console.log("VHType is: " + vh)
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    var vhType = req.session.params.vhType;
     res.render("pages/interventionType/EducationalComponentText/4", {id: id, vh: vh, vhType: vhType, interventionType: interventionType, buttons: buttons, url: '4'})
 })
-
-
-function getInfo(req, res, next) {
-    id = req.id
-    vh = req.vh
-    vhType = req.vhType
-    interventionType = req.interventionType
-    visitNum = req.visitNum
-    next()
-}
 
 function updateDatabase(req, res, next) {
     let dbEntry = req.url.slice(1)

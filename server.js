@@ -15,6 +15,8 @@ var sql = require("mssql");
 
 const columnNames = ['diseases', 'synonym1', 'synonym2', 'synonym3', 'synonym4', 'synonym5', 'synonym6', 'synonym7', 'synonym8', 'synonym9', 'synonym10', 'synonym11', 'synonym12', 'synonym13', 'synonym14', 'synonym15', 'synonym16', 'synonym17', 'synonym18', 'synonym19', 'synonym20', 'synonym21', 'synonym22', 'synonym23', 'synonym24', 'synonym25', 'synonym26', 'synonym27', 'synonym28', 'synonym29', 'synonym30', 'synonym31', 'synonym32', 'synonym33', 'synonym34', 'synonym35', 'synonym36', 'synonym37', 'synonym38', 'synonym39', 'synonym40', 'synonym41', 'synonym42', 'synonym43', 'synonym44', 'synonym45', 'synonym46', 'synonym47', 'synonym48', 'synonym49', 'synonym50', 'synonym51'];
 
+const FLAG = 'FLAG';
+
 
 const config = {
     user: 'VergAdmin',
@@ -43,16 +45,20 @@ app.use(session({
     },
 }))
 
-app.post('/updateDatabase', async (req, res) => {
+app.post('/updateDatabase', storeSessionParameters, async (req, res) => {
     let setList = ''
     // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
-        setList += key + `='` + value + `', `
+        if (key != FLAG)
+            setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    // console.log(setList);
+    console.log(setList);
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
+    var id = req.session.params.id;
+    var type = req.session.params.interventionType;
+    var vCHE = req.session.params.vCHE;
     sql.connect(config, function (err) {
     
         if (err) console.log(err);
@@ -67,18 +73,22 @@ app.post('/updateDatabase', async (req, res) => {
         AND VisitNum = ` + req.session.params.visitNum;
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err) 
-            res.status(200).json({ message: 'Updated.' });
+            res.json({ id: id, type: type, vCHE: vCHE});
         }); 
     
     });
     // END DATABASE STUFF
 })
 
+
 app.post('/storeCharacterInfoInServer', async (req, res) => {
     req.session.params.vCHE = req.body.vCHE
     req.session.params.vhType = req.body.VHType
-    res.status(200).json({ message: 'OK' });
-})
+    var id = req.session.params.id;
+    var vh = req.session.params.vCHE;
+    var interventionType = req.session.params.interventionType;
+    res.json({id: id, vhType: interventionType, vh: vh});
+});
 
 app.post("/:id/:interventionType/RetrieveConditions", (req, res) => {
     let searchValue = (Object.entries(req.body)[0][1])
@@ -116,15 +126,12 @@ app.get('/', (req, res) => {
 app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, res) => {
     if (!req.session.params) {
         req.session.params = {};
+        req.session.params.id = req.params.id
+        req.session.params.interventionType = req.params.interventionType
     }
-
-    req.session.params.id = req.params.id
-    req.session.params.interventionType = req.params.interventionType
 
     var id = req.session.params.id;
     var interventionType = req.session.params.interventionType;
-
-    console.log("INTERVENTION TYPE", interventionType)
 
     if (interventionType == "text") 
         res.render('pages/indexText', {id: id, interventionType: interventionType})
@@ -167,6 +174,39 @@ app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
 
     res.render('pages/discover', {id: id, vh: vh, interventionType: interventionType})
 })
+
+function storeSessionParameters(req, res, next) {
+    const formData = ['ConditionText1', 'ConditionText2', 'ConditionText3', 'Age', 'Gender', 'LocationState', 'LocationCity', 'Role'];
+
+    const groupingsData = ['HealthyLiving', 'PreventionScreening', 'Treatment', 'Survivorship', 'Other'];
+
+    if (!req.session.params) {
+        req.session.params = {};
+    }
+    if (!req.session.params.searchCriteria) {
+        req.session.params.searchCriteria = {};
+    }
+    if (!req.session.params.searchCriteria.groupings) {
+        req.session.params.searchCriteria.groupings = [];
+    }
+
+    if (req.body.FLAG) {
+        if (req.body.FLAG === FLAG) {
+            req.session.params.searchCriteria = {};
+        }
+    }
+
+    for (const [key, value] of Object.entries(req.body)) {
+        if (formData.includes(key)) {
+            req.session.params.searchCriteria[key] = value;
+        } else if (groupingsData.includes(key) && !req.session.params.searchCriteria.groupings.includes(key)) {
+            req.session.params.searchCriteria.groupings.push(key);
+        }
+    }
+
+    next();
+
+}
 
 function checkPreviousVisit(req, res, next) {
     if (req.session.visitedIndex) {
@@ -230,7 +270,8 @@ function addVisitToDatabase(req, res, next) {
     }
     var id = req.params.id;
     var interventionType = req.params.interventionType;
-
+    console.log('Heres the intervention type:');
+    console.log(interventionType)
     req.session.params.id = id;
     req.session.params.interventionType = interventionType;
 
@@ -301,7 +342,6 @@ app.post('/:id/:interventionType/RetrieveCities', (req, res) => {
 // Virtual Human Types
 const EducationalComponentRouter = require('./routes/EducationalComponent');
 app.use('/:id/:interventionType/:vh/EducationalComponent', function(req,res,next) {
-    console.log("LET US SEE WOT IS IN REQ SESS PARAMS", req.session.params)
     req.id = req.session.params.id;
     req.vh = req.session.params.vCHE;
     req.vhType = req.session.params.vhType;

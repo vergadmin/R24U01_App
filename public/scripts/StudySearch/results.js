@@ -4,10 +4,16 @@ var emailModal = document.getElementById("emailModal");
 
 // Get the <span> element that closes the email modal
 var emailCloseBtn = document.getElementsByClassName("close")[0];
-
+var openModalEmail;
+var openModalTitle;
+var openModalNctId;
+var openModalMessage;
 // When the user clicks the button, open the email modal 
 function openEmailModal(contactName, contactEmail, studyTitle, briefSummary, nctID) {
   console.log("here!")
+  openModalEmail = contactEmail;
+  openModalTitle = studyTitle;
+  openModalNctId = nctID;
   emailModal.style.display = "flex";
   let text= `Hello, 
 
@@ -18,6 +24,7 @@ NCT ID: ${nctID}
 
 AI-Generated Description I Read: ${briefSummary}`
     document.getElementById("message").value = text;
+    openModalMessage =text;
 
     if (contactName && contactEmail !== null) {
       document.getElementById("coordinator-contact").innerHTML = contactName + ": " + contactEmail + " "
@@ -38,12 +45,100 @@ window.onclick = function(event) {
   }
 }
 
+async function emailPatient() {
+  var patientName, patientEmail, caregiverName, caregiverEmail;
+  if (document.getElementById("patientName")) {
+    patientName = document.getElementById("patientName").value;
+  }
+  if (document.getElementById("patientEmail")) {
+    patientEmail = document.getElementById("patientEmail").value;
+  }
+  var subject = "Requesting Information (NCTID: " + openModalNctId + ") " + openModalTitle; 
+
+  let id = sessionStorage.getItem("id") || "dummyId";
+  let type = sessionStorage.getItem("type") || "dummyType";
+  let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+  let url =`/${id}/${type}/${vCHE}/StudySearch/SendEmailPatient`;
+  let data = {
+    message: openModalMessage,
+    subject: subject,
+    studyContact: "christopheryou32@gmail.com",
+    patientEmail: patientEmail
+  }
+  console.log(data);
+  let res = await fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+  });
+
+  if (res.ok) {
+    let ret = await res.json();
+    console.log(ret);
+  }
+
+}
+
+async function emailCaregiver() {
+  var patientName, patientEmail, caregiverName, caregiverEmail;
+  if (document.getElementById("patientName")) {
+    patientName = document.getElementById("patientName").value;
+  }
+  if (document.getElementById("patientEmail")) {
+    patientEmail = document.getElementById("patientEmail").value;
+  }
+
+  if (document.getElementById("caregiverName")) {
+    caregiverName = document.getElementById("caregiverName").value;
+  }
+  if (document.getElementById("caregiverEmail")) {
+    caregiverEmail = document.getElementById("caregiverEmail").value;
+  }
+  var subject = "Requesting Information (NCTID: " + openModalNctId + ") " + openModalTitle; 
+
+  let id = sessionStorage.getItem("id") || "dummyId";
+  let type = sessionStorage.getItem("type") || "dummyType";
+  let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+  let url =`/${id}/${type}/${vCHE}/StudySearch/SendEmailCaregiver`;
+
+  let data = {
+    message: openModalMessage,
+    subject: subject,
+    studyContact: "christopheryou32@gmail.com",
+    patientEmail: patientEmail,
+    caregiverEmail: caregiverEmail
+  }
+  console.log(data);
+
+  let res = await fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+  });
+  
+  if (res.ok) {
+    let ret = await res.json();
+    console.log(ret);
+  }
+
+}
+
 // Handle submission of email
+/*
 var submitEmailButton = document.getElementById("submitEmailButton");
 submitEmailButton.onclick = function() {
-  var emailInput = document.getElementById("emailInput").value;
+  if (contactName && contactEmail !== null) {
+    document.getElementById("coordinator-contact").innerHTML = contactName + ": " + contactEmail + " "
+  } else {
+    document.getElementById("coordinator-contact").style.display = none;
+  }
   // Perform any action with the entered email here, such as sending it to a server
   console.log("Submitted email:", emailInput);
   // Close the email modal after submission
   emailModal.style.display = "none";
 }
+  */
