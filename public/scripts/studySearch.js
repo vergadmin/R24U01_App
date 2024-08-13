@@ -18,9 +18,9 @@ function validateAndSendFormData(id) {
                 if (!document.getElementById('role-info')) {
                     const roleLegend = document.querySelector('.role-legend');
                     const pElementRole = document.createElement('p');
-                    pElementRole.textContent = "This field is required."
+                    pElementRole.textContent = "*You must select your role to proceed."
                     pElementRole.classList.add('small-text-red');
-                    pElementRole.id = 'genroleder-info';
+                    pElementRole.id = 'role-info';
                     const roleInput = roleLegend.nextElementSibling;
                     roleInput.insertAdjacentElement('beforebegin', pElementRole);
                 }
@@ -46,18 +46,18 @@ function validateAndSendFormData(id) {
         }
         else {
             if (!preferencesSelected) {
-                if (!document.getElementById('preferences')) {
-                    const roleLegend = document.querySelector('.preferences-legend');
-                    const pElementRole = document.createElement('p');
-                    pElementRole.textContent = "This field is required."
-                    pElementRole.classList.add('small-text-red');
-                    pElementRole.id = 'genroleder-info';
-                    const roleInput = roleLegend.nextElementSibling;
-                    roleInput.insertAdjacentElement('beforebegin', pElementRole);
+                if (!document.getElementById('preferences-info')) {
+                    const preferenceLegend = document.querySelector('.preferences-legend');
+                    const pElementPreference = document.createElement('p');
+                    pElementPreference.textContent = "*You must select an option below to proceed."
+                    pElementPreference.classList.add('small-text-red');
+                    pElementPreference.id = 'preference-info';
+                    const preferenceInput = preferenceLegend.nextElementSibling;
+                    preferenceInput.insertAdjacentElement('beforebegin', pElementPreference);
                 }
             }
             else {
-                if (document.getElementById('preferences')) document.getElementById('preferences').remove();
+                if (document.getElementById('preferences-info')) document.getElementById('preferences-info').remove();
             }        
         }
     }
@@ -69,8 +69,8 @@ function validateAndSendFormData(id) {
         const ageValid = !isNaN(ageValue) && ageValue >= 18 && ageValue <= 150;
         const genderSelected = Array.from(genderInputs).some(button => button.checked);
         const stateSelected = document.getElementById("LocationState").value === '---' ? false : true
-        const citySelected = document.getElementById("LocationCity").value.trim.length === 0 ? false : true
-        console.log(document.getElementById("LocationCity").value.trim.length)
+        const citySelected = document.getElementById("LocationCity").value === '' ? false : true
+        console.log(document.getElementById("LocationCity").value)
 
         console.log(stateSelected)
         console.log(citySelected)
