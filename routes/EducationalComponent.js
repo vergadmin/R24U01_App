@@ -97,12 +97,13 @@ function updateDatabase(req, res, next) {
         SET Educational_` + dbEntry + `= 'clicked'
         WHERE ID = '` + req.id + `' 
         AND VisitNum = '` + req.visitNum + `'`;
+        req.session.params.queryString = queryString;
 
-        console.log("AB TO DO DATABASE THING")
+        // console.log("AB TO DO DATABASE THING")
         request.query(queryString, function (err, recordset) {
             if (err) console.log(err)
         }); 
-        console.log("DID THE DB THING")
+        // console.log("DID THE DB THING")
     });
     // END DATABASE STUFF
 

@@ -78,6 +78,14 @@ async function retrieveCities(city, state) {
         console.log(result);
         cities = result;
     }).catch((error) => {
+        const url = "/SendError";
+        let rev = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({error}),
+        });
         console.error('Error:', error);
         res.status(500).json({error:'Failed to wait for promise.'});
     });

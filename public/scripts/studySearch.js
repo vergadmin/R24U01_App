@@ -233,8 +233,6 @@ async function sendFormData(id) {
     });
     if (res.ok) {
         let ret = await res.json();
-        console.log("Testing", ret);
-        console.log(id);
         var userId = ret.id;
         var type = ret.type;
         var vCHE = ret.vCHE;
@@ -306,7 +304,14 @@ function copyEmailText(contactName, studyTitle, briefSummary) {
         button.innerHTML = "&#x2713; Email Text Copied!";
         button.style.backgroundColor = "green";
     }).catch(function(error) {
-        // Error - handle the error here
+        const url = "/SendError";
+        let res = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({error}),
+        });
         console.error('An error occurred while copying to clipboard:', error);
     });
 }

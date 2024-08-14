@@ -1,4 +1,3 @@
-console.log(sessionStorage)
 async function sendToDatabase(column, value) {
     // console.log("IN REGISTER CLICK FROM CLIENT")
     // console.log(column + ": " + value)

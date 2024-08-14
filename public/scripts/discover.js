@@ -14,6 +14,14 @@ function copyLink() {
         button.style.backgroundColor = "green";
     }).catch(function(error) {
         // Error - handle the error here
+        const url = "/SendError";
+        let res = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({error}),
+        });
         console.error('An error occurred while copying to clipboard:', error);
     });
     

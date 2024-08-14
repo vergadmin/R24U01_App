@@ -79,7 +79,8 @@ async function emailPatient() {
     message: openModalMessage,
     subject: subject,
     studyContact: "christopheryou32@gmail.com",
-    patientEmail: patientEmail
+    patientEmail: patientEmail,
+    nctId: openModalNctId
   }
   console.log(data);
   let res = await fetch(url, {
@@ -124,7 +125,8 @@ async function emailCaregiver() {
     subject: subject,
     studyContact: "christopheryou32@gmail.com",
     patientEmail: patientEmail,
-    caregiverEmail: caregiverEmail
+    caregiverEmail: caregiverEmail,
+    nctId: openModalNctId
   }
   console.log(data);
 

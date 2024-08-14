@@ -4,7 +4,9 @@ const AWS = require('aws-sdk');
 const router = express.Router()
 var sql = require("mssql");
 var axios = require("axios")
-const OpenAI = require('openai')
+const OpenAI = require('openai');
+const { json } = require('body-parser');
+require('dotenv').config()
 
 // <--- openai constants
 const client = new OpenAI({
@@ -139,7 +141,6 @@ router.get('/GeneratingResults', (req, res) => {
   res.render("pages/StudySearch/generatingResults", {id: id, vh: vh, vhType: vhType, interventionType: interventionType})
 })
 
-
 router.post('/Results', parameterHelper, searchForCT, CTsWithDatabase, (req, res) => {
   // All middleware have executed in order by this point
   // You can send the response here 
@@ -158,12 +159,12 @@ router.get('/Results', (req, res) => {
   res.render("pages/StudySearch/results", {id: id, vh: vh, interventionType: interventionType, role: role, trialsList: trialsList, sponsoredList: sponsoredList})
 })
 
-router.post('/SendEmailPatient', SendEmailPatient, (req, res) => {
+router.post('/SendEmailPatient', logStudyContact, SendEmailPatient, (req, res) => {
   console.log("SEND P");
   res.send('Email Sent Successfully - P');
 });
 
-router.post('/SendEmailCaregiver', SendEmailCaregiver, (req, res) => {
+router.post('/SendEmailCaregiver', logStudyContact, SendEmailCaregiver, (req, res) => {
   console.log("SEND CG");
   res.send('Email Sent Successfully - CG');
 });
@@ -198,10 +199,129 @@ async function SendEmailPatient (req, res, next) {
       console.log('Email sent:', data);
       next();
   } catch (err) {
+      errorProtocol(err, req, res);
       console.error('Failed to send email:', err);
       next();
   }
 }
+
+function logStudyContact(req, res, next) {
+  if (!req.session.params.contactedStudies) {
+    req.session.params.contactedStudies = [];
+  }
+  let studyObject = {
+    NCTId: req.body.nctId,
+    studyContact: req.body.studyContact
+  }
+  req.session.params.contactedStudies.push(studyObject);
+
+  try {
+    sql.connect(config, function (err) {
+      if (err) {
+          errorProtocol(err, req, res);
+          console.error('SQL connection error:', err);
+          next(err);
+          return;
+      }
+
+      var id = req.session.params.id;
+      var visitNum = req.session.params.visitNum;
+      var contactedStudies = JSON.stringify(req.session.params.contactedStudies);
+
+      const request = new sql.Request();
+      let queryString = `
+      UPDATE R24U01 SET ContactedStudies = @contactedStudies
+      WHERE ID = @id AND VisitNum = @visitNum`
+      req.session.params.queryString = queryString;
+
+      // Add input parameters
+      request.input('id', sql.VarChar(50), id);
+      request.input('visitNum', sql.Int, visitNum);
+      request.input('contactedStudies', sql.VarChar(sql.MAX), contactedStudies);
+
+      request.query(queryString, function (err, recordset) {
+          if (err) {
+              errorProtocol(err, req, res);
+              console.error('SQL query error:', err);
+              next(err);
+              return;
+          }
+          next();
+      });
+  });
+  } catch (err){
+      errorProtocol(err, req, res);
+      next(err);
+      return;
+  }
+  
+}
+
+async function errorProtocol (error, req, res) {
+  const email = "alexu01console@gmail.com";
+  const id = req.session.params.id;
+  const visitNum = req.session.params.visitNum;
+  const now = new Date();
+
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,  // Set to true for 12-hour time with AM/PM
+    timeZoneName: 'short'  // Add time zone abbreviation (e.g., "PDT", "GMT")
+  };
+
+  const timeStamp = new Intl.DateTimeFormat('en-US', options).format(now);
+
+
+  const queryString = req.session.params.queryString || 'Not a query string';
+  const subject = `[User ${id}] Error at ${timeStamp}`;
+  const message = `Error occurred at ${timeStamp} for [USER ID: ${id}] AND [VISIT NUMBER: ${visitNum}]. The error log can be found below. 
+
+  ${queryString}
+
+  ERROR
+  ===============================================
+  ${error.name}
+
+  ${error.message}
+
+  ${error}
+
+
+  STACK TRACE
+  ===============================================
+  ${error.stack}`;
+
+  const params = {
+    Source: 'error@learn-research.org', // Must be verified in SES
+    Destination: {
+        ToAddresses: [email]
+    },
+    Message: {
+        Subject: {
+            Data: subject
+        },
+        Body: {
+            Text: {
+                Data: message
+            }
+        }
+    }
+  };
+
+  try {
+      const data = await ses.sendEmail(params).promise();
+      console.log('Email sent:', data);
+  } catch (err) {
+      console.error('Failed to send email:', err);
+  }
+}
+
+
 
 async function SendEmailCaregiver (req, res, next) {
   const message = req.body.message;
@@ -235,6 +355,7 @@ async function SendEmailCaregiver (req, res, next) {
       console.log('Email sent:', data);
       next();
   } catch (err) {
+      errorProtocol(err, req, res);
       console.error('Failed to send email:', err);
       next();
   }
@@ -265,18 +386,20 @@ function CTsWithDatabase(req, res, next) {
           sql.connect(config, function (err) {
               var request = new sql.Request();
               let queryString = `SELECT * FROM ClinicalTrials WHERE STUDYID='` + trialsList[i].NCTId + `'`;
+              req.session.params.queryString = queryString;
               request.query(queryString, function (err, recordset) {
-                  if (err) 
+                  if (err) {
+                      errorProtocol(err, req, res)
                       console.log(err);
-
+                  }
                   // CASE 1: The StudyID is not in our table yet -- we have no summary, so we have to GPT it and store it.
                   // Also, a Sanity Check is Necessary (&&):
                   // If we somehow have duplicates in the trialsList, we don't want to store it in the table twice.
                   // This can happen in very rare cases where the recordset length returns 0, after an entry for it was added moments before.
                   if (recordset.recordset.length === 0 && !idTracker.includes(trialsList[i].NCTId)) {
                       // console.log("HERE")
-                      summarizeGPT(trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((summary) => {
-                        titleizeGPT(trialsList[i].BriefTitle, trialsList[i].BriefSummary, trialsList[i].DetailedDescription).then((title) => {
+                      summarizeGPT(trialsList[i].BriefSummary, trialsList[i].DetailedDescription, req, res).then((summary) => {
+                        titleizeGPT(trialsList[i].BriefTitle, trialsList[i].BriefSummary, trialsList[i].DetailedDescription, req, res).then((title) => {
 
                           // Convert summary into a SQL friendly string and put in trialsList
                           title = title.replace(/'/g, "''");
@@ -291,16 +414,20 @@ function CTsWithDatabase(req, res, next) {
                           let updateString = `INSERT INTO ClinicalTrials (StudyID, GPTTitle, GPTSummary, Categories) VALUES ('` + trialsList[i].NCTId + `','` + title + `','` + summary + `','` + category + `')`;
                           // console.log(updateString);
                           request.query(updateString, function (err, recordset2) {
-                              if (err) 
-                                  console.log(err);
+                            if (err) {
+                              errorProtocol(err, req, res)
+                              console.log(err);
+                          }
                           });
                           // Update for loop and call it again until we looped through all items in trialsList
                           i++;
                           processNext();
                         }).catch((error) => {
+                          errorProtocol(error);
                           console.error("Error in title GPT:", error);
                         })
                       }).catch((error) => {
+                        errorProtocol(error);
                           console.error("Error in summarize GPT:", error);
                       })
                   }
@@ -322,10 +449,8 @@ function CTsWithDatabase(req, res, next) {
   processNext();
 }
 
-
-
 // summarizeGPT is an async helper function used to call openai API and returns the result
-async function summarizeGPT(briefSummary, detailedDescription) {
+async function summarizeGPT(briefSummary, detailedDescription, req, res) {
   const prompt = SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
   try {
     const completion = await client.chat.completions.create({            model: 'gpt-3.5-turbo',
@@ -335,11 +460,14 @@ async function summarizeGPT(briefSummary, detailedDescription) {
     // console.log(botResponse);
     return botResponse;
   } catch (err) {
+    if (err) {
+      errorProtocol(err, req, res)
       console.log(err);
-  }
+  }  
+}
 }
 
-async function titleizeGPT(title, briefSummary, detailedDescription) {
+async function titleizeGPT(title, briefSummary, detailedDescription, req, res) {
   const prompt = TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
   try {
       const completion = await client.chat.completions.create({            model: 'gpt-3.5-turbo',
@@ -349,11 +477,13 @@ async function titleizeGPT(title, briefSummary, detailedDescription) {
       // console.log(botResponse);
       return botResponse;
   } catch (err) {
+    if (err) {
+      errorProtocol(err, req, res)
       console.log(err);
-  }
+  }  }
 }
 
-async function categorizeGPT (title, briefSummary, detailedDescription) {
+async function categorizeGPT (title, briefSummary, detailedDescription, req, res) {
   let prompt = `Classify the following clinical trial accurately using any number of the following categories: "Healthy Living", "Cancer Prevention & Screening", "Treatment", and "Survivorship." If the clinical trial does not fit into any of these four categories, classify it as "Other".
       
   Your output should be in JSON format only. The JSON object can be called "category", and its object should be an array.
@@ -374,8 +504,10 @@ async function categorizeGPT (title, briefSummary, detailedDescription) {
       console.log(categoryArray);
       return categoryArray;
   } catch (err) {
+    if (err) {
+      errorProtocol(err, req, res)
       console.log(err);
-  }
+  }  }
 
 }
 
@@ -485,103 +617,112 @@ async function searchForCT(req, res, next) {
       return studies;
   })
   .catch(err => {
+    errorProtocol(`API URL FOR CT: ${apiUrl} \n\n ${err}`);
     console.error('Error in retrieving trials...: ', err.message, apiUrl);
   });
 
   var finalTrialsList = [];
+  try {
+    if(trialsList && trialsList.length > 0) {
+      // GETTING FACILITIES LIST -- loop through all trials
+      for (var i = 0; i < trialsList.length; i++) {
+        // console.log("CONTACTS LOCATIONS MODULE:", trialsList[i].protocolSection.contactsLocationsModule)
+        finalTrialsList[i] = {};
+        const armsInterventionsModule = trialsList[i].protocolSection.armsInterventionsModule;
+        var interventions;
+        if (armsInterventionsModule)
+          if (armsInterventionsModule.interventions)
+            interventions = armsInterventionsModule.interventions;
+        if (interventions)
+          trialsList[i].InterventionType = [...new Set(interventions.map(intervention => intervention.type))];
+        else 
+          trialsList[i].InterventionType = ["Not listed"];
+        finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
+        locationIndeces = [];
+        facilities = []
+        facilityLocations = []
+        var remaining = -1;
+        var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
+        // get indeces of locations from cities array
+        // If no city provided, we'll go by state, and if no state provided, we'll go by country (United States only)
+        if (req.body.LocationCity && req.body.LocationCity != "") {
+          for (var j = 0; j < locationsArray.length; j++) {
+            if (locationsArray[j].city == req.body.LocationCity) {
+              locationIndeces.push(j);
+            }
+          }
+        }
+        else if (req.body.LocationState && req.body.LocationState != "---") {
+          for (var j = 0; j < locationsArray.length; j++) {
+            if (locationsArray[j].state == req.body.LocationState) {
+              locationIndeces.push(j);
+            }
+          }
+        }
+        else {
+          for (var j = 0; j < locationsArray.length; j++) {
+            if (locationsArray[j].country == "United States") {
+              locationIndeces.push(j);
+            }
+          }
+        }
+        // condense down to 5 locations if more than 5
+        if (locationIndeces.length > 5) {
+          remaining = locationIndeces.length - 5;
+          locationIndeces = locationIndeces.slice(0,5);
+        }
+        // iterate through indeces and extract those facilities from facilities array
+        for (var j = 0; j < locationIndeces.length; j++) {
+          facilities.push(locationsArray[locationIndeces[j]].facility);
+          const stateIndex = usStates.indexOf(locationsArray[locationIndeces[j]].state);
+          if (stateIndex !== -1)
+            facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + stateAbbreviations[stateIndex]);
+          else
+            facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + locationsArray[locationIndeces[j]].state);
   
-  if(trialsList && trialsList.length > 0) {
-    // GETTING FACILITIES LIST -- loop through all trials
-    for (var i = 0; i < trialsList.length; i++) {
-      // console.log("CONTACTS LOCATIONS MODULE:", trialsList[i].protocolSection.contactsLocationsModule)
-      finalTrialsList[i] = {};
-      const armsInterventionsModule = trialsList[i].protocolSection.armsInterventionsModule;
-      var interventions;
-      if (armsInterventionsModule)
-        if (armsInterventionsModule.interventions)
-          interventions = armsInterventionsModule.interventions;
-      if (interventions)
-        trialsList[i].InterventionType = [...new Set(interventions.map(intervention => intervention.type))];
-      else 
-        trialsList[i].InterventionType = ["Not listed"];
-      finalTrialsList[i]['InterventionType'] = trialsList[i].InterventionType;
-      locationIndeces = [];
-      facilities = []
-      facilityLocations = []
-      var remaining = -1;
-      var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
-      // get indeces of locations from cities array
-      // If no city provided, we'll go by state, and if no state provided, we'll go by country (United States only)
-      if (req.body.LocationCity && req.body.LocationCity != "") {
-        for (var j = 0; j < locationsArray.length; j++) {
-          if (locationsArray[j].city == req.body.LocationCity) {
-            locationIndeces.push(j);
+        }
+        // set new property on trialsList for filtered facilities
+        if (remaining != -1) {
+          finalTrialsList[i]['RemainingFacilities'] = `... and ${remaining} other locations.`
+        }
+        finalTrialsList[i]['FilteredFacilities'] = facilities;
+        finalTrialsList[i]['FacilityLocations'] = facilityLocations;
+        if(trialsList[i].protocolSection.contactsLocationsModule.centralContacts) {
+          finalTrialsList[i]['LocationContact'] = trialsList[i].protocolSection.contactsLocationsModule.centralContacts;
+        } else {
+          finalTrialsList[i]['LocationContact'] = [];
+        }
+        finalTrialsList[i]['Condition'] = trialsList[i].protocolSection.conditionsModule.conditions;
+        finalTrialsList[i]['StudyType'] = trialsList[i].protocolSection.designModule.studyType;
+        finalTrialsList[i]['BriefTitle'] = trialsList[i].protocolSection.identificationModule.briefTitle;
+        finalTrialsList[i]['NCTId'] = trialsList[i].protocolSection.identificationModule.nctId;
+        finalTrialsList[i]['BriefSummary'] = trialsList[i].protocolSection.descriptionModule.briefSummary;
+        finalTrialsList[i]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
+        var categories = await categorizeGPT(finalTrialsList[i]['BriefTitle'], finalTrialsList[i]['BriefSummary'], finalTrialsList[i]['DetailedDescription'], req, res);
+        finalTrialsList[i]['Categories'] = categories;
+        for (var j = 0; j < categories.length; j++) {
+          let index = userCategories.indexOf(categories[j]);
+          if (index !== -1) {
+            categoriesArray[index] = true;
           }
         }
-      }
-      else if (req.body.LocationState && req.body.LocationState != "---") {
-        for (var j = 0; j < locationsArray.length; j++) {
-          if (locationsArray[j].state == req.body.LocationState) {
-            locationIndeces.push(j);
-          }
+        if (i >= 15 && categoriesArray.includes(true)) {
+          break;
         }
-      }
-      else {
-        for (var j = 0; j < locationsArray.length; j++) {
-          if (locationsArray[j].country == "United States") {
-            locationIndeces.push(j);
-          }
-        }
-      }
-      // condense down to 5 locations if more than 5
-      if (locationIndeces.length > 5) {
-        remaining = locationIndeces.length - 5;
-        locationIndeces = locationIndeces.slice(0,5);
-      }
-      // iterate through indeces and extract those facilities from facilities array
-      for (var j = 0; j < locationIndeces.length; j++) {
-        facilities.push(locationsArray[locationIndeces[j]].facility);
-        const stateIndex = usStates.indexOf(locationsArray[locationIndeces[j]].state);
-        if (stateIndex !== -1)
-          facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + stateAbbreviations[stateIndex]);
-        else
-          facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + locationsArray[locationIndeces[j]].state);
-
-      }
-      // set new property on trialsList for filtered facilities
-      if (remaining != -1) {
-        finalTrialsList[i]['RemainingFacilities'] = `... and ${remaining} other locations.`
-      }
-      finalTrialsList[i]['FilteredFacilities'] = facilities;
-      finalTrialsList[i]['FacilityLocations'] = facilityLocations;
-      if(trialsList[i].protocolSection.contactsLocationsModule.centralContacts) {
-        finalTrialsList[i]['LocationContact'] = trialsList[i].protocolSection.contactsLocationsModule.centralContacts;
-      } else {
-        finalTrialsList[i]['LocationContact'] = [];
-      }
-      finalTrialsList[i]['Condition'] = trialsList[i].protocolSection.conditionsModule.conditions;
-      finalTrialsList[i]['StudyType'] = trialsList[i].protocolSection.designModule.studyType;
-      finalTrialsList[i]['BriefTitle'] = trialsList[i].protocolSection.identificationModule.briefTitle;
-      finalTrialsList[i]['NCTId'] = trialsList[i].protocolSection.identificationModule.nctId;
-      finalTrialsList[i]['BriefSummary'] = trialsList[i].protocolSection.descriptionModule.briefSummary;
-      finalTrialsList[i]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
-      var categories = await categorizeGPT(finalTrialsList[i]['BriefTitle'], finalTrialsList[i]['BriefSummary'], finalTrialsList[i]['DetailedDescription']);
-      finalTrialsList[i]['Categories'] = categories;
-      for (var j = 0; j < categories.length; j++) {
-        let index = userCategories.indexOf(categories[j]);
-        if (index !== -1) {
-          categoriesArray[index] = true;
-        }
-      }
-      if (i >= 15 && categoriesArray.includes(true)) {
-        break;
       }
     }
+  } catch (err) {
+    errorProtocol(err, req, res);
+    console.log(err);
   }
+  
   // Get remaining falses
   // Return those somewhere and log em
   req.trialsList = finalTrialsList;
   next();
 }
 
-module.exports = router
+module.exports = {
+  StudySearchRouter: router,
+  errorProtocol,
+}

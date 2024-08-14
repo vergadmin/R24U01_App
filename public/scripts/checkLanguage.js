@@ -1,7 +1,5 @@
 var lang = sessionStorage.getItem("language")
 
-console.log("IN CHECK LANGUAGE: ", lang)
-
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({pageLanguage: lang}, 'google_translate_element');
 }

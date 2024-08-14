@@ -1,12 +1,17 @@
 const express = require('express')
 const session = require('express-session');
+require('dotenv').config()
 const stringSimilarity = require('string-similarity');
-
+const routerImporter = require('./routes/StudySearch');
+const StudySearchRouter = routerImporter.StudySearchRouter;
+const errorProtocol = routerImporter.errorProtocol;
 const app = express()
 const CryptoJS = require("crypto-js");
-
-require('dotenv').config()
-// console.log(process.env)
+// <--- openai constants
+const OpenAI = require('openai');
+const client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY // This is the default and can be omitted
+  });
 
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
@@ -45,34 +50,44 @@ app.use(session({
     },
 }))
 
-app.post('/updateDatabase', storeSessionParameters, async (req, res) => {
+app.post('/updateDatabase', storeSessionParameters, (req, res) => {
     let setList = ''
-    // console.log(req.session.visitedIndex);
     for (const [key, value] of Object.entries(req.body)) {
-        if (key != FLAG)
+        if (key !== FLAG)
             setList += key + `='` + value + `', `
     }
     setList = setList.slice(0, -2); 
-    console.log(setList);
+
 
     // BEGIN DATABSAE STUFF:SENDING VERSION (R24 OR U01) AND ID TO DATABASE
     var id = req.session.params.id;
     var type = req.session.params.interventionType;
     var vCHE = req.session.params.vCHE;
+    if (setList === '') {
+        res.json({ id: id, type: type, vCHE: vCHE});
+        return;
+    }
     sql.connect(config, function (err) {
-    
-        if (err) console.log(err);
+        if (err) {
+            errorProtocol(err, req, res);
+            console.log(err);
+        }
 
         // create Request object
         var request = new sql.Request();
 
         let queryString = `
         UPDATE R24U01
-        SET ` + setList + 
-        ` WHERE ID = '` + req.session.params.id + `' 
-        AND VisitNum = ` + req.session.params.visitNum;
+        SET ${setList} 
+        WHERE ID = '${req.session.params.id}' 
+        AND VisitNum = ${req.session.params.visitNum}`
+        // console.log(queryString);
+        req.session.params.queryString = queryString;
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err) 
+            if (err) {
+                errorProtocol(err, req, res);
+                console.log(err);
+            }
             res.json({ id: id, type: type, vCHE: vCHE});
         }); 
     
@@ -80,6 +95,11 @@ app.post('/updateDatabase', storeSessionParameters, async (req, res) => {
     // END DATABASE STUFF
 })
 
+app.post('/SendError', (req, res) => {
+    errorProtocol(req.body.error, req, res);
+    res.send("Error recorded successfully");
+  })
+  
 
 app.post('/storeCharacterInfoInServer', async (req, res) => {
     req.session.params.vCHE = req.body.vCHE
@@ -91,31 +111,68 @@ app.post('/storeCharacterInfoInServer', async (req, res) => {
 });
 
 app.post("/:id/:interventionType/RetrieveConditions", (req, res) => {
-    let searchValue = (Object.entries(req.body)[0][1])
-    const columnConditions = columnNames.map(column => `${column} LIKE '%${searchValue}%'`).join(' OR ')
-    // const finalConditions = columnConditions.slice(0, -3);
+    const searchValue = (Object.entries(req.body)[0][1]);
+
+    // List all synonym columns to be selected
+    const synonymColumns = Array.from({ length: 51 }, (_, i) => `synonym${i + 1}`).join(", ");
+    
+    // Construct the query to select the disease and all synonym columns
     let queryString = `
-    SELECT TOP 10 diseases FROM Diseases
-    WHERE ${columnConditions}
+    SELECT TOP 300 diseases, ${synonymColumns} FROM Diseases
+    WHERE ${columnNames.map(column => `${column} LIKE '%${searchValue}%'`).join(' OR ')}
     `;
 
+    req.session.params.queryString = queryString;
+
     sql.connect(config, function (err) {
-        if (err) console.log(err)
+        if (err) {
+            errorProtocol(err, req, res);
+            console.log(err);
+            return;
+        }
 
         var request = new sql.Request();
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
-            // send records as a response
-            // console.log(recordset.recordset[0]);
+            if (err) {
+                errorProtocol(err, req, res);
+                console.log(err);
+                return;
+            }
+
             let conditions = recordset.recordset;
-              // Sort items based on similarity score (higher score means more similar)
-            const sortedItems = conditions.sort((a, b) => stringSimilarity.compareTwoStrings(searchValue, b.diseases) - stringSimilarity.compareTwoStrings(searchValue, a.diseases));
-              
-              // Get the top 10 most similar items
-            res.json(sortedItems);    
-        }); 
-    })
-})
+
+            // For each condition, find the synonym that is the closest match to the searchValue
+            let results = conditions.map(condition => {
+                // Collect all non-empty synonyms into an array
+                const synonymsArray = [];
+                for (let i = 1; i <= 51; i++) {
+                    const synonym = condition[`synonym${i}`];
+                    if (synonym) {
+                        synonymsArray.push(synonym.trim());
+                    }
+                }
+
+                // Find the synonym with the highest similarity score
+                const bestMatch = synonymsArray.reduce((best, synonym) => {
+                    const similarity = stringSimilarity.compareTwoStrings(searchValue, synonym);
+                    return (similarity > best.similarity) ? { synonym, similarity } : best;
+                }, { synonym: '', similarity: 0 });
+                
+                return {
+                    disease: condition.diseases,
+                    bestMatch: bestMatch.synonym,
+                    similarity: bestMatch.similarity
+                };
+            });
+
+            // Sort the results by similarity score, highest first
+            results.sort((a, b) => b.similarity - a.similarity);
+            // console.log(results.slice(0, 10));
+            // Limit the results to top 10 most similar items
+            res.json(results.slice(0, 10));
+        });
+    });
+});
 
 // Root route that redirects to valid route
 app.get('/', (req, res) => {
@@ -154,8 +211,10 @@ app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
     var vh = req.session.params.vCHE;
     sql.connect(config, function (err) {
 
-        if (err) console.log(err);
-
+        if (err) {
+            errorProtocol(err, req, res);
+            console.log(err);
+        }
         // create Request object
         var request = new sql.Request();
 
@@ -164,10 +223,13 @@ app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
         SET Discover = 'clicked'
         WHERE ID = '` + id + `' 
         AND VisitNum = '` + visitNum + `'`;
-        
-        // console.log(queryString)
+        req.session.params.queryString = queryString;
+
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
+            if (err) {
+                errorProtocol(err, req, res);
+                console.log(err);
+            }        
         }); 
     
     });
@@ -222,6 +284,7 @@ function checkPreviousVisit(req, res, next) {
     // 
     sql.connect(config, function (err) {
         if (err) {
+            errorProtocol(err, req, res);
             console.error('SQL connection error:', err);
             next(err);
             return;
@@ -238,8 +301,11 @@ function checkPreviousVisit(req, res, next) {
                 FROM R24U01
                 WHERE ID = '` + id + `' 
         )`
+        req.session.params.queryString = checkString;
+
         request.query(checkString, function (err, recordset) {
             if (err) {
+                errorProtocol(err, req, res)
                 console.error('SQL query error:', err);
                 next(err);
                 return;
@@ -270,8 +336,6 @@ function addVisitToDatabase(req, res, next) {
     }
     var id = req.params.id;
     var interventionType = req.params.interventionType;
-    console.log('Heres the intervention type:');
-    console.log(interventionType)
     req.session.params.id = id;
     req.session.params.interventionType = interventionType;
 
@@ -279,6 +343,7 @@ function addVisitToDatabase(req, res, next) {
     req.session.params.visitNum = visitNum;
     sql.connect(config, function (err) {
         if (err) {
+            errorProtocol(err, req, res)
             console.error('SQL connection error:', err);
             next(err);
             return;
@@ -297,6 +362,7 @@ function addVisitToDatabase(req, res, next) {
  
         request.query(queryString, function (err, recordset) {
             if (err) {
+                errorProtocol(err, req, res);
                 console.error('SQL query error:', err);
                 next(err);
                 return;
@@ -328,12 +394,19 @@ app.post('/:id/:interventionType/RetrieveCities', (req, res) => {
     WHERE State = '${stateVal}' 
     `;
 
-    sql.connect(config, function (err) {
-        if (err) console.log(err)
+    req.session.params.queryString = queryString;
 
+    sql.connect(config, function (err) {
+        if (err) {
+            errorProtocol(err, req, res);
+            console.log(err);
+        }
         var request = new sql.Request();
         request.query(queryString, function (err, recordset) {
-            if (err) console.log(err)
+            if (err) {
+                errorProtocol(err, req, res);
+                console.log(err);
+            }            
             res.json(recordset.recordset);    
         }); 
     })
@@ -363,7 +436,6 @@ app.use('/:id/:interventionType/:vh/EducationalComponentText', function(req,res,
 }, EducationalComponentTextRouter)
 
 // Clinical Trials/study search router
-const StudySearchRouter = require('./routes/StudySearch');
 const { json } = require('body-parser');
 app.use('/:id/:interventionType/:vh/StudySearch', function(req,res,next){
     req.id = req.session.params.id;

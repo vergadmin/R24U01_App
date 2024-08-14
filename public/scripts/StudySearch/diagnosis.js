@@ -82,7 +82,10 @@ async function retrieveConditions(input, list) {
             list.style.display = 'none';
         }
         for (var i = 0; i < result.length; i++) {
-            var disease = result[i].diseases;
+            var disease = result[i].bestMatch;
+            if (disease === '') {
+                disease = result[i].disease;
+            }
             const listItem = document.createElement('li');
             listItem.textContent = disease;
             // listItem.name = "cities-list";
@@ -96,6 +99,14 @@ async function retrieveConditions(input, list) {
             list.appendChild(listItem);     
         }
     }).catch((error) => {
+        const url = "/SendError";
+        let rev = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({error}),
+        });
         console.error('Error:', error);
         res.status(500).json({error:'Failed to wait for promise.'});
     });
