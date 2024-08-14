@@ -175,13 +175,15 @@ async function SendEmailPatient (req, res, next) {
   const studyContact = req.body.studyContact;
   const patientEmail = String(req.body.patientEmail); // Ensure it's a string
 
+  const tempEmail = 'alexu01console@gmail.com';
+  const etchEmail = 'etch@mayo.edu';
   const params = {
     Source: 'reply-all@learn-research.org', // Must be verified in SES
     Destination: {
-        ToAddresses: [studyContact],
-        BccAddresses: ['etch@mayo.edu'] // The recipient's email address
+        ToAddresses: [tempEmail],
+        BccAddresses: [etchEmail] // The recipient's email address
     },
-    ReplyToAddresses: [patientEmail],
+    ReplyToAddresses: [tempEmail],
     Message: {
         Subject: {
             Data: subject
@@ -330,14 +332,16 @@ async function SendEmailCaregiver (req, res, next) {
   const patientEmail = String(req.body.patientEmail); // Ensure it's a string
 
   const caregiverEmail = req.body.caregiverEmail;
+  const tempEmail = 'alexu01console@gmail.com';
+  const etchEmail = 'etch@mayo.edu';
   const params = {
     Source: 'reply-all@learn-research.org', // Must be verified in SES
     Destination: {
-        ToAddresses: [studyContact],
-        BccAddresses: ['etch@mayo.edu'], // The recipient's email address
-        CcAddresses: [patientEmail]
+        ToAddresses: [tempEmail],
+        BccAddresses: [etchEmail], // The recipient's email address
+        CcAddresses: [tempEmail]
     },
-    ReplyToAddresses: [caregiverEmail],
+    ReplyToAddresses: [tempEmail],
     Message: {
         Subject: {
             Data: subject
