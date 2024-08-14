@@ -68,7 +68,12 @@ button:hover {
 #link-text {
   color:#002657;
   text-decoration: underline;
-  font-size: 19px;
+  font-size: 17px;
+}
+
+#link-text:hover {
+  cursor: pointer;
+  color: #fa4616;
 }
 
 .next-back-button-area {

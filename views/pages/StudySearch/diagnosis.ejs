@@ -57,24 +57,25 @@
                     <legend id="diagnosis-text">&nbsp; Conditions &nbsp;</legend>
                     <div id="diagnosis1">
                         <div class="condition-row">
+                            <button type="button" id="remove3" class ="remove-button" style="visibility: hidden" data-text="-">-</button>
                             <input type="text" class="condition-input" id="Diagnosis1" name="ConditionText1">
-                            <button type="button" id="add1" onclick="addConditionRow(`diagnosis2`)" style="display:none" class="add-button" data-text="+">+</button>
+                            <button type="button" id="add1" onclick="addConditionRow(`diagnosis2`)" class="add-button disabled" data-text="+">+</button>
                         </div>
                         <ul class="conditions-list" id="conditions-list1" name="conditions-list"></ul>
                     </div>
                     <div id="diagnosis2">
                         <div class="condition-row">
+                            <button type="button" id="remove2" onclick="removeConditionRow(`diagnosis2`)" class ="remove-button" data-text="-">-</button>
                             <input type="text" class="condition-input" id="Diagnosis2" name="ConditionText2">
                             <button type="button" id="add2" onclick="addConditionRow(`diagnosis3`)" class ="add-button" data-text="+">+</button>
-                            <button type="button" id="remove2" onclick="removeConditionRow(`diagnosis2`)" class ="remove-button" data-text="-">-</button>
                         </div>
                         <ul class="conditions-list" id="conditions-list2" name="conditions-list"></ul>
                     </div>
                     <div id="diagnosis3">
                         <div class="condition-row">
+                            <button type="button" id="remove3" onclick="removeConditionRow(`diagnosis3`)" class ="remove-button" data-text="-">-</button>
                             <input type="text" class="condition-input" id="Diagnosis3" name="ConditionText3">
                             <button type="button" id="add3" onclick="addConditionRow(`diagnosis2`)" class ="add-button" data-text="+">+</button>
-                            <button type="button" id="remove3" onclick="removeConditionRow(`diagnosis3`)" class ="remove-button" data-text="-">-</button>
                         </div>
                         <ul class="conditions-list" id="conditions-list3" name="conditions-list"></ul>
                     </div>

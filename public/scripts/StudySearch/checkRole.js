@@ -34,14 +34,13 @@ if (document.getElementById("results-page")) {
 }
 
 if (document.getElementById("groupings")) {
-    console.log(JSON.parse(sessionStorage.preferences).Preferences)
-    if (JSON.parse(sessionStorage.preferences).Preferences === "Browse") {
+    console.log(sessionStorage.preferences)
+    if (sessionStorage.preferences === "Browse") {
         console.log(document.getElementById("back-link").href)
         document.getElementById("back-link").href = document.getElementById("back-link").href + "Preferences"
     } else {
         document.getElementById("back-link").href = document.getElementById("back-link").href +  "Diagnosis"
     }
-    document.getElementById("back-link")
 }
 
 
