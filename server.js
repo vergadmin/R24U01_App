@@ -102,8 +102,10 @@ app.post('/SendError', (req, res) => {
   
 
 app.post('/storeCharacterInfoInServer', async (req, res) => {
+    console.log("IN STORE CHARACTER INFO")
     req.session.params.vCHE = req.body.vCHE
     req.session.params.vhType = req.body.VHType
+    console.log(req.session.params)
     var id = req.session.params.id;
     var vh = req.session.params.vCHE;
     var interventionType = req.session.params.interventionType;
@@ -190,10 +192,13 @@ app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, 
     var id = req.session.params.id;
     var interventionType = req.session.params.interventionType;
 
-    if (interventionType == "text") 
+    if (interventionType === "text") {
+        console.log("TEXT VERISON")
         res.render('pages/indexText', {id: id, interventionType: interventionType})
-    else 
+    } 
+    else {
         res.render('pages/index', {id: id, interventionType: interventionType})
+    }
 })
 
 // TO DO: ADD DATABASE CONNECTION
@@ -209,6 +214,7 @@ app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
     var interventionType = req.session.params.interventionType;
     var visitNum = req.session.params.visitNum;
     var vh = req.session.params.vCHE;
+    console.log("SESSION STUFF IS:", req.session)
     sql.connect(config, function (err) {
 
         if (err) {

@@ -1,4 +1,3 @@
-
 function download() {
     window.open(`https://vpf2content.s3.amazonaws.com/Uploads/Videos/R24/pdfs/questions.pdf`, '_blank');
     sendToDatabase(`DownloadGuide`, `clicked`)
