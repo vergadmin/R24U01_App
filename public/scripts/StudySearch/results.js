@@ -119,6 +119,11 @@ async function emailPatient() {
       }
   }
 
+function openSurvey () {
+  let id = sessionStorage.getItem("id") || "dummyId";
+  const url =  `https://ufl.qualtrics.com/jfe/form/SV_0v1xFWcmSi5MRPE?PreScreenerID=${id}`;
+  window.open(url, '_blank');
+}
 
 async function emailCaregiver() {
   var patientName, patientEmail, caregiverName, caregiverEmail;
