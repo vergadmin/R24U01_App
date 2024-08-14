@@ -142,7 +142,6 @@
             </ul>
         </div>
         
-        <`/>
         <br/>
         <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
         <br/>
@@ -217,13 +216,13 @@
                     <p>Unfortunately we could not find a study coordinator for this study. However, if you're interested in this study, click the button below to connect with our research team!</p>
                     <br/>
                     <div class="center">
-                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(null, null, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Our Research Team!</button>         
+                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= role %>`, null, null, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Our Research Team!</button>         
                     </div>
                 <% } else { %>
                     <p>If you're interested in this study, click the button below to get connected with the research coordinator</p>
                     <br/>
                     <div class="center">
-                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].LocationContact[0].email %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Research Coordinator!</button>         
+                        <button class="pulse" onclick="sendToDatabase(`ResultsSendEmail`, `clicked`); openEmailModal(`<%= role %>`,`<%= trialsList[i].LocationContact[0].name %>`, `<%= trialsList[i].LocationContact[0].email %>`, `<%= trialsList[i].BriefTitle %>`, `<%= trialsList[i].GPTSummary%>`, `<%= trialsList[i].NCTId %>`)">Connect with Research Coordinator!</button>         
                     </div>
                 <% } %>
                 <br/>

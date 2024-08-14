@@ -9,20 +9,36 @@ var openModalTitle;
 var openModalNctId;
 var openModalMessage;
 // When the user clicks the button, open the email modal 
-function openEmailModal(contactName, contactEmail, studyTitle, briefSummary, nctID) {
+function openEmailModal(role, contactName, contactEmail, studyTitle, briefSummary, nctID) {
   console.log("here!")
   openModalEmail = contactEmail;
   openModalTitle = studyTitle;
   openModalNctId = nctID;
   emailModal.style.display = "flex";
-  let text= `Hello, 
+  let patientText= `Hello, 
 
-I saw the following research study on the ALEX website, and am interested in participating and would like more information.
+  I saw the following research study on the ALEX website. I am interested in participating and would like more information about the study and how to enroll.
 
-Title: ${studyTitle}
-NCT ID: ${nctID}
+  Title: ${studyTitle}
+  NCT ID: ${nctID}
 
-AI-Generated Description I Read: ${briefSummary}`
+  AI-Generated Description I Read from ALEX: ${briefSummary}`
+
+  let caregiverText= `Hello, 
+
+  I saw the following research study on the ALEX website. I am the caregiver of someone who is interested in participating and would like more information about the study and how to enroll them.
+
+  Title: ${studyTitle}
+  NCT ID: ${nctID}
+
+  AI-Generated Description I Read from ALEX: ${briefSummary}`
+
+  var text
+  if (role === 'Patient') {
+    text = patientText
+  } else {
+    text = caregiverText
+  }
     document.getElementById("message").value = text;
     openModalMessage =text;
 

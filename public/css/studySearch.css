@@ -4,6 +4,9 @@ fieldset {
     border-radius: 15px;
     border-color: #002657;
 }
+video {
+    width: 75%;
+}
 
 legend {
     background-image: linear-gradient(
@@ -435,5 +438,8 @@ li {
 
     .study-row {
         flex-direction: column;
+    }
+    video {
+        width: 100%;
     }
 }

@@ -239,7 +239,7 @@ async function sendFormData(id) {
         var type = ret.type;
         var vCHE = ret.vCHE;
         if (id === "browse-info" || id == "no-info") {
-            window.location.href = `/${userId}/${type}/${vCHE}/StudySearch/Registries`
+            window.location.href = `/${userId}/${type}/${vCHE}/StudySearch/GeneratingResults`
         }
         else if (id === "diagnosis-info") {
             window.location.href = `/${userId}/${type}/${vCHE}/StudySearch/Groupings`
@@ -252,7 +252,7 @@ async function sendFormData(id) {
                     let id = sessionStorage.getItem("id") || "dummyId";
                     let type = sessionStorage.getItem("type") || "dummyType";
                     let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
-                    window.location.href = `/${id}/${type}/${vCHE}/StudySearch/Registries`
+                    window.location.href = `/${id}/${type}/${vCHE}/StudySearch/GeneratingResults`
                 }
             }
         }

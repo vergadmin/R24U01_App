@@ -10,6 +10,9 @@ async function getResults() {
     let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
     var url = `/${id}/${type}/${vCHE}/StudySearch/Results`
 
+    console.log("IN GET RESULTS")
+    console.log(url)
+
     
     let res = await fetch(url, {
         method: 'POST',

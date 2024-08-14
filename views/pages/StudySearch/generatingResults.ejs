@@ -12,6 +12,8 @@
     <link href="/css/progress.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bowser/2.11.0/bundled.js"></script>
     <script src="/scripts/studySearch.js"></script>
+    <script src="/scripts/registerClicks.js"></script>
+    <script src="/scripts/generatingResults.js"></script>
     <script src="/scripts/checkLanguage.js"></script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <title>ALEX</title>
@@ -34,12 +36,12 @@
                     <div class="bullet visited"><span>✓</span></div>
                     <p>Background</p>
                 </div>
-                <div class="step active">
-                    <div class="bullet active"><span>3</span></div>
+                <div class="step visited">
+                    <div class="bullet visited"><span>✓</span></div>
                     <p>Preferences</p>
                 </div>
-                <div class="step">
-                    <div class="bullet"><span>4</span></div>
+                <div class="step active">
+                    <div class="bullet active"><span>4</span></div>
                     <p>Generating Results</p>
                 </div>
                 <div class="step">
@@ -48,26 +50,15 @@
                 </div>
             </div>
         </div>
-        <h1 class="title">Let's find some research studies!</h1>
-        <p id="preferences-description" class="preferences-legend"></p>
-        <div class="form-area">
-            <form onsubmit="return false" id="preferences">
-                <div class="single-select-button">
-                    <input type="radio" id="search" name="Preferences" value="Search" />
-                    <label for="search">Yes, I'd like to search for a specific diagnosis.</label>
-                </div>
-                <div class="single-select-button">
-                    <input type="radio" id="browse" name="Preferences" value="Browse" />
-                    <label for="browse">No, I'm just browsing.</label>    
-                </div>     
-                <br/>
-            </form>
-        </div>
-        <div class="next-back-button-area">
-            <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Background"><button class="back">Back</button></a>
-            <button class="green" onclick="validateAndSendFormData(`preferences`)">Next</button>
-        </div>
+        <h1 class="title" id="loaded-title">Your Results Are Loading ...</h1>       
+        <p id="disabled-text" style="font-size: 19px; margin-top: 5px; font-style: italic;">Please view a quick message from Alex below while we create a personalized list of clinical trials for you!</p>
+        <video autoplay controls>
+            <source src="https://research-studies-with-alex.s3.amazonaws.com/vCHE/<%=vhType%>/<%=vh%>_GeneratingResults.mp4" type="video/mp4">
+        </video>
+        <br/>
+        <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Results">
+            <button id = "results" disabled class = "disabled">Loading...</button>
+        </a>         
     </div>
 </body>
-<script src="/scripts/StudySearch/checkRole.js"></script>
 </html>

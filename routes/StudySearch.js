@@ -131,11 +131,12 @@ router.get('/Browse', (req, res) => {
   res.render("pages/StudySearch/browse", {id: id, vh: vh, interventionType: interventionType})
 })
 
-router.get('/Registries', (req, res) => {
+router.get('/GeneratingResults', (req, res) => {
   var id = req.session.params.id;
   var vh = req.session.params.vCHE;
   var interventionType = req.session.params.interventionType;
-  res.render("pages/StudySearch/registries", {id: id, vh: vh, type: interventionType, interventionType: interventionType})
+  var vhType = req.session.params.vhType;
+  res.render("pages/StudySearch/generatingResults", {id: id, vh: vh, vhType: vhType, interventionType: interventionType})
 })
 
 
