@@ -251,8 +251,13 @@ textarea {
 .button-action-area {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
   width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.button-action-area button {
+  margin: 25px;
 }
 
 @keyframes pulse-animation {
@@ -280,5 +285,9 @@ textarea {
 
   #name, #email {
     width: 65vw;
+  }
+  .button-action-area button {
+    font-size: 15px !important;
+    margin: 11px;
   }
 }

@@ -141,6 +141,13 @@ router.get('/GeneratingResults', (req, res) => {
   res.render("pages/StudySearch/generatingResults", {id: id, vh: vh, vhType: vhType, interventionType: interventionType})
 })
 
+router.get('/Registries', (req, res) => {
+  var id = req.session.params.id;
+  var vh = req.session.params.vCHE;
+  var interventionType = req.session.params.interventionType;
+  res.render("pages/StudySearch/registries", {id: id, vh: vh, interventionType: interventionType})
+})
+
 router.post('/Results', parameterHelper, searchForCT, CTsWithDatabase, (req, res) => {
   // All middleware have executed in order by this point
   // You can send the response here 

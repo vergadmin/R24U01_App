@@ -40,23 +40,22 @@
                     <div class="bullet visited"><span>✓</span></div>
                     <p>Preferences</p>
                 </div>
-                <div class="step active">
-                    <div class="bullet active"><span>4</span></div>
-                    <p>Registries</p>
+                <div class="step visited">
+                    <div class="bullet visited"><span>✓</span></div>
+                    <p>Generating Results</p>
                 </div>
-                <div class="step">
-                    <div class="bullet"><span>5</span></div>
+                <div class="step active">
+                    <div class="bullet active"><span>★</span></div>
                     <p>Studies</p>
                 </div>
             </div>
         </div>
-        <h1 class="title" id="loaded-title">Results are Loading ...</h1>       
-        <p id = "disabled-text">Thank you for that information! A tailored list of clinical trials are loading. This may take up to 30 seconds...</p>
-        <a href="/<%=id%>/<%=type%>/<%=vh%>/StudySearch/Results">
-            <button id = "results" disabled class = "disabled">Loading...</button>
-        </a> 
-        <p>While we load a custom list of research studies, you can read about research registries -- which are special lists gathering information from people interested in research participation -- and choose to join!</p>
-        <div class="study-card">
+        <h1 class="title" id="loaded-title">Research Registries</h1>       
+        <p>Here you have the opportunity to join research registries, or special lists gathering information from people interested in research participation! Don't forget to complete the post-survey after you finish viewing this page.</p>
+        <button class="green" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">📝 Complete Survey</button>
+        <br/>
+        <a id="link-text" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Results">Return to Research Study Results</a>
+        <div class="registry-card">
             <h3>JAX-ASCENT Registry</h3>
             <h4>Official Title:</h4>
             <p>JAX-ASCENT Registry</p>
