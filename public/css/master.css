@@ -58,6 +58,19 @@ button:hover {
     - Text version has a nav pane on left for "buttons" (a hrefs).
 */
 
+.nav-link-text-area {
+  display: flex;
+  justify-content: center;
+  width: 55%;
+  padding-top: 15px;
+}
+
+#link-text {
+  color:#002657;
+  text-decoration: underline;
+  font-size: 19px;
+}
+
 .next-back-button-area {
   display: flex;
   justify-content: space-between;

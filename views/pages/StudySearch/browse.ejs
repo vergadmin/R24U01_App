@@ -111,7 +111,9 @@
         <div class="next-back-button-area">
             <a id="back-link" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Groupings"><button class="back">Back</button></a>
             <button class="green" onclick="sendFormData(`browse-info`)">Next</button>
-            <button class="green" onclick="sendFormData(`no-info`)">I am not interested in any of these conditions</button>
+        </div>
+        <div class="nav-link-text-area">
+            <p id="link-text" onclick="sendFormData(`no-info`)">I am not interested in any of these conditions (Click here to skip)</p>
         </div>
     </div>
 </body>
