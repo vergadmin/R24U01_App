@@ -15,23 +15,9 @@ function openEmailModal(role, contactName, contactEmail, studyTitle, briefSummar
   openModalTitle = studyTitle;
   openModalNctId = nctID;
   emailModal.style.display = "flex";
-  let patientText= `Hello, 
-
-  I saw the following research study on the ALEX website. I am interested in participating and would like more information about the study and how to enroll.
-
-  Title: ${studyTitle}
-  NCT ID: ${nctID}
-
-  AI-Generated Description I Read from ALEX: ${briefSummary}`
-
-  let caregiverText= `Hello, 
-
-  I saw the following research study on the ALEX website. I am the caregiver of someone who is interested in participating and would like more information about the study and how to enroll them.
-
-  Title: ${studyTitle}
-  NCT ID: ${nctID}
-
-  AI-Generated Description I Read from ALEX: ${briefSummary}`
+  let alexInfoText = `What is ALEX?\nThe ALEX portal and associated research was developed through the support of the U01CA274970 grant from the National Cancer Institute, part of the National Institute of Health. The ALEX portal is a web-based tool for patients, caregivers, and providers which aims to increase referral of patients to clinical trials. ALEX helps a user search for and learn about potential study opportunities and understand the complex language that can be a barrier for many patients and their caregivers. If you have questions about why you are receiving this email, or to learn more about the ALEX portal, please reach out to the ALEX Research team at ETCH@mayo.edu.`
+  let patientText= `Hello, \n\nI saw the following research study on the ALEX website. I am interested in participating and would like more information about the study and how to enroll.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Generated Description I Read from ALEX: ${briefSummary}`
+  let caregiverText= `Hello,\n\nI saw the following research study on the ALEX website. I am the caregiver of someone who is interested in participating and would like more information about the study and how to enroll them.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Generated Description I Read from ALEX: ${briefSummary}`
 
   var text
   if (role === 'Patient') {
@@ -39,6 +25,7 @@ function openEmailModal(role, contactName, contactEmail, studyTitle, briefSummar
   } else {
     text = caregiverText
   }
+  text = text + '\n\n' + alexInfoText
     document.getElementById("message").value = text;
     openModalMessage =text;
 
@@ -93,10 +80,24 @@ async function emailPatient() {
 
   if (res.ok) {
     let ret = await res.json();
+    console.log("SUCCESSFULLY EMAILED!")
     console.log(ret);
   }
 
 }
+
+
+  function showMore(button, moreCount) {
+      var moreItems = button.nextElementSibling;
+      if (moreItems.style.display === "none") {
+          moreItems.style.display = "block";
+          button.textContent = "Show Less Conditions";
+      } else {
+          moreItems.style.display = "none";
+          button.textContent = `...More (${moreCount})`;
+      }
+  }
+
 
 async function emailCaregiver() {
   var patientName, patientEmail, caregiverName, caregiverEmail;
@@ -140,6 +141,7 @@ async function emailCaregiver() {
   
   if (res.ok) {
     let ret = await res.json();
+    console.log("SUCCESSFULLY EMAILED!")
     console.log(ret);
   }
 

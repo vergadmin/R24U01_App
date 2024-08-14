@@ -101,6 +101,11 @@ form .col {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
+}
+
+input[type='email'] , input[type='text'] {
+  width: 100%;
 }
 
 .pulse {
@@ -213,7 +218,7 @@ textarea {
 .study-card .tag-row{
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: baseline;
   flex-wrap: wrap;
 }
 
@@ -224,6 +229,23 @@ textarea {
   padding: 5px;
   border-radius: 7px;
   margin: 5px;
+}
+
+.more-expand {
+  color:#002657;
+}
+
+.more-expand:hover {
+  color:#fa4616;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.button-action-area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
 @keyframes pulse-animation {

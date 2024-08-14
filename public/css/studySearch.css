@@ -1,9 +1,10 @@
 fieldset {
     margin: 15px;
-    padding: 15px;
-    border-radius: 15px;
+    padding: 25px;
+    border-radius: 25px;
     border-color: #002657;
 }
+
 video {
     width: 75%;
 }
@@ -25,6 +26,17 @@ legend {
 #background-description, #preferences-description {
     width: 65%;
     font-size: 21px;
+}
+
+.search-subtitle {
+    font-size: 17px !important;
+    margin-top: 0px !important;
+    font-style: italic !important;
+}
+
+.search-subtext {
+    margin-bottom: 5px;
+    font-size: 25px;
 }
 
 label, input, select {
@@ -192,6 +204,10 @@ li {
     margin: 15px;
 }
 
+ul#cities-list {
+    padding-inline-start: 0px
+}
+
 .cities-list , .conditions-list {
     list-style: none;
     font-size: 21px;
@@ -199,14 +215,13 @@ li {
 
 .cities-list, .conditions-list  li {
     list-style: none;
-    transition: .2s ease-in-out;
 }
 
 .cities-list li:hover, .conditions-list  li:hover {
     background-color: #002657;
+    border-radius: 5px;
     color: white;
     cursor: pointer;
-    font-size: 23px;
 }
 
 .disabled {
@@ -411,19 +426,31 @@ li {
     margin: 0px 5px;
   }
 
-  .condition-input, .add-button, .remove-button {
+  .add-button, .remove-button {
     height: 35px;
-  }
-
-  .condition-input {
-    width: 405px;
-    padding: 9px;
-    border-radius: 15px;
   }
 
   .fieldset-container input[type="text"] {
     width: 100%;
     text-align:center;
+  }
+
+  input[type="text"]  {
+    max-width: 405px;
+    padding: 9px;
+    border-radius: 15px;
+  }
+
+  input[type="number"]  {
+    max-width: 205px;
+    padding: 9px;
+    border-radius: 15px;
+  }
+
+  select {
+    max-width: 405px;
+    padding: 9px;
+    border-radius: 15px;
   }
 
   .pulse {
@@ -476,7 +503,7 @@ li {
         font-size: 13px;
       }
     
-      .condition-input {
+      input[type="text"] {
         width: 205px;
         height: 25px;
         font-size: 17px;

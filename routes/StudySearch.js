@@ -246,6 +246,7 @@ function logStudyContact(req, res, next) {
               next(err);
               return;
           }
+          console.log("WE LOGGED THE STUDY CONTACT")
           next();
       });
   });

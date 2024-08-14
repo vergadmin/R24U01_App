@@ -98,9 +98,10 @@
                 <% } else { %>
                     <p style="margin:0 0 7px 0; font-size:17px; text-align: center">By clicking “Send Message,” I acknowledge that my Name, the patient's Name, my Email, the patient's Email, and Message will be shared with the contacts listed under Message Recipients.</p>
                 <% } %>
+                <br/>
 
                 <% if (role === 'Patient') { %>
-                    <button class="green" id = "submitEmailButton" onclick = "emailPatient()" type = "button">Send Message</button>  
+                    <button style="align-self: center" class="green" id = "submitEmailButton" onclick = "emailPatient()" type = "button">Send Message</button>  
                 <% } else { %>
                     <button class="green" id = "submitEmailButton" onclick = "emailCaregiver()" type = "button">Send Message</button>
                 <% } %>
@@ -132,21 +133,28 @@
                 </div>
             </div>
         </div>
-        <h1 class="title">Study Results</h1>
+        <h1 class="title">Your Tailored List of Studies</h1>
         <div class="information">
-            <p>Thank you for all that information! Here are some research studies we found. </p>
+            <p>On this page, we have put together a few studies based on the information you shared! Here's what you can do next:</p>
             <ul>
-                <li>You can view information on the studies and contact the study team for studies you are interested in.</li>
-                <li>You can also click “Download Studies List” and your browser will ask you to save this page as a PDF.</li>
-                <li><strong>Before leaving this page, please be sure to click on the "Complete Survey" button to be directed to our survey.</strong></li>
-                <a id="link-text" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Role">Start a Different Search</a>
+                <li><span style="font-weight: 600; color: #002657">Read about each study.</span> If you're interested and want more information, you can <b>connect with a research coordinator</b>!</li>
+                <li><span style="font-weight: 600; color: #002657">Save your tailored list of studies.</span> You can click the "Save My Tailored Studies" button, and your browser will ask you to save this web page as a PDF.</li>
+                <li><span style="font-weight: 600; color: #002657">Explore research registries.</span> If you're interested in more research opportunities, click "View Research Registries" to sign up for a list where researchers can contact you for future studies!</li>
+                <li><span style="font-weight: 600; color: #002657">Search again.</span> Want to search for different research studies? <span><a id="link-text" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Role">Click here to start a different search</a></span></li>
+                <li><span style="font-weight: 600; color: #002657">Complete the post-survey.</span> Finally, when you're done with this page, please click the "Complete Survey" button to be directed to our post-survey.</li>
+                
             </ul>
         </div>
         
         <br/>
-        <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">Download Studies List</button>
+        <div class="button-action-area">
+            <button onclick="sendToDatabase(`ResultsDownloadStudiesList`, `clicked`);window.print()">⬇️ Save My Tailored Studies</button>
+            <button class="green" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">📝 Complete Survey</button>
+            <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Registries">
+                <button>View Research Registries</button>
+            </a>
+        </div>
         <br/>
-        <button class="green" onclick="sendToDatabase(`ResultsCompleteSurvey`, `clicked`)">Complete Survey</button>
         
         <% for(var i=0; i<trialsList.length; i++) { %>
             <div class="study-card">
@@ -169,10 +177,20 @@
                 <div class="mini-card">
                     <h5>Condition(s): </h5>
                     <div class="tag-row">
-                        <% for (var j = 0; j < trialsList[i].Condition.length - 1; j++) { %>
-                            <div class="tag-item"><%= trialsList[i].Condition[j]%></div>  
+                        <% var conditionLength = trialsList[i].Condition.length; %>
+                        <% var displayLimit = 5; %>
+                        <% for (var j = 0; j < Math.min(displayLimit, conditionLength); j++) { %>
+                            <div class="tag-item"><%= trialsList[i].Condition[j] %></div>
                         <% } %>
-                        <div class="tag-item"><%= trialsList[i].Condition[trialsList[i].Condition.length - 1]%></div>
+                        <% if (conditionLength > displayLimit) { %>
+                            <% var moreCount = conditionLength - displayLimit; %>
+                            <p class="more-expand" onclick="showMore(this, `<%= moreCount %>`)">Show More Conditions (<%= moreCount %>)</p>
+                        <% } %>
+                        <div class="more-items" style="display: none;">
+                            <% for (var j = displayLimit; j < conditionLength; j++) { %>
+                                <div class="tag-item"><%= trialsList[i].Condition[j] %></div>
+                            <% } %>
+                        </div>
                     </div>
                 </div>
                 <div class="study-row">
