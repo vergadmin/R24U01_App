@@ -29,8 +29,13 @@
     <!-- The Email Modal -->
     <div id="emailModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <form action="#">
+            <span id='close' class="close">&times;</span>
+            <div id="email-sending-loading">
+                <h2 id="email-status">Sending your email...</h2>
+                <p id="status-message"></p>
+                <button id="close-btn">Click here to close this window.</button>
+            </div>
+            <form id="email-form" action="#">
                 <p class="email-modal-title">Connect with Research Coordinator</p>
                 <% if (role === 'Patient') { %>
                     <div class="row">
@@ -103,7 +108,7 @@
                 <% if (role === 'Patient') { %>
                     <button style="align-self: center" class="green" id = "submitEmailButton" onclick = "emailPatient()" type = "button">Send Message</button>  
                 <% } else { %>
-                    <button class="green" id = "submitEmailButton" onclick = "emailCaregiver()" type = "button">Send Message</button>
+                    <button style="align-self: center" class="green" id = "submitEmailButton" onclick = "emailCaregiver()" type = "button">Send Message</button>
                 <% } %>
             </form>
         </div>

@@ -4,6 +4,9 @@ var emailModal = document.getElementById("emailModal");
 
 // Get the <span> element that closes the email modal
 var emailCloseBtn = document.getElementsByClassName("close")[0];
+
+var sentEmailCloseBtn = document.getElementById("close-btn")
+
 var openModalEmail;
 var openModalTitle;
 var openModalNctId;
@@ -41,6 +44,14 @@ emailCloseBtn.onclick = function() {
   emailModal.style.display = "none";
 }
 
+// When the user clicks on <span> (x), close the email modal
+sentEmailCloseBtn.onclick = function() {
+  document.getElementById("email-form").style.display = ''
+  document.getElementById("close").style.display = ''
+  document.getElementById("email-sending-loading").style.display = 'none'
+  emailModal.style.display = "none";
+}
+
 // When the user clicks anywhere outside of the email modal, close it
 window.onclick = function(event) {
   if (event.target == emailModal) {
@@ -50,6 +61,9 @@ window.onclick = function(event) {
 
 async function emailPatient() {
   var patientName, patientEmail, caregiverName, caregiverEmail;
+  document.getElementById("email-form").style.display = 'none'
+  document.getElementById("close").style.display = 'none'
+  document.getElementById("email-sending-loading").style.display = 'flex'
   if (document.getElementById("patientName")) {
     patientName = document.getElementById("patientName").value;
   }
@@ -78,10 +92,17 @@ async function emailPatient() {
       body: JSON.stringify(data),
   });
 
+  console.log("HERE!")
+  console.log(res)
+
   if (res.ok) {
     let ret = await res.json();
-    console.log("SUCCESSFULLY EMAILED!")
     console.log(ret);
+    document.getElementById("email-status").innerText = "🎉 Success!"
+    document.getElementById("status-message").innerText = "Your email has been successfully sent to the research coordinator. Please click the button below to continue browsing other trials."
+  } else {
+    document.getElementById("email-status").innerText = "😕 Hmm, something went wrong..."
+    document.getElementById("status-message").innerText = "There was an error sending your email."
   }
 
 }
@@ -101,6 +122,9 @@ async function emailPatient() {
 
 async function emailCaregiver() {
   var patientName, patientEmail, caregiverName, caregiverEmail;
+  document.getElementById("email-form").style.display = 'none'
+  document.getElementById("close").style.display = 'none'
+  document.getElementById("email-sending-loading").style.display = 'flex'
   if (document.getElementById("patientName")) {
     patientName = document.getElementById("patientName").value;
   }
@@ -141,8 +165,12 @@ async function emailCaregiver() {
   
   if (res.ok) {
     let ret = await res.json();
-    console.log("SUCCESSFULLY EMAILED!")
     console.log(ret);
+    document.getElementById("email-status").innerText = "🎉 Success!"
+    document.getElementById("status-message").innerText = "Your email has been successfully sent to the research coordinator. Please click the button below to continue browsing other trials."
+  } else {
+    document.getElementById("email-status").innerText = "😕 Hmm, something went wrong..."
+    document.getElementById("status-message").innerText = "There was an error sending your email."
   }
 
 }

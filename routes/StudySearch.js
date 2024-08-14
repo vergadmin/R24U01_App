@@ -161,12 +161,12 @@ router.get('/Results', (req, res) => {
 
 router.post('/SendEmailPatient', logStudyContact, SendEmailPatient, (req, res) => {
   console.log("SEND P");
-  res.send('Email Sent Successfully - P');
+  res.send({message: 'Email Sent Successfully - P'});
 });
 
 router.post('/SendEmailCaregiver', logStudyContact, SendEmailCaregiver, (req, res) => {
   console.log("SEND CG");
-  res.send('Email Sent Successfully - CG');
+  res.send({message: 'Email Sent Successfully - CG'});
 });
 
 async function SendEmailPatient (req, res, next) {

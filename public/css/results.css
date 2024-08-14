@@ -25,6 +25,13 @@
   border-radius: 5px;
 }
 
+#email-sending-loading {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 #message::-webkit-scrollbar-thumb {
   border-radius: 0px;
 }
