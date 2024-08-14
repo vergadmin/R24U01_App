@@ -194,7 +194,9 @@ app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, 
 
     if (interventionType === "text") {
         console.log("TEXT VERISON")
-        res.render('pages/indexText', {id: id, interventionType: interventionType})
+        req.session.params.vCHE = 't';
+        req.session.params.vhType = 't';
+        res.render('pages/indexText', {id: id, interventionType: interventionType, vh: 't', vhType: 't'})
     } 
     else {
         res.render('pages/index', {id: id, interventionType: interventionType})
