@@ -250,6 +250,8 @@ function storeSessionParameters(req, res, next) {
 
     const groupingsData = ['HealthyLiving', 'PreventionScreening', 'Treatment', 'Survivorship', 'Other'];
 
+    const groupingsNames = ['Healthy Living', 'Cancer Prevention & Screening', 'Treatment', 'Survivorship', 'Other'];
+
     if (!req.session.params) {
         req.session.params = {};
     }
@@ -270,7 +272,9 @@ function storeSessionParameters(req, res, next) {
         if (formData.includes(key)) {
             req.session.params.searchCriteria[key] = value;
         } else if (groupingsData.includes(key) && !req.session.params.searchCriteria.groupings.includes(key)) {
-            req.session.params.searchCriteria.groupings.push(key);
+            let index = groupingsData.indexOf(key);
+            let category = groupingsNames[index];
+            req.session.params.searchCriteria.groupings.push(category);
         }
     }
 

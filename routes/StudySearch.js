@@ -695,7 +695,7 @@ async function searchForCT(req, res, next) {
       errorProtocol(err);
       console.error('Error in retrieving trials...: ', err.message, apiUrl);
     });
-
+  // console.log("Trials Length: ", trialsList.length);
   var finalTrialsList = [];
   try {
     if (trialsList && trialsList.length > 0) {
@@ -720,6 +720,9 @@ async function searchForCT(req, res, next) {
           }).catch(err => {
             errorProtocol(err);
           })
+
+        // console.log("The categories are : ", categories);
+        // console.log("Has Match? ^ ", hasMatch);
 
         if (hasMatch) {
           finalTrialsList[finalTrialsIndex] = {};
@@ -803,6 +806,7 @@ async function searchForCT(req, res, next) {
           finalTrialsList[finalTrialsIndex]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
           finalTrialsIndex = finalTrialsIndex + 1;
           if (i >= 15 && categoriesArray.includes(true)) {
+            // console.log("Early breakout")
             break;
           }
         }
