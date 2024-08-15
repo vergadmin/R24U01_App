@@ -23,6 +23,7 @@ async function getResults() {
         var button = document.getElementById("results");
         var loadedTitle = document.getElementById("loaded-title");
         if (ret.numTrials === 0) {
+            document.getElementById("notice-area").style.display = 'none';
             button.className = "green";
             button.innerText = "See Sponsored Study Results";
             button.disabled = false;
@@ -33,8 +34,10 @@ async function getResults() {
 
             document.getElementById("still-loading").innerText = "We were unable to find any trials with your specified criteria. You can try searching again with different conditions and preferences, if you'd like.";
             
+            document.getElementById("still-loading").style.display = 'block'
+            document.getElementById("link-text-area").style.display = 'none'
             document.getElementById("noneHref").style.display = "block";
-            document.getElementById("noneId").className = 'red';
+            document.getElementById("noneId").className = 'blue';
             document.getElementById("noneId").disabled = false;
         }
         else {
