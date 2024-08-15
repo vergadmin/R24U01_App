@@ -168,9 +168,9 @@ async function sendFormData(id) {
         }
         if (pref === 'Browse') {
             console.log("User is browsing");
-            let id = sessionStorage.getItem("id") || "dummyId";
-            let type = sessionStorage.getItem("type") || "dummyType";
-            let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+            let id = sessionStorage.getItem("id") || "tempId";
+            let type = sessionStorage.getItem("type") || "tempType";
+            let vCHE = sessionStorage.getItem("vCHE") || "tempvCHE";
             window.location.href = `/${id}/${type}/${vCHE}/StudySearch/Browse`
         }
     } 
@@ -247,9 +247,9 @@ async function sendFormData(id) {
                 const pref = sessionStorage.getItem('preferences');
                 if (pref === 'Search') {
                     console.log("User is Searching");
-                    let id = sessionStorage.getItem("id") || "dummyId";
-                    let type = sessionStorage.getItem("type") || "dummyType";
-                    let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+                    let id = sessionStorage.getItem("id") || "tempId";
+                    let type = sessionStorage.getItem("type") || "tempType";
+                    let vCHE = sessionStorage.getItem("vCHE") || "tempvCHE";
                     window.location.href = `/${id}/${type}/${vCHE}/StudySearch/GeneratingResults`
                 }
             }

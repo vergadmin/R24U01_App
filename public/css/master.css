@@ -93,6 +93,17 @@ button:hover {
   background-image: linear-gradient(25deg, rgba(34,136,76,1) 0%, rgba(44,167,94,1) 100%)
 }
 
+
+.red {
+  background-color: #C85250 !important;
+  transition: .2s ease-in-out;
+}
+
+.red:hover {
+background-image: linear-gradient(25deg, rgba(#C85250) 0%, rgb(231, 104, 104) 100%)
+}
+
+
 .goog-te-banner-frame.skiptranslate {
   display: none !important;
   } 
