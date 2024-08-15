@@ -24,7 +24,7 @@ img {
 
 .branding-logos {
     height: 65px !important;
-    right: 15px !important;
+    margin: 0px 11px;
 }
 
 .header-logo {
@@ -49,6 +49,7 @@ img {
 
     .branding-logos {
         height: 35px !important;
+        margin: 3px 3px;
     }
 
     .branding-area {
