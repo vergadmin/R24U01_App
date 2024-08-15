@@ -19,8 +19,8 @@ function openEmailModal(role, contactName, contactEmail, studyTitle, briefSummar
   openModalNctId = nctID;
   emailModal.style.display = "flex";
   let alexInfoText = `What is ALEX?\nThe ALEX portal and associated research was developed through the support of the U01CA274970 grant from the National Cancer Institute, part of the National Institute of Health. The ALEX portal is a web-based tool for patients, caregivers, and providers which aims to increase referral of patients to clinical trials. ALEX helps a user search for and learn about potential study opportunities and understand the complex language that can be a barrier for many patients and their caregivers. If you have questions about why you are receiving this email, or to learn more about the ALEX portal, please reach out to the ALEX Research team at ETCH@mayo.edu.`
-  let patientText= `Hello, \n\nI saw the following research study on the ALEX website. I am interested in participating and would like more information about the study and how to enroll.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Generated Description I Read from ALEX: ${briefSummary}`
-  let caregiverText= `Hello,\n\nI saw the following research study on the ALEX website. I am the caregiver of someone who is interested in participating and would like more information about the study and how to enroll them.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Generated Description I Read from ALEX: ${briefSummary}`
+  let patientText= `Hello, \n\nI saw the following research study on the ALEX website. I am interested in participating and would like more information about the study and how to enroll.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Summarized Description I Read from ALEX: ${briefSummary}`
+  let caregiverText= `Hello,\n\nI saw the following research study on the ALEX website. I am the caregiver of someone who is interested in participating and would like more information about the study and how to enroll them.\n\nTitle: ${studyTitle}\nNCT ID: ${nctID}\n\nAI-Summarized Description I Read from ALEX: ${briefSummary}`
 
   var text
   if (role === 'Patient') {
@@ -70,16 +70,19 @@ async function emailPatient() {
   if (document.getElementById("patientEmail")) {
     patientEmail = document.getElementById("patientEmail").value;
   }
-  var subject = "Requesting Information (NCTID: " + openModalNctId + ") " + openModalTitle; 
 
-  let id = sessionStorage.getItem("id") || "dummyId";
-  let type = sessionStorage.getItem("type") || "dummyType";
-  let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+  let title = openModalTitle <= 25 ? openModalTitle : openModalTitle.substring(0, 25) + "...";
+
+  const subject = `[ACTION REQUESTED] Potential Participant Requesting Information about ${title}`
+
+  let id = sessionStorage.getItem("id") || "tempId";
+  let type = sessionStorage.getItem("type") || "tempType";
+  let vCHE = sessionStorage.getItem("vCHE") || "tempvCHE";
   let url =`/${id}/${type}/${vCHE}/StudySearch/SendEmailPatient`;
   let data = {
     message: openModalMessage,
     subject: subject,
-    studyContact: "christopheryou32@gmail.com",
+    studyContact: openModalEmail,
     patientEmail: patientEmail,
     nctId: openModalNctId
   }
@@ -120,7 +123,7 @@ async function emailPatient() {
   }
 
 function openSurvey () {
-  let id = sessionStorage.getItem("id") || "dummyId";
+  let id = sessionStorage.getItem("id") || "tempId";
   const url =  `https://ufl.qualtrics.com/jfe/form/SV_0v1xFWcmSi5MRPE?PreScreenerID=${id}`;
   window.open(url, '_blank');
 }
@@ -143,17 +146,20 @@ async function emailCaregiver() {
   if (document.getElementById("caregiverEmail")) {
     caregiverEmail = document.getElementById("caregiverEmail").value;
   }
-  var subject = "Requesting Information (NCTID: " + openModalNctId + ") " + openModalTitle; 
 
-  let id = sessionStorage.getItem("id") || "dummyId";
-  let type = sessionStorage.getItem("type") || "dummyType";
-  let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+  let title = openModalTitle <= 25 ? openModalTitle : openModalTitle.substring(0, 25) + "...";
+
+  const subject = `[ACTION REQUESTED] Potential Participant Requesting Information about ${title}`
+
+  let id = sessionStorage.getItem("id") || "tempId";
+  let type = sessionStorage.getItem("type") || "tempType";
+  let vCHE = sessionStorage.getItem("vCHE") || "tempvCHE";
   let url =`/${id}/${type}/${vCHE}/StudySearch/SendEmailCaregiver`;
 
   let data = {
     message: openModalMessage,
     subject: subject,
-    studyContact: "christopheryou32@gmail.com",
+    studyContact: openModalEmail,
     patientEmail: patientEmail,
     caregiverEmail: caregiverEmail,
     nctId: openModalNctId

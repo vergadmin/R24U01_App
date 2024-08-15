@@ -113,9 +113,9 @@ async function retrieveConditions(input, list) {
 }
 
 async function getResults(conditionText) {
-    let id = sessionStorage.getItem("id") || "dummyId";
-    let type = sessionStorage.getItem("type") || "dummyType";
-    let vCHE = sessionStorage.getItem("vCHE") || "dummyvCHE";
+    let id = sessionStorage.getItem("id") || "tempId";
+    let type = sessionStorage.getItem("type") || "tempType";
+    let vCHE = sessionStorage.getItem("vCHE") || "tempvCHE";
     let url = `/${id}/${type}/RetrieveConditions`;
     // console.log(url)
 
