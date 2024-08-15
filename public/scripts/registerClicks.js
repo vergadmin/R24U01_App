@@ -106,7 +106,9 @@ async function storeCharacterInfoInServer(VHType, vCHE) {
         let ret = await res.json();
         var id = ret.id;
         var type = ret.vhType;
-        window.location.href=`/${id}/${type}/${vCHE}/EducationalComponent/Introduction`
+        if (type !== 'text') {
+            window.location.href=`/${id}/${type}/${vCHE}/EducationalComponent/Introduction`
+        }
     } else {
         return `HTTP error: ${res.status}`;
     }

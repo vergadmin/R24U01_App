@@ -658,6 +658,8 @@ function parameterHelper(req, res, next) {
   // console.log("IN HELPER");
   req.body = {};
   req.body = req.session.params.searchCriteria;
+  console.log("IN PARAM HELPER")
+  console.log(req.body)
   next();
 }
 

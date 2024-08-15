@@ -191,9 +191,9 @@ app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, 
 
     var id = req.session.params.id;
     var interventionType = req.session.params.interventionType;
+    console.log("INTERVENTION TYPE IS", interventionType)
 
     if (interventionType === "text") {
-        console.log("TEXT VERISON")
         req.session.params.vCHE = 't';
         req.session.params.vhType = 't';
         res.render('pages/indexText', {id: id, interventionType: interventionType, vh: 't', vhType: 't'})
@@ -279,15 +279,23 @@ function storeSessionParameters(req, res, next) {
 }
 
 function checkPreviousVisit(req, res, next) {
-    if (req.session.visitedIndex) {
+    if (req.session.visitedIndex && req.session.params.interventionType === req.params.interventionType) {
         next();
         return;
     }
     var id = req.params.id;
+    var interventionType = req.params.interventionType;
     if (!req.session.params) {
         req.session.params = {};
         req.session.params.id = id;
+        req.session.params.interventionType = interventionType;
     }
+    if ( req.session.params.interventionType !== req.params.interventionType) {
+        req.session.params.interventionType = interventionType;
+    }
+
+    
+
     var visitN = -1;
     // 
     sql.connect(config, function (err) {
@@ -304,10 +312,12 @@ function checkPreviousVisit(req, res, next) {
         let checkString = `
         SELECT * FROM R24U01
         WHERE ID = '` + id + `'
+        AND InterventionType = '` + interventionType + `'
         AND VisitNum = (
-                SELECT max(VisitNum)
-                FROM R24U01
-                WHERE ID = '` + id + `' 
+            SELECT max(VisitNum)
+            FROM R24U01
+            WHERE ID = '` + id + `'
+            AND InterventionType = '` + interventionType + `'
         )`
         req.session.params.queryString = checkString;
 
