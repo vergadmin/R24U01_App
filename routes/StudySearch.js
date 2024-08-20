@@ -567,6 +567,27 @@ async function returnCategories(title, briefSummary, detailedDescription, nctId,
   });
 }
 
+async function getCoordinates(city, state) {
+  const location = `${city}, ${state}`;
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`;
+
+  try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.length > 0) {
+          const { lat, lon } = data[0];
+          return { lat, lon };
+      } else {
+          // If no results found, return the original city and state
+          return { city, state };
+      }
+  } catch (error) {
+      console.error("Error fetching coordinates:", error);
+      // Return the original city and state in case of an error
+      return { city, state };
+  }
+}
 
 async function createClinicalTrialsString(fields) {
   // return new Promise((resolve) => {
@@ -597,7 +618,7 @@ async function createClinicalTrialsString(fields) {
     genderString += "AREA[Gender] " + fields.Gender + " OR AREA[Gender] All";
     gender = true;
   }
-
+  
   // Location Builder
   let locationString = "&query.locn=AREA[LocationCountry] United States"
   let locationState = false;
@@ -614,6 +635,20 @@ async function createClinicalTrialsString(fields) {
     locationCity = true;
   }
 
+  // Distance Builder
+  let city = fields.LocationCity || "INVALID_STRING";
+  let state = fields.LocationState || "INVALID_STRING";
+  var coordinates;
+  coordinates = await getCoordinates(city, state);
+  const distance = '50mi';
+  var geoFilter = false;
+  var geoFilterString = "";
+  if (city != coordinates.lat && state != coordinates.lon) {
+    geoFilterString = `&filter.geo=distance(${coordinates.lat},${coordinates.lon},${distance})`;
+    geoFilter = true;
+  }
+
+
   // Advanced String
   let advancedString = "&filter.advanced="
   let age = false;
@@ -621,13 +656,14 @@ async function createClinicalTrialsString(fields) {
     advancedString += "AREA[MinimumAge]RANGE[MIN, " + fields.Age + " years] AND AREA[MaximumAge]RANGE[" + fields.Age + " years, MAX]";
     age = true;
   }
-  
+
+  /*
   let healthyString = "AREA[HealthyVolunteers] true";
   if (age)
-    advancedString += healthyString;
-    // advancedString += " AND " + healthyString;
+    advancedString += " AND " + healthyString;
   else
     advancedString += healthyString;
+  */
 
   // Constants in String
   let recruitingString = "&filter.overallStatus=RECRUITING";
@@ -640,12 +676,16 @@ async function createClinicalTrialsString(fields) {
   if (gender)
     expression += genderString;
   // if (locationState || locationCity)
-  expression += locationString;
+  if (geoFilter)
+    expression += geoFilterString;
+  else 
+    expression += locationString;
+
   expression += advancedString;
   expression += recruitingString
 
   // Max results set to 50
-  let maxResults = "&pageSize=50";
+  let maxResults = "&pageSize=100";
   expression += maxResults;
 
   expression = encodeURI(expression);
@@ -679,6 +719,7 @@ async function searchForCT(req, res, next) {
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
   const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&sort=%40relevance&countTotal=true`;
+  console.log(apiUrl);
   // console.log(req.body);
   var userCategories = req.body.groupings;
   // console.log(userCategories);
@@ -695,7 +736,7 @@ async function searchForCT(req, res, next) {
       errorProtocol(err);
       console.error('Error in retrieving trials...: ', err.message, apiUrl);
     });
-  // console.log("Trials Length: ", trialsList.length);
+  console.log("Trials Length: ", trialsList.length);
   var finalTrialsList = [];
   try {
     if (trialsList && trialsList.length > 0) {
@@ -805,8 +846,8 @@ async function searchForCT(req, res, next) {
           finalTrialsList[finalTrialsIndex]['BriefSummary'] = trialsList[i].protocolSection.descriptionModule.briefSummary;
           finalTrialsList[finalTrialsIndex]['DetailedDescription'] = trialsList[i].protocolSection.descriptionModule.detailedDescription;
           finalTrialsIndex = finalTrialsIndex + 1;
-          if (i >= 15 && categoriesArray.includes(true)) {
-            // console.log("Early breakout")
+          if (i >= 15 && finalTrialsIndex >= 5 && categoriesArray.includes(true)) {
+            console.log("Early breakout")
             break;
           }
         }
