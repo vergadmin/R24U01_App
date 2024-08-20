@@ -191,7 +191,7 @@ app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, 
 
     var id = req.session.params.id;
     var interventionType = req.session.params.interventionType;
-    console.log("INTERVENTION TYPE IS", interventionType)
+    // console.log("INTERVENTION TYPE IS", interventionType)
 
     if (interventionType === "text") {
         req.session.params.vCHE = 't';

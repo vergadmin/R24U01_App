@@ -698,8 +698,8 @@ function parameterHelper(req, res, next) {
   // console.log("IN HELPER");
   req.body = {};
   req.body = req.session.params.searchCriteria;
-  console.log("IN PARAM HELPER")
-  console.log(req.body)
+  // console.log("IN PARAM HELPER")
+  // console.log(req.body)
   next();
 }
 
@@ -719,7 +719,7 @@ async function searchForCT(req, res, next) {
   // console.log("Starting search...");
   let expression = await createClinicalTrialsString(req.body);
   const apiUrl = `https://clinicaltrials.gov/api/v2/studies?${expression}&sort=%40relevance&countTotal=true`;
-  console.log(apiUrl);
+  // console.log(apiUrl);
   // console.log(req.body);
   var userCategories = req.body.groupings;
   // console.log(userCategories);
@@ -736,7 +736,7 @@ async function searchForCT(req, res, next) {
       errorProtocol(err);
       console.error('Error in retrieving trials...: ', err.message, apiUrl);
     });
-  console.log("Trials Length: ", trialsList.length);
+  // console.log("Trials Length: ", trialsList.length);
   var finalTrialsList = [];
   try {
     if (trialsList && trialsList.length > 0) {
