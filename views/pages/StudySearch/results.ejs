@@ -228,7 +228,7 @@
                     <div class="col mini-card">
                         <h5 style="margin-bottom: 5px;">Study Contact:</h5>
                         <% if (trialsList[i].LocationContact.length === 0) { %>
-                        <p>We could not find a primary study contact for this study. Please visit <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId[0] %>">this link (click here)</a> and look under "Contacts and Locations" to find a contact or location closest to you.</p>
+                        <p>We could not find a primary study contact for this study. Please visit <a target="_blank" rel="noopener noreferrer" href="https://clinicaltrials.gov/study/<%= trialsList[i].NCTId %>">this link (click here)</a> and look under "Contacts and Locations" to find a contact or location closest to you.</p>
                         <% } else { %>
                         <p style="margin-bottom: 0px;">Name: <%= trialsList[i].LocationContact[0].name%> </p>
                         <p>Email: <%= trialsList[i].LocationContact[0].email%> </p>
