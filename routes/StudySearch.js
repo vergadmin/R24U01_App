@@ -6,6 +6,7 @@ var sql = require("mssql");
 var axios = require("axios")
 const OpenAI = require('openai');
 const { json } = require('body-parser');
+const geolib = require('geolib');
 require('dotenv').config()
 
 // <--- openai constants
@@ -32,7 +33,7 @@ AWS.config.update({
 });
 
 const ses = new AWS.SES({ apiVersion: '2010-12-01' });
-
+const maxInt = Number.MAX_SAFE_INTEGER;
 const usStates = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida",
   "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine",
@@ -40,6 +41,59 @@ const usStates = [
   "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
   "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
   "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+];
+
+const usStatesWithBorders = [
+  { state: "Alabama", borders: ["Florida", "Georgia", "Mississippi", "Tennessee"] },
+  { state: "Alaska", borders: [] }, // Alaska doesn't border any US state
+  { state: "Arizona", borders: ["California", "Nevada", "Utah", "Colorado", "New Mexico"] },
+  { state: "Arkansas", borders: ["Louisiana", "Mississippi", "Missouri", "Oklahoma", "Tennessee", "Texas"] },
+  { state: "California", borders: ["Arizona", "Nevada", "Oregon"] },
+  { state: "Colorado", borders: ["Arizona", "Kansas", "Nebraska", "New Mexico", "Oklahoma", "Utah", "Wyoming"] },
+  { state: "Connecticut", borders: ["Massachusetts", "New York", "Rhode Island"] },
+  { state: "Delaware", borders: ["Maryland", "New Jersey", "Pennsylvania"] },
+  { state: "Florida", borders: ["Alabama", "Georgia"] },
+  { state: "Georgia", borders: ["Alabama", "Florida", "North Carolina", "South Carolina", "Tennessee"] },
+  { state: "Hawaii", borders: [] }, // Hawaii doesn't border any US state
+  { state: "Idaho", borders: ["Montana", "Nevada", "Oregon", "Utah", "Washington", "Wyoming"] },
+  { state: "Illinois", borders: ["Indiana", "Iowa", "Kentucky", "Missouri", "Wisconsin"] },
+  { state: "Indiana", borders: ["Illinois", "Kentucky", "Michigan", "Ohio"] },
+  { state: "Iowa", borders: ["Illinois", "Minnesota", "Missouri", "Nebraska", "South Dakota", "Wisconsin"] },
+  { state: "Kansas", borders: ["Colorado", "Missouri", "Nebraska", "Oklahoma"] },
+  { state: "Kentucky", borders: ["Illinois", "Indiana", "Missouri", "Ohio", "Tennessee", "Virginia", "West Virginia"] },
+  { state: "Louisiana", borders: ["Arkansas", "Mississippi", "Texas"] },
+  { state: "Maine", borders: ["New Hampshire"] },
+  { state: "Maryland", borders: ["Delaware", "Pennsylvania", "Virginia", "West Virginia"] },
+  { state: "Massachusetts", borders: ["Connecticut", "New Hampshire", "New York", "Rhode Island", "Vermont"] },
+  { state: "Michigan", borders: ["Indiana", "Ohio", "Wisconsin"] }, // Note: Michigan has water borders with Illinois and Minnesota, but no land border
+  { state: "Minnesota", borders: ["Iowa", "North Dakota", "South Dakota", "Wisconsin"] },
+  { state: "Mississippi", borders: ["Alabama", "Arkansas", "Louisiana", "Tennessee"] },
+  { state: "Missouri", borders: ["Arkansas", "Illinois", "Iowa", "Kansas", "Kentucky", "Nebraska", "Oklahoma", "Tennessee"] },
+  { state: "Montana", borders: ["Idaho", "North Dakota", "South Dakota", "Wyoming"] },
+  { state: "Nebraska", borders: ["Colorado", "Iowa", "Kansas", "Missouri", "South Dakota", "Wyoming"] },
+  { state: "Nevada", borders: ["Arizona", "California", "Idaho", "Oregon", "Utah"] },
+  { state: "New Hampshire", borders: ["Maine", "Massachusetts", "Vermont"] },
+  { state: "New Jersey", borders: ["Delaware", "New York", "Pennsylvania"] },
+  { state: "New Mexico", borders: ["Arizona", "Colorado", "Oklahoma", "Texas", "Utah"] },
+  { state: "New York", borders: ["Connecticut", "Massachusetts", "New Jersey", "Pennsylvania", "Vermont"] },
+  { state: "North Carolina", borders: ["Georgia", "South Carolina", "Tennessee", "Virginia"] },
+  { state: "North Dakota", borders: ["Minnesota", "Montana", "South Dakota"] },
+  { state: "Ohio", borders: ["Indiana", "Kentucky", "Michigan", "Pennsylvania", "West Virginia"] },
+  { state: "Oklahoma", borders: ["Arkansas", "Colorado", "Kansas", "Missouri", "New Mexico", "Texas"] },
+  { state: "Oregon", borders: ["California", "Idaho", "Nevada", "Washington"] },
+  { state: "Pennsylvania", borders: ["Delaware", "Maryland", "New Jersey", "New York", "Ohio", "West Virginia"] },
+  { state: "Rhode Island", borders: ["Connecticut", "Massachusetts"] },
+  { state: "South Carolina", borders: ["Georgia", "North Carolina"] },
+  { state: "South Dakota", borders: ["Iowa", "Minnesota", "Montana", "Nebraska", "North Dakota", "Wyoming"] },
+  { state: "Tennessee", borders: ["Alabama", "Arkansas", "Georgia", "Kentucky", "Mississippi", "Missouri", "North Carolina", "Virginia"] },
+  { state: "Texas", borders: ["Arkansas", "Louisiana", "New Mexico", "Oklahoma"] },
+  { state: "Utah", borders: ["Arizona", "Colorado", "Idaho", "Nevada", "New Mexico", "Wyoming"] },
+  { state: "Vermont", borders: ["Massachusetts", "New Hampshire", "New York"] },
+  { state: "Virginia", borders: ["Kentucky", "Maryland", "North Carolina", "Tennessee", "West Virginia"] },
+  { state: "Washington", borders: ["Idaho", "Oregon"] },
+  { state: "West Virginia", borders: ["Kentucky", "Maryland", "Ohio", "Pennsylvania", "Virginia"] },
+  { state: "Wisconsin", borders: ["Illinois", "Iowa", "Michigan", "Minnesota"] },
+  { state: "Wyoming", borders: ["Colorado", "Idaho", "Montana", "Nebraska", "South Dakota", "Utah"] }
 ];
 
 // Array of corresponding state abbreviations
@@ -50,7 +104,6 @@ const stateAbbreviations = [
   "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
   "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
 ];
-
 
 const sponsoredList = [
   {
@@ -465,7 +518,7 @@ async function summarizeGPT(briefSummary, detailedDescription, req, res) {
   const prompt = SUMMARY_PROMPT + "\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
   try {
     const completion = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: `${prompt}` }],
     });
     const botResponse = completion.choices[0].message.content;
@@ -483,7 +536,7 @@ async function titleizeGPT(title, briefSummary, detailedDescription, req, res) {
   const prompt = TITLE_PROMPT + "\nTITLE: [" + title + "]\nTEXT1: [" + briefSummary + "]\nTEXT2: [" + detailedDescription + "]";
   try {
     const completion = await client.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: `${prompt}` }],
     });
     const botResponse = completion.choices[0].message.content;
@@ -675,10 +728,9 @@ async function createClinicalTrialsString(fields) {
     expression += conditionString;
   if (gender)
     expression += genderString;
-  // if (locationState || locationCity)
   if (geoFilter)
     expression += geoFilterString;
-  else 
+  if ((locationState || locationCity) && (!geoFilter))
     expression += locationString;
 
   expression += advancedString;
@@ -774,7 +826,7 @@ async function searchForCT(req, res, next) {
               categoriesArray[index] = true;
             }
           }
-          // console.log("CONTACTS LOCATIONS MODULE:", trialsList[i].protocolSection.contactsLocationsModule)
+
           const armsInterventionsModule = trialsList[i].protocolSection.armsInterventionsModule;
           var interventions;
           if (armsInterventionsModule)
@@ -785,51 +837,75 @@ async function searchForCT(req, res, next) {
           else
             trialsList[i].InterventionType = ["Not listed"];
           finalTrialsList[finalTrialsIndex]['InterventionType'] = trialsList[i].InterventionType;
-          locationIndeces = [];
-          facilities = []
-          facilityLocations = []
+
+
+          // No need to error check for "" or "---" anymore because we require City/State, but we'll check that they're valid.
+          var facilities = []
+          var facilityLocations = []
           var remaining = -1;
           var locationsArray = trialsList[i].protocolSection.contactsLocationsModule.locations;
-          // get indeces of locations from cities array
-          // If no city provided, we'll go by state, and if no state provided, we'll go by country (United States only)
-          if (req.body.LocationCity && req.body.LocationCity != "") {
+          let city = req.body.LocationCity || "INVALID_STRING";
+          let state = req.body.LocationState || "INVALID_STRING";
+          var geoCoordinates;
+          geoCoordinates = await getCoordinates(city, state);
+          var stateDistances = [];
+          if (city != geoCoordinates.lat && state != geoCoordinates.lon) {
             for (var j = 0; j < locationsArray.length; j++) {
-              if (locationsArray[j].city == req.body.LocationCity) {
-                locationIndeces.push(j);
+              let indexOfState = usStates.indexOf(req.body.LocationState);
+              if (locationsArray[j].state === req.body.LocationState || (((usStatesWithBorders[indexOfState]).borders).includes(locationsArray[j].state))) {
+                if (locationsArray[j].geoPoint) {
+                  if (locationsArray[j].lat && locationsArray[j].lon) {
+                    const distance = geolib.getDistance(
+                      { latitude: geoCoordinates.lat, longitude: geoCoordinates.lon },
+                      { latitude: locationsArray[j].lat, longitude: locationsArray[j].lon }
+                    );
+                    stateDistances.push({
+                      distance: distance,
+                      state: locationsArray[j].state,
+                      city: locationsArray[j].city,
+                      facility: locationsArray[j].facility
+                    });
+                  }
+                  else {
+                    stateDistances.push({
+                      distance: locationsArray[j].state === req.body.LocationState ? maxInt - 1 : maxInt,
+                      state: locationsArray[j].state,
+                      city: locationsArray[j].city,
+                      facility: locationsArray[j].facility
+                    })
+                  }
+                }
+                else {
+                  stateDistances.push({
+                    distance: locationsArray[j].state === req.body.LocationState ? maxInt - 1 : maxInt,
+                    state: locationsArray[j].state,
+                    city: locationsArray[j].city,
+                    facility: locationsArray[j].facility
+                  })
+                }
               }
             }
           }
-          else if (req.body.LocationState && req.body.LocationState != "---") {
-            for (var j = 0; j < locationsArray.length; j++) {
-              if (locationsArray[j].state == req.body.LocationState) {
-                locationIndeces.push(j);
-              }
-            }
+
+          if (stateDistances.length > 1) {
+            stateDistances.sort((a, b) => a.distance - b.distance);
           }
-          else {
-            for (var j = 0; j < locationsArray.length; j++) {
-              if (locationsArray[j].country == "United States") {
-                locationIndeces.push(j);
-              }
-            }
+          if (stateDistances.length > 5) {
+            remaining = stateDistances.length - 5;
+            stateDistances = stateDistances.slice(0, 5);
           }
-          // condense down to 5 locations if more than 5
-          if (locationIndeces.length > 5) {
-            remaining = locationIndeces.length - 5;
-            locationIndeces = locationIndeces.slice(0, 5);
-          }
-          // iterate through indeces and extract those facilities from facilities array
-          for (var j = 0; j < locationIndeces.length; j++) {
-            facilities.push(locationsArray[locationIndeces[j]].facility);
-            const stateIndex = usStates.indexOf(locationsArray[locationIndeces[j]].state);
+
+          for (var j = 0; j < stateDistances.length; j++) {
+            facilities.push(stateDistances[j].facility);
+            const stateIndex = usStates.indexOf(stateDistances[j].state);
             if (stateIndex !== -1)
-              facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + stateAbbreviations[stateIndex]);
+              facilityLocations.push(stateDistances[j].city + ", " + stateAbbreviations[stateIndex]);
             else
-              facilityLocations.push(locationsArray[locationIndeces[j]].city + ", " + locationsArray[locationIndeces[j]].state);
-  
+              facilityLocations.push(stateDistances[j].city + ", " + stateDistances[j].state);
           }
+
           // set new property on trialsList for filtered facilities
-          if (remaining != -1) {
+          if (remaining > 0) {
             finalTrialsList[finalTrialsIndex]['RemainingFacilities'] = `... and ${remaining} other locations.`
           }
           finalTrialsList[finalTrialsIndex]['FilteredFacilities'] = facilities;

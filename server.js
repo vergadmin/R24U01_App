@@ -246,6 +246,7 @@ app.get('/:id/:interventionType/:vh/Discover', (req, res) => {
 })
 
 function storeSessionParameters(req, res, next) {
+
     const formData = ['ConditionText1', 'ConditionText2', 'ConditionText3', 'Age', 'Gender', 'LocationState', 'LocationCity', 'Role'];
 
     const groupingsData = ['HealthyLiving', 'PreventionScreening', 'Treatment', 'Survivorship', 'Other'];
@@ -268,6 +269,16 @@ function storeSessionParameters(req, res, next) {
         }
     }
 
+    if (req.body.ConditionText1 || req.body.ConditionText2 || req.body.ConditionText3) {
+        delete req.session.params.searchCriteria.ConditionText1;
+        delete req.session.params.searchCriteria.ConditionText2;
+        delete req.session.params.searchCriteria.ConditionText3;
+    }
+
+    if (req.body.HealthyLiving || req.body.PreventionScreening || req.body.Treatment || req.body.Survivorship || req.body.Other) {
+        req.session.params.searchCriteria.groupings = [];
+    }
+
     for (const [key, value] of Object.entries(req.body)) {
         if (formData.includes(key)) {
             req.session.params.searchCriteria[key] = value;
@@ -277,7 +288,6 @@ function storeSessionParameters(req, res, next) {
             req.session.params.searchCriteria.groupings.push(category);
         }
     }
-
     next();
 
 }

@@ -191,7 +191,7 @@ async function sendFormData(id) {
 
     else if (id === 'background-info') {
         data = Object.fromEntries(formData)
-        data['FLAG'] = true;
+        // data['FLAG'] = 'FLAG';
 
     }
     else if (id === "no-info") {
@@ -214,6 +214,10 @@ async function sendFormData(id) {
             }
         })
         data = conditions;
+    }
+    else if (id === 'role-type') {
+        data = Object.fromEntries(formData)
+        data['FLAG'] = 'FLAG';
     }
     else {
         console.log(Object.fromEntries(formData))
