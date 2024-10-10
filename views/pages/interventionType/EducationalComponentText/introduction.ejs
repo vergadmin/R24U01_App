@@ -33,7 +33,12 @@
             <div class = "title-container">
                 <text-h1 class = "main-title-container title"><%=mainTitle%></text-h1>
             </div>
-            <text-p><%-text1%></text-p>
+            <div class="text-component-row">
+                <img class="character-image" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/<%=vh%>.png"/>
+                <div class="text-component-col">
+                    <text-p><%-text1%></text-p>
+                </div>
+            </div>
             <br>
         </div>
 
@@ -41,13 +46,13 @@
         <div class="navigation-area">
             <% for (var i = 0; i < buttons.length; i++) { %>
                 <% if (buttons[i].url === url) { %>
-                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/EducationalComponentText/<%=buttons[i].url%>">
                         <button class="education-navigation selected" >
                             <%= buttons[i].text %>
                         </button>
                     </a>
                 <% } else { %>
-                    <a href="/<%=id%>/<%=interventionType%>/t/EducationalComponentText/<%=buttons[i].url%>">
+                    <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/EducationalComponentText/<%=buttons[i].url%>">
                         <button class="education-navigation" >
                             <%= buttons[i].text %>
                         </button>
@@ -56,7 +61,7 @@
             <% } %>
         </div>
         <div class="discover-button-area">
-            <a href="/<%=id%>/<%=interventionType%>/t/Discover">
+            <a href="/<%=id%>/<%=interventionType%>/<%=vh%>/Discover">
                 <button class="green discover">Discover Research Opportunities</button>
             </a>
         </div>

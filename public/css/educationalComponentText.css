@@ -15,6 +15,26 @@ text-p {
     margin: 15px;
 }
 
+.text-component-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0px 25px;
+}
+
+.text-component-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.character-image {
+    height: 150px;
+    border-radius: 50%;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+    margin: 15px;
+}
+
 text-button {
     padding: 15px;
     font-size: 21px;

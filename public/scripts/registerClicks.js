@@ -3,6 +3,7 @@ async function sendToDatabase(column, value) {
     // console.log(column + ": " + value)
     console.log("IN SEND TO DATABSE")
     console.log(column, value)
+    console.log(sessionStorage)
     if (column === "vCHE") {
         sessionStorage.setItem("vCHE", value)
         if (value === 'swe' || value === 'mbe') {
@@ -106,8 +107,13 @@ async function storeCharacterInfoInServer(VHType, vCHE) {
         let ret = await res.json();
         var id = ret.id;
         var type = ret.vhType;
-        if (type !== 'text') {
+
+        if (type === 'vh') {
+            console.log("VH")
             window.location.href=`/${id}/${type}/${vCHE}/EducationalComponent/Introduction`
+        } else {
+            console.log("TEXT")
+            window.location.href=`/${id}/${type}/${vCHE}/EducationalComponentText/Introduction`
         }
     } else {
         return `HTTP error: ${res.status}`;

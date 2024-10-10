@@ -194,9 +194,7 @@ app.get('/:id/:interventionType', checkPreviousVisit, addVisitToDatabase, (req, 
     // console.log("INTERVENTION TYPE IS", interventionType)
 
     if (interventionType === "text") {
-        req.session.params.vCHE = 't';
-        req.session.params.vhType = 't';
-        res.render('pages/indexText', {id: id, interventionType: interventionType, vh: 't', vhType: 't'})
+        res.render('pages/indexText', {id: id, interventionType: interventionType})
     } 
     else {
         res.render('pages/index', {id: id, interventionType: interventionType})

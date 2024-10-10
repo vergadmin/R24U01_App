@@ -24,25 +24,13 @@
     </header>
     <div class="container">
         <h1 class="title">Discover Research Opportunities</h1>
-        <p style="font-size:23px;">Now that you’ve learned more about research studies from Alex, here are a few things you can do!</p>
-        <div class="areas">
-            <div class="area">
-                <h3 style="margin: 0;">Download Question Guide</h3>
-                <p class="minor">To download questions to <b>ask healthcare providers, study teams, and loved ones</b> about research studies, click the button below. It will open a new tab where you can easily download a PDF version.</p>
-                <button style="font-size: 17px;" onclick="download()">⬇️ Download Question Guide</button>
-            </div>
-            <div class="area">
-                <h3 style="margin: 0;">Share ALEX with Friends and Family</h3>
-                <p class="minor">To <b>share this information with friends and family</b>, click the button below to copy the link to this website.</p>
-                <button style="font-size: 17px;" id = "copyLink" onclick="copyLink()">&#x1F517; Copy Link</button>
-            </div>
+        <p style="font-size:23px;">Now that you’ve learned more about research studies from Alex, you can <b>search for research studies suitable for you</b>! You may also <b>download our question guide</b>, which is a PDF with a list of questions to ask healthcare providers, study teams, and loved ones.</p>
+        <button onclick="download()">⬇️ Download Question Guide</button>
+        <p style="margin-top: 11px; font-size: 17px;">This will open a PDF in a new tab</p>
+        <div class="area">
+            <p style="font-size:23px;">When you're ready, click the button below to find a research study for you!</p>
+            <a onclick="sendToDatabase(`SearchStudies`, `clicked`)" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Role"><button class="green discover">🔍 Start Searching for Clinical Trials</button>
         </div>
-
-                <h2>Search for Research Studies and Registries</h2>
-                <p style="font-size:23px;">Now you're ready to search for a research study! To <b>find suitable research studies</b>, click the button below. It will take you to a search page. </p>
-                <a onclick="sendToDatabase(`SearchStudies`, `clicked`)" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Role"><button class="green discover">🔍 Start Searching for Clinical Trials</button>
-    
-        
     </div>
 </body>
 </html>
