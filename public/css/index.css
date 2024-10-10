@@ -17,6 +17,30 @@
     margin-bottom: 0;
 }
 
+.title .textdecor {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.intro {
+  width: 75%;
+}
+
+.intro p {
+  font-size: 21px !important;
+  text-align: left;
+}
+
+ul > li {
+  text-align: left;
+  font-size: 21px !important;
+}
+
+hr {
+  border-top: 1px solid black !important;
+  width: 75%;
+}
+
 .selection-area {
     display: flex;
     flex-direction: column;
