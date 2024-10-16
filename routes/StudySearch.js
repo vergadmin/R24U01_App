@@ -8,6 +8,8 @@ const OpenAI = require('openai');
 const { json } = require('body-parser');
 const geolib = require('geolib');
 require('dotenv').config()
+const csv = require('csvtojson');
+
 
 // <--- openai constants
 const client = new OpenAI({
@@ -25,6 +27,7 @@ const MAX_TITLE_TOKENS = 50
 const TEMPERATURE = 0
 // open ai constants --->
 
+const s3 = new AWS.S3();
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -116,6 +119,8 @@ const sponsoredList = [
     "Link": "https://research-studies-with-alex.s3.amazonaws.com/SponsoredStudies/STAMPEDNutrition_Module_CRC_Flyer_12.5.19.pdf"
   }
 ]
+
+var customStudiesRegistriesJSON = [];
 
 const config = {
   user: 'VergAdmin',
@@ -218,7 +223,9 @@ router.get('/Results', (req, res) => {
   var role = req.session.params.searchCriteria.Role;
 
   var trialsList = req.session.trialsList;
-  res.render("pages/StudySearch/results", { id: id, vh: vh, interventionType: interventionType, role: role, trialsList: trialsList, sponsoredList: sponsoredList })
+
+  console.log(customStudiesRegistriesJSON)
+  res.render("pages/StudySearch/results", { id: id, vh: vh, interventionType: interventionType, role: role, trialsList: trialsList, customList: customStudiesRegistriesJSON })
 })
 
 router.post('/SendEmailPatient', logStudyContact, SendEmailPatient, (req, res) => {
@@ -230,6 +237,72 @@ router.post('/SendEmailCaregiver', logStudyContact, SendEmailCaregiver, (req, re
   console.log("SEND CG");
   res.send({ message: 'Email Sent Successfully - CG' });
 });
+
+const params = {
+  Bucket: 'research-studies-with-alex',
+  Key: 'custom_studies_registries/custom.csv'
+};
+
+async function csvToJSON() {
+  // Define the condition and columns to extract
+  const conditionColumn = 3; // Index of the column to check (0-based)
+  const conditionValue = 'STUDY'; // Value to check for
+  const columnsToExtract = {
+    'STUDY': [
+      { index: 4, name: 'Categories' },
+      { index: 5, name: 'ContactName' },
+      { index: 6, name: 'ContactEmail' },
+      { index: 7, name: 'Title' },
+      { index: 8, name: 'BriefTitle' },
+      { index: 9, name: 'Description' },
+      { index: 10, name: 'Condition' },
+      { index: 11, name: 'URL' }
+    ],
+    'default': [
+      { index: 5, name: 'ContactName' },
+      { index: 6, name: 'ContactEmail' },
+      { index: 7, name: 'Title' },
+      { index: 8, name: 'BriefTitle' },
+      { index: 9, name: 'Description' },
+      { index: 10, name: 'Condition' },
+      { index: 11, name: 'URL' }
+    ]
+  };
+
+  // Get CSV file and create stream
+  const stream = s3.getObject(params).createReadStream();
+
+  // Convert CSV file to JSON, conditionally extracting columns
+  await csv({
+    noheader: true,
+    output: "csv",
+    ignoreEmpty: true
+  })
+  .fromStream(stream)
+  .subscribe((csvRow, rowIndex) => {
+    if (rowIndex > 0) { // Skip the first row (index 0)
+      const extractedData = {};
+      const columnsToUse = csvRow[conditionColumn] === conditionValue ? 
+                           columnsToExtract['STUDY'] : 
+                           columnsToExtract['default'];
+      
+      columnsToUse.forEach(({ index, name }) => {
+        if (index === 10) {
+          // Convert comma-separated string to array for column 10
+          extractedData[name] = csvRow[index].split(',').map(item => item.trim());
+        } else {
+          extractedData[name] = csvRow[index];
+        }
+      });
+      customStudiesRegistriesJSON.push(extractedData);
+      console.log("BEGIN CUSTOM")
+      console.log(customStudiesRegistriesJSON);
+      console.log("END CUSTOM")
+    }
+  });
+}
+
+csvToJSON();
 
 async function SendEmailPatient(req, res, next) {
   const message = req.body.message;
