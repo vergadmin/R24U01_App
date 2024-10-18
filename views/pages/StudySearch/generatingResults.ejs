@@ -53,7 +53,7 @@
         <h1 class="title" id="loaded-title">Your Results Are Loading ...</h1>      
             <% if (interventionType === 'vh') { %>
                 <div id="notice-area">
-                    <p style="font-size: 19px; margin-top: 5px; font-style: italic;">Please view a quick message from Alex below while we create a personalized list of clinical trials for you!</p>
+                    <p style="font-size: 19px; margin-top: 5px; font-style: italic;">Please view a quick message from Alex below while we create a personalized list of research studies for you!</p>
                 </div>
                 <br/>
                 <video id="alex-video" autoplay controls>
@@ -61,17 +61,17 @@
                 </video>
             <% } else { %>
                 <div id="notice-area">
-                <p style="font-size: 19px; margin-top: 5px; font-style: italic;">Please read the message below while we create a personalized list of clinical trials for you!</p>
+                <p style="font-size: 19px; margin-top: 5px; font-style: italic;">Please read the message below while we create a personalized list of research studies for you!</p>
                 <img class="character-image" src="https://research-studies-with-alex.s3.amazonaws.com/vCHE-images/<%=vh%>.png"/>
-                <p>Thank you so much for sharing that information! We are now generating a personalized list of clinical trials that might be a great fit for you. This process only takes a few moments.</p>
-                <p>On the next page, be sure to locate the "Complete Survey" button to take the post-survey once you are done looking through your personalized list of clinical trials.</p>
+                <p>Thank you so much for sharing that information! We are now generating a personalized list of research studies that might be a great fit for you. This process only takes a few moments.</p>
+                <p>On the next page, be sure to locate the "Complete Survey" button to take the post-survey once you are done looking through your personalized list of research studies.</p>
                 <p>Your personalized clinical trial list should be ready soon. Please click the button below to view your results!</p>
                 </div>
             <% } %>
        
         
         <br/>
-        <p id="still-loading" style="font-size: 19px; margin-top: 5px; font-style: italic; display: none">Your results are taking slightly longer than expected to load. \n Please wait one more minute for us to personalize your clinical trials list!</p>
+        <p id="still-loading" style="font-size: 19px; margin-top: 5px; font-style: italic; display: none">Your results are taking slightly longer than expected to load. \n Please wait one more minute for us to personalize your research studies list!</p>
         <a id = "seeHref" href="/<%=id%>/<%=interventionType%>/<%=vh%>/StudySearch/Results">
             <button id = "results" disabled class = "disabled">Loading...</button>
         </a>      
